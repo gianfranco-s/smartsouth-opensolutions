@@ -1,0 +1,66 @@
+Resumen práctico — Ecosistema CONDOR / Open
+Open ofrece principalmente el ecosistema CONDOR, compuesto por soluciones de RRHH, ERP, autogestión, proveedores, analytics y cloud. La web lo presenta como software de gestión para empresas medianas y grandes, con foco en RRHH, ERP e IA. 
+Producto / App
+Qué es en simple
+Para qué lo usa el cliente
+Qué me importa como Infra
+Condor Work HR
+Sistema de RRHH
+Legajos, liquidación de sueldos, ausentismo, novedades, reportes
+Datos sensibles, Oracle DB, WebLogic/Forms/Reports, backups, accesos, performance en liquidación
+Condor Link
+App / portal de autogestión
+El empleado firma recibos, carga solicitudes o novedades desde celular/web
+Publicación web, SSL, Nginx/reverse proxy, APIs, seguridad, exposición a Internet
+Condor Enterprise ERP
+ERP administrativo
+Finanzas, compras, stock, proveedores, tesorería, contabilidad
+Sistema crítico, Oracle DB, integraciones, disponibilidad, backups, monitoreo
+Condor ProvIA
+Portal de proveedores con IA
+Compras, aprobación de facturas, matching automático, alertas
+APIs, documentos/facturas, conexión con ERP, seguridad de datos, almacenamiento
+Condor Analytics
+BI / reportes
+Dashboards ejecutivos, reportes personalizados, análisis de datos
+Consultas pesadas, conexión a DB, Power BI/reporting, impacto en performance
+Condor Cloud
+Infraestructura cloud/hosting
+Tener CONDOR alojado fuera del cliente, con acceso remoto
+VMs, firewall, VPN, Nginx, certificados, backups, monitoreo, alta disponibilidad
+Cómo entenderlo rápido
+Condor Work es el mundo de RRHH.Ahí están empleados, sueldos, legajos, ausencias y recibos. Para Infra es sensible porque maneja información personal y salarial.
+Condor Enterprise es el mundo administrativo/ERP.Ahí están compras, finanzas, proveedores, stock, tesorería y contabilidad. Para Infra suele ser crítico porque si se cae puede frenar la operación del cliente.
+Condor Link es la cara más “web/app” para los empleados.Es importante porque normalmente requiere publicación segura, certificados SSL, reverse proxy y control de exposición.
+Condor ProvIA complementa al ERP con proveedores e IA.Puede manejar facturas, órdenes de compra y aprobaciones. Desde Infra hay que mirar integraciones, almacenamiento de documentos y seguridad.
+Condor Analytics es la capa de reportes y tableros.No siempre es una app transaccional, pero puede pegarle fuerte a la base si consulta directo a producción.
+Condor Cloud no es una app funcional, sino el modelo donde alojamos todo.Ahí entran servidores, VMs, base Oracle, WebLogic, firewalls, VPNs, backups, monitoreo, certificados y disponibilidad.
+Mapa mental para Infra
+Cliente └── Producto CONDOR      ├── Work HR        → RRHH / sueldos / legajos      ├── Enterprise ERP → administración / compras / finanzas      ├── Link           → app web/mobile para empleados      ├── ProvIA         → proveedores + IA      ├── Analytics      → BI / reportes      └── Cloud          → infraestructura donde corre todo
+
+
+Lo que tenés que relevar por cada cliente
+Punto
+Pregunta clave
+Producto
+¿Usa Work, Enterprise, Link, Analytics, ProvIA?
+Ambiente
+¿Es PROD, QA, TEST o DEV?
+Servidor App
+¿Dónde corre WebLogic / Forms / Reports / API?
+Servidor DB
+¿Dónde está Oracle? ¿Qué service name usa?
+Acceso
+¿Entra por URL pública, VPN, S2S o red interna?
+Publicación
+¿Hay Nginx/reverse proxy? ¿Certificado SSL?
+Firewall
+¿Qué reglas/NAT/VPN lo permiten?
+Integraciones
+¿Banco, SFTP, AFIP, correo, Power BI, API externa?
+Backup
+¿Qué se respalda? ¿DB, VM, dumps, archivos?
+Monitoreo
+¿Está en Zabbix/OEM/Veeam/vCenter?
+Criticidad
+¿Qué pasa si se cae? ¿A quién afecta?

@@ -1,0 +1,130 @@
+﻿Nombre,Estado,Condición,Host,Espacio aprovisionado,Espacio utilizado,Sistema operativo invitado,Dirección IP,CPU de host,Memoria de host,Memoria invitada - %
+CLIENTES-DB,Encendido,Normal,192.1.1.224,"594,17 GB","594,17 GB",CentOS 7 (64-bit),192.1.1.32,545 MHz,"30,9 GB",5
+CLIENTES-DB2,Encendido,Normal,192.1.1.223,"524,19 GB","524,19 GB",Oracle Linux 7 (64-bit),192.1.1.51,398 MHz,"23,57 GB",29
+CliProFw01,Encendido,Normal,192.1.1.223,"74,1 GB","74,1 GB",FreeBSD Pre-11 versions (64-bit),"192.1.3.5, 10.77.6.1, 10.77.8.1, fe80::250:56ff:fe99:cc6f, fe80::250:56ff:fe99:9c3b, fe80::250:56ff:fe99:188d, fe80::250:56ff:fe99:e0bf",62 MHz,"16,76 GB",5
+COCO ORT,Apagado,Normal,192.1.1.221,"83,23 GB","80,04 GB",Microsoft Windows 7 (32-bit),192.1.2.37,0 Hz,0 B,0
+DASADBPROD01,Encendido,Normal,192.1.1.223,"532,14 GB","532,14 GB",Oracle Linux 7 (64-bit),10.77.10.201,167 MHz,"28,18 GB",7
+Database .23,Encendido,Normal,192.1.1.215,"474,21 GB","474,21 GB",Oracle Linux 6 (64-bit),192.1.1.23,598 MHz,"7,26 GB",2
+Database .27,Encendido,Normal,192.1.1.215,"424,16 GB","424,16 GB",Oracle Linux 6 (64-bit),"192.168.122.1, 192.1.1.27, 10.101.2.180, fe80::250:56ff:fe99:54d9",99 MHz,"4,75 GB",1
+Database .44 - Clientes TEST,Encendido,Normal,192.1.1.215,"402,2 GB","402,2 GB",Oracle Linux 7 (64-bit),192.1.1.44,359 MHz,"31,94 GB",2
+Database .90,Encendido,Normal,192.1.1.214,"206,14 GB","206,14 GB",Other Linux (64-bit),192.1.1.90,176 MHz,"6,04 GB",3
+Database 12c .17,Apagado,Normal,192.1.1.216,"354,22 GB","330,01 GB",Oracle Linux 7 (64-bit),,0 Hz,0 B,0
+Database-24,Encendido,Normal,192.1.1.220,"524,19 GB","524,19 GB",Oracle Linux 7 (64-bit),192.1.1.24,418 MHz,24 GB,12
+Database.25.,Encendido,Normal,192.1.1.224,"310,1 GB","310,1 GB",Oracle Linux 7 (64-bit),192.1.1.25,356 MHz,"22,74 GB",7
+Database.28,Encendido,Normal,192.1.1.215,"288,41 GB","288,41 GB",Oracle Linux 7 (64-bit),,19 MHz,"1,02 GB",2
+Database12c .18,Encendido,Normal,192.1.1.220,"408,16 GB","408,16 GB",Oracle Linux 6 (64-bit),"192.1.1.18, fe80::250:56ff:fe97:3dd5",0 Hz,"3,92 GB",2
+DB-ARGOCEAN,Apagado,Normal,192.1.3.252,"216,12 GB","176,38 GB",Oracle Linux 4/5 or later (64-bit),,0 Hz,0 B,0
+DB-GIAR,Encendido,Normal,192.1.3.252,"262,16 GB","253,61 GB",Oracle Linux 6 (64-bit),"10.10.1.9, fe80::20c:29ff:fe7f:c211",0 Hz,"11,96 GB",1
+DB-ROMAN,Encendido,Normal,192.1.3.252,"132,14 GB","124,34 GB",Red Hat Enterprise Linux 5 (64-bit),"172.18.5.43, fe80::20c:29ff:fe0d:97ab",83 MHz,"12,07 GB",4
+DB-ROMAN-HISTORICO,Encendido,Normal,192.1.3.252,"124,14 GB","115,14 GB",Red Hat Enterprise Linux 5 (64-bit),"172.18.5.38, fe80::20c:29ff:fe38:a92a",125 MHz,"3,97 GB",4
+DB-TEST,Apagado,Normal,192.1.3.252,"412,25 GB",396 GB,Oracle Linux 7 (64-bit),,0 Hz,0 B,0
+DBClientes-12C.31,Encendido,Normal,192.1.1.218,"237,19 GB","237,19 GB",Oracle Linux 6 (64-bit),192.1.1.31,423 MHz,"17,54 GB",7
+DBClientes.190,Encendido,Normal,192.1.1.218,"412,15 GB","412,15 GB",Oracle Linux 7 (64-bit),192.1.1.190,174 MHz,"9,98 GB",3
+DBClientes.238,Encendido,Normal,192.1.1.218,"255,19 GB","244,1 GB",Oracle Linux 4/5 or later (64-bit),192.1.1.238,373 MHz,"7,87 GB",9
+DC1,Encendido,Normal,192.1.1.216,"96,14 GB","96,14 GB",Microsoft Windows Server 2016 (64-bit),192.1.1.13,263 MHz,"15,3 GB",11
+DEV12C,Apagado,Normal,192.1.1.219,"126,24 GB","120,03 GB",Microsoft Windows 10 (64-bit),,0 Hz,0 B,0
+DMFW01,Encendido,Normal,192.1.1.223,"76,09 GB","76,09 GB",FreeBSD 12 or later versions (64-bit),"200.55.240.146, 192.1.3.93, 10.77.10.1, fe80::250:56ff:fe99:7af5, fe80::250:56ff:fe99:7943, fe80::250:56ff:fe99:ae85",41 MHz,"9,74 GB",5
+DMWL01,Encendido,Normal,192.1.1.223,"246,1 GB","246,1 GB",Oracle Linux 7 (64-bit),10.77.10.101,188 MHz,"14,81 GB",5
+DOCKER-DEB,Encendido,Normal,192.1.1.223,"176,12 GB","176,12 GB",Debian GNU/Linux 10 (64-bit),"192.1.1.37, 172.19.0.1, 172.18.0.1, fe80::250:56ff:fe99:64b1, fe80::6815:5bff:fe3d:997",104 MHz,"15,7 GB",2
+FW,Encendido,Normal,192.1.3.252,"48,14 GB","9,85 GB",FreeBSD (64-bit),"10.10.1.1, 192.1.3.1, 172.18.5.2, 200.55.243.116, 200.55.243.117, fe80::20c:29ff:fe86:fbb2, fe80::250:56ff:fe99:3f39, fe80::20c:29ff:fe86:fb9e, fe80::20c:29ff:fe86:fba8",20 MHz,"8,03 GB",2
+FWOPEN,Encendido,Normal,192.1.1.217,"104,15 GB","104,15 GB",FreeBSD Pre-11 versions (64-bit),"192.1.1.11, 200.55.243.90, 200.55.243.94, 172.18.5.1, fe80::250:56ff:fe99:facf, fe80::250:56ff:fe99:7f61, fe80::250:56ff:fe99:33, fe80::250:56ff:fe99:facf, fe80::250:56ff:fe99:facf",71 MHz,"3,36 GB",15
+Jasper-Server,Encendido,Normal,192.1.1.219,"33,13 GB","33,13 GB",Ubuntu Linux (64-bit),,0 Hz,"5,31 GB",1
+MAGUILERA-OPEN1,Apagado,Normal,192.1.1.221,"83,21 GB","80,02 GB",Microsoft Windows 7 (32-bit),,0 Hz,0 B,0
+MAGUILERA-OPEN2,Apagado,Normal,192.1.1.221,"83,21 GB","80,03 GB",Microsoft Windows 7 (32-bit),,0 Hz,0 B,0
+MAGUILERA-OPEN3,Apagado,Normal,192.1.1.221,"83,2 GB","80,01 GB",Microsoft Windows 7 (32-bit),,0 Hz,0 B,0
+MARCO-OPEN1,Apagado,Normal,192.1.1.221,"83,23 GB","80,04 GB",Microsoft Windows 7 (64-bit),,0 Hz,0 B,0
+MARCO-OPEN2,Apagado,Normal,192.1.1.221,"85,26 GB","80,07 GB",Microsoft Windows 7 (32-bit),,0 Hz,0 B,0
+MARCO-OPEN3,Apagado,Normal,192.1.1.221,"83,24 GB","80,05 GB",Microsoft Windows 7 (64-bit),,0 Hz,0 B,0
+MICRO,Apagado,Normal,192.1.1.214,"304,24 GB","280,02 GB",Microsoft Windows Server 2016 (64-bit),,0 Hz,0 B,0
+Microstrategy.111,Encendido,Normal,192.1.1.218,"276,13 GB","271,43 GB",Microsoft Windows Server 2008 R2 (64-bit),192.1.1.111,249 MHz,"8,39 GB",3
+NUBE-OPEN-DOCKER,Encendido,Normal,192.1.1.219,"868,19 GB","868,19 GB",CentOS 7 (64-bit),"192.1.1.33, 172.19.0.1, 172.23.0.1, 172.20.0.1, 172.21.0.1, 172.31.0.1, 172.18.0.1, fe80::250:56ff:fe99:ddcd, fe80::42:22ff:fe70:b7d4, fe80::42:54ff:fe3c:a119, fe80::42:93ff:fe76:6ee, fe80::42:33ff:fe01:52f5, fe80::42:28ff:fef3:8e6d",167 MHz,"7,37 GB",5
+OL8DBMULTI01,Apagado,Normal,192.1.1.222,"371,22 GB","347,01 GB",Oracle Linux 7 (64-bit),,0 Hz,0 B,0
+OL8LABWL01,Encendido,Normal,192.1.3.252,"152,11 GB","152,11 GB",Oracle Linux 7 (64-bit),192.1.2.195,146 MHz,"16,07 GB",4
+OPEN01,Encendido,Normal,192.1.1.221,"62,17 GB","62,17 GB",Microsoft Windows 10 (64-bit),192.1.1.166,303 MHz,"12,08 GB",14
+OPEN1,Apagado,Normal,192.1.1.221,"85,25 GB","80,06 GB",Microsoft Windows 7 (32-bit),,0 Hz,0 B,0
+OPEN1-SABRINA,Encendido,Normal,192.1.1.221,"82,13 GB","82,13 GB",Microsoft Windows 7 (64-bit),"169.254.222.144, 169.254.102.215, 169.254.156.216, 169.254.194.22, 192.1.1.189, fe80::fd81:b0d7:8e83:de90, fe80::5512:aba1:398e:66d7, fe80::f9b8:231a:f076:9cd8, fe80::ccb5:9e3b:393:c216",25 MHz,"2,12 GB",4
+OPEN1-W10,Apagado,Normal,192.1.1.221,"54,21 GB",50 GB,Microsoft Windows 10 (64-bit),,0 Hz,0 B,0
+OPEN2,Apagado,Normal,192.1.1.221,"86,83 GB","81,65 GB",Microsoft Windows 7 (32-bit),,0 Hz,0 B,0
+OPEN2-W10,Apagado,Normal,192.1.1.221,"54,21 GB",50 GB,Microsoft Windows 10 (64-bit),,0 Hz,0 B,0
+OPEN3,Apagado,Normal,192.1.1.221,"90,74 GB","83,47 GB",Microsoft Windows 7 (64-bit),,0 Hz,0 B,0
+OPEN3-W10,Apagado,Normal,192.1.1.221,"54,21 GB",50 GB,Microsoft Windows 10 (64-bit),,0 Hz,0 B,0
+openbackend01,Apagado,Normal,192.1.3.252,"76,19 GB",60 GB,Ubuntu Linux (64-bit),,0 Hz,0 B,0
+OPENBI001,Encendido,Normal,192.1.1.214,"188,12 GB","188,12 GB",Microsoft Windows 10 (64-bit),192.1.2.196,126 MHz,"8,07 GB",46
+OPENBK,Encendido,Normal,192.1.1.217,"3,62 TB","3,62 TB",Microsoft Windows Server 2016 (64-bit),"192.1.1.14, 10.77.254.114",646 MHz,"15,2 GB",9
+OPENCLIRDP02,Apagado,Normal,192.1.1.221,"128,23 GB","112,02 GB",Microsoft Windows 10 (64-bit),,0 Hz,0 B,0
+OPENCLIVPN02,Apagado,Normal,192.1.1.221,"90,27 GB","82,06 GB",Microsoft Windows 10 (64-bit),,0 Hz,0 B,0
+OPENCLIVPN03,Apagado,Normal,192.1.1.221,"90,21 GB",82 GB,Microsoft Windows 10 (64-bit),,0 Hz,0 B,0
+OPENCLIVPN04,Apagado,Normal,192.1.1.221,"90,21 GB",82 GB,Microsoft Windows 10 (64-bit),,0 Hz,0 B,0
+OPENCLOUD - Jasper .4,Encendido,Normal,192.1.1.215,"262,13 GB","262,13 GB",Ubuntu Linux (64-bit),"192.1.1.4, fe80::250:56ff:fe97:8e4c",0 Hz,"2,03 GB",1
+OPENDB19DEV01,Encendido,Normal,192.1.1.218,"138,11 GB","138,11 GB",Oracle Linux 7 (64-bit),192.1.2.240,249 MHz,"10,01 GB",2
+OPENDBDES011,Encendido,Normal,192.1.1.224,"332,12 GB","332,12 GB",Oracle Linux 7 (64-bit),10.77.7.151,251 MHz,"21,18 GB",2
+OPENDBPR001,Encendido,Normal,192.1.1.223,"392,14 GB","392,14 GB",Oracle Linux 8 (64-bit),192.1.3.30,335 MHz,"25,14 GB",10
+OPENDBPROD001,Encendido,Normal,192.1.1.224,"732,13 GB","732,13 GB",Oracle Linux 7 (64-bit),10.77.7.11,230 MHz,"28,47 GB",8
+OPENDBPROD005,Encendido,Normal,192.1.1.224,"332,13 GB","332,13 GB",Oracle Linux 7 (64-bit),10.77.7.15,209 MHz,"27,75 GB",3
+OPENDBPROD006,Encendido,Normal,192.1.1.217,"700,11 GB","700,11 GB",Oracle Linux 8 (64-bit),"192.1.1.22, fe80::250:56ff:fe99:afcb",167 MHz,"18,61 GB",2
+OPENDBPROD011,Encendido,Normal,192.1.1.218,"196,11 GB","196,11 GB",Oracle Linux 7 (64-bit),192.1.3.21,0 Hz,"2,41 GB",1
+OPENDBPROD03,Encendido,Normal,192.1.1.224,"580,09 GB","580,09 GB",Other 4.x or later Linux (64-bit),"10.77.7.30, fe80::250:56ff:fe99:b29",230 MHz,"18,37 GB",2
+OPENDBQA01,Encendido,Normal,192.1.1.224,"436,09 GB","436,09 GB",Oracle Linux 8 (64-bit),10.77.7.70,272 MHz,"15,5 GB",3
+OpenDevServices,Apagado,Normal,192.1.1.220,"262,22 GB","250,03 GB",Ubuntu Linux (64-bit),,0 Hz,0 B,0
+OPENDOCKER.57,Encendido,Normal,192.1.1.216,"188,13 GB","188,13 GB",CentOS 7 (64-bit),"192.1.1.57, 172.28.0.1, 192.168.80.1, 172.20.0.1, 192.168.16.1, fe80::250:56ff:fe99:7b06, fe80::42:a1ff:fed8:b901, fe80::42:2ff:fe2b:9319, fe80::42:83ff:fe93:3418, fe80::42:88ff:fefe:db93",47 MHz,"2,69 GB",1
+OPENDOCKER01,Encendido,Normal,192.1.1.219,"126,14 GB","126,14 GB",Ubuntu Linux (64-bit),"192.1.1.110, 172.19.0.1, 172.18.0.1",71 MHz,"15,64 GB",1
+OPENDOCKER02,Encendido,Normal,192.1.1.220,"126,14 GB","126,14 GB",Ubuntu Linux (64-bit),"192.1.1.112, 198.11.1.1, 198.11.11.1, 198.11.9.1, 198.11.6.1, 198.11.12.1, 198.11.5.1, 198.11.7.1, 198.11.3.1, 198.11.10.1, 198.11.4.1, 198.11.8.1, fe80::250:56ff:fe99:e46f",55 MHz,"3,09 GB",2
+OPENDOCKER03,Apagado,Normal,192.1.1.220,"326,23 GB","310,04 GB",Ubuntu Linux (64-bit),,0 Hz,0 B,0
+OPENDOCKER04,Encendido,Normal,192.1.1.224,"96,09 GB","96,09 GB",Ubuntu Linux (64-bit),"10.77.7.5, 172.18.0.1, fe80::250:56ff:fe99:afbf, fe80::68e9:adff:feb2:1350",41 MHz,"7,28 GB",1
+OPENFILE,Encendido,Normal,192.1.1.219,"1,45 TB","1,45 TB",Microsoft Windows Server 2008 R2 (64-bit),,"2,8 GHz","4,05 GB",20
+OPENFWCLI001,Encendido,Normal,192.1.1.223,"66,08 GB","66,08 GB",FreeBSD Pre-11 versions (64-bit),"200.55.243.93, 192.1.3.250, fe80::250:56ff:fe99:31d1, fe80::250:56ff:fe99:13b8, fe80::250:56ff:fe99:ffb5",41 MHz,"6,88 GB",2
+OPENFWCLI02,Encendido,Normal,192.1.1.217,"66,11 GB","66,11 GB",FreeBSD Pre-11 versions (64-bit),,47 MHz,"3,11 GB",2
+OPENFWCLI10,Encendido,Normal,192.1.1.224,"58,08 GB","58,08 GB",FreeBSD Pre-11 versions (64-bit),"200.55.240.147, 192.1.3.6, 10.77.7.1, fe80::250:56ff:fe99:51da, fe80::250:56ff:fe99:2c63, fe80::250:56ff:fe99:94e6",20 MHz,"7,19 GB",7
+OPENHUMHUB,Encendido,Normal,192.1.1.219,"158,11 GB","158,11 GB",Ubuntu Linux (64-bit),"192.1.2.238, fe80::250:56ff:fe99:1715",23 MHz,"7,24 GB",1
+OPENINFR01,Encendido,Normal,192.1.3.252,"23,25 GB","23,25 GB",Red Hat Enterprise Linux 7 (64-bit),"192.1.1.128, fe80::250:56ff:fe99:a3a0",0 Hz,"3,42 GB",1
+OPENINFR02,Encendido,Normal,192.1.1.220,"268,23 GB","268,23 GB",Other Linux (64-bit),192.1.1.200,27 MHz,"7,9 GB",4
+OPENINFR04,Encendido,Normal,192.1.1.215,"32,31 GB","32,31 GB",Red Hat Enterprise Linux 7 (64-bit),"192.1.1.124, fe80::250:56ff:fe99:ea5b",19 MHz,"2,59 GB",1
+OPENINFR05,Encendido,Normal,192.1.1.216,"208,24 GB","208,24 GB",Red Hat Enterprise Linux 7 (64-bit),"192.1.1.123, fe80::250:56ff:fe99:6302",23 MHz,"1,82 GB",1
+OPENINFR06,Encendido,Normal,192.1.1.218,"20,22 GB","20,22 GB",Red Hat Enterprise Linux 7 (64-bit),"192.1.1.126, fe80::250:56ff:fe99:1f8",0 Hz,"1,65 GB",2
+OPENINFR07,Encendido,Normal,192.1.1.219,"20,21 GB","20,21 GB",Red Hat Enterprise Linux 7 (64-bit),"192.1.1.127, fe80::250:56ff:fe99:aa34",0 Hz,"6,29 GB",1
+OPENINFR10,Encendido,Normal,192.1.1.221,"28,11 GB","28,11 GB",Red Hat Enterprise Linux 7 (64-bit),192.1.1.120,25 MHz,"2,33 GB",1
+openinfr214,Encendido,Normal,192.1.1.214,"32,12 GB","32,12 GB",Oracle Linux 7 (64-bit),"192.1.2.214, fe80::250:56ff:fe99:861",0 Hz,"3,72 GB",1
+openinfr217,Encendido,Normal,192.1.1.217,"32,12 GB","32,12 GB",Oracle Linux 7 (64-bit),"192.1.2.217, fe80::250:56ff:fe99:650c",0 Hz,"4,32 GB",1
+OPENINFR222,Encendido,Normal,192.1.1.222,"48,11 GB","48,11 GB",Ubuntu Linux (64-bit),"192.1.2.222, fe80::250:56ff:fe99:ef36",0 Hz,"3,15 GB",0
+OPENINFR223,Encendido,Normal,192.1.1.223,"36,39 GB","36,39 GB",Red Hat Enterprise Linux 7 (64-bit),192.1.2.223,20 MHz,"4,67 GB",1
+OPENINFR224,Encendido,Normal,192.1.1.224,"66,24 GB","66,24 GB",Red Hat Enterprise Linux 7 (64-bit),"192.1.2.224, fe80::e3b2:7fce:67c8:d6ce",20 MHz,"4,77 GB",1
+OPENOEM24ai,Encendido,Normal,192.1.1.223,"304,1 GB","304,1 GB",Oracle Linux 8 (64-bit),10.77.8.15,398 MHz,"23,83 GB",21
+OPENORACLEDB01,Encendido,Normal,192.1.1.223,"314,15 GB","314,15 GB",Oracle Linux 7 (64-bit),"192.1.1.80, 10.5.1.177",314 MHz,"23,62 GB",5
+OPENORACLEDB02,Apagado,Normal,192.1.1.222,"338,23 GB","306,01 GB",Oracle Linux 7 (64-bit),,0 Hz,0 B,0
+OPENPORTAL01,Encendido,Normal,192.1.1.223,"292,12 GB","292,12 GB",Ubuntu Linux (64-bit),"10.77.10.5, 172.18.0.1, 172.19.0.1, fe80::250:56ff:fe99:ae3b",62 MHz,"6,21 GB",1
+OPENPORTALCLI02,Encendido,Normal,192.1.1.223,"96,09 GB","96,09 GB",Ubuntu Linux (64-bit),"10.77.8.2, 172.20.0.1, 172.19.0.1, 172.18.0.1, fe80::250:56ff:fe99:3d48, fe80::42:fcff:fedd:96d5",356 MHz,"15,62 GB",4
+OPENREMOTECLI01,Encendido,Normal,192.1.1.222,"130,11 GB","130,11 GB",Microsoft Windows 10 (64-bit),"169.254.8.113, 192.1.1.102, 169.254.7.97, 192.168.25.1, 192.168.72.1, fe80::856d:d391:db7:1e8c, fe80::eda0:ab62:fed2:9c22, fe80::d597:579e:ac2c:37ad, fe80::7734:4e90:a0dd:8a00",223 MHz,"16,08 GB",30
+OpenRepo,Apagado,Normal,192.1.1.220,"158,21 GB","131,88 GB",Ubuntu Linux (64-bit),,0 Hz,0 B,0
+OPENSVNLINUX .3,Encendido,Normal,192.1.1.220,"208,2 GB","208,2 GB",CentOS 4/5 or later (64-bit),"192.1.1.3, fe80::250:56ff:fea0:3dd1",0 Hz,"4,09 GB",0
+OPENSYTDB01,Apagado,Normal,192.1.3.252,"176,22 GB",160 GB,Oracle Linux 7 (64-bit),,0 Hz,0 B,0
+OPENTECNO,Encendido,Normal,192.1.1.216,"221,16 GB","221,16 GB",Ubuntu Linux (64-bit),"192.1.1.8, fe80::20c:29ff:fefc:f79c",23 MHz,880 MB,6
+OPENVPNFW01,Encendido,Normal,192.1.1.216,"52,13 GB","52,13 GB",FreeBSD 12 or later versions (64-bit),"200.55.243.92, 200.55.243.115, 192.1.2.11, 192.1.3.11, fe80::250:56ff:fe99:93db, fe80::250:56ff:fe99:cc39",71 MHz,"3,64 GB",4
+OPENWLCLI01,Apagado,Normal,192.1.1.223,"246,22 GB","230,01 GB",Oracle Linux 7 (64-bit),,0 Hz,0 B,0
+OPENWLDES010,Encendido,Normal,192.1.1.224,"146,09 GB","146,09 GB",Oracle Linux 7 (64-bit),10.77.7.51,272 MHz,"13,72 GB",2
+OPENWLPROD001,Apagado,Normal,192.1.1.224,"146,21 GB",130 GB,Oracle Linux 7 (64-bit),,0 Hz,0 B,0
+OPENWLPROD01,Encendido,Normal,192.1.1.224,"246,1 GB","246,1 GB",Oracle Linux 7 (64-bit),10.77.7.201,272 MHz,"15,55 GB",4
+OPENWLPROD02,Apagado,Normal,192.1.1.224,"206,22 GB",190 GB,Oracle Linux 7 (64-bit),,0 Hz,0 B,0
+OPENWLQA01,Encendido,Normal,192.1.1.224,"258,09 GB","258,09 GB",Oracle Linux 8 (64-bit),10.77.7.80,146 MHz,"14,72 GB",2
+OPENZABBIX03,Encendido,Normal,192.1.1.224,"136,09 GB","136,09 GB",Oracle Linux 7 (64-bit),192.1.1.5,62 MHz,"11,02 GB",1
+PIVOT-INTEGRACIONES01,Encendido,Normal,192.1.1.216,"64,11 GB","64,11 GB",Oracle Linux 8 (64-bit),"192.1.2.60, fe80::250:56ff:fe99:f776",0 Hz,"1,33 GB",1
+SARHA_ONLINE .109,Encendido,Normal,192.1.1.216,"26,12 GB","26,12 GB",Debian GNU/Linux 6 (64-bit),"192.1.1.109, fe80::250:56ff:feac:175f",0 Hz,598 MB,1
+SMTP-OPEN,Encendido,Normal,192.1.1.220,"86,13 GB","86,13 GB",CentOS 7 (64-bit),192.1.1.46,0 Hz,"1,07 GB",2
+TRUENAS,Encendido,Normal,192.1.1.216,"1,82 TB","1,82 TB",FreeBSD Pre-11 versions (64-bit),192.1.1.41,383 MHz,"14,64 GB",12
+vCenter,Encendido,Normal,192.1.1.217,"295,8 GB","295,8 GB",VMware Photon OS (64-bit),192.1.1.29,215 MHz,"15,27 GB",18
+VEEAM-PIEDRAS,Encendido,Normal,192.1.1.221,"188,11 GB","188,11 GB",Microsoft Windows Server 2016 (64-bit),"192.1.1.195, fe80::53b:aeb5:62aa:af6d",25 MHz,"7,93 GB",3
+VM-DOCKER-Clientes,Encendido,Normal,192.1.1.223,"214,09 GB","214,09 GB",Debian GNU/Linux 10 (64-bit),"192.1.1.38, 172.18.0.1, 172.19.0.1, fe80::250:56ff:fe99:4b31, fe80::42:d5ff:fe6e:6544, fe80::42:9cff:fe6c:e99f",83 MHz,"3,84 GB",4
+VM-DOCKER-Clientes (1),Encendido,Normal,192.1.3.252,"214,18 GB","214,18 GB",Debian GNU/Linux 10 (64-bit),"172.18.5.123, 10.10.1.43, 172.18.0.1, 172.19.0.1, 192.1.3.4, fe80::250:56ff:fe99:90d5, fe80::20c:29ff:fe11:a548, fe80::42:79ff:fe54:d9cf, fe80::42:dcff:fe85:c7a4, fe80::20c:29ff:fe11:a552",83 MHz,"4,04 GB",13
+VM_FW,Apagado,Normal,192.1.3.252,"44,21 GB","40,02 GB",FreeBSD (64-bit),,0 Hz,0 B,0
+VPNCLIENTESRDP,Encendido,Normal,192.1.1.221,"58,11 GB","58,11 GB",Microsoft Windows 10 (64-bit),"169.254.193.114, 192.1.1.136, fe80::69ee:ffbd:22f2:f29f",329 MHz,"8,06 GB",18
+Weblogic .16,Encendido,Normal,192.1.1.215,"122,13 GB","122,13 GB",Oracle Linux 4/5 or later (64-bit),"192.1.1.16, fe80::250:56ff:fea0:a070",339 MHz,"2,01 GB",1
+WebLogic.19,Encendido,Normal,192.1.1.223,"226,14 GB","226,14 GB",Oracle Linux 6 (64-bit),"192.1.1.19, fe80::250:56ff:fe97:c510",41 MHz,"5,25 GB",8
+WebLogic.191,Encendido,Normal,192.1.1.217,"366,12 GB","362,71 GB",Red Hat Enterprise Linux 6 (64-bit),192.1.1.191,"5,39 GHz","8,42 GB",2
+Weblogic.21,Encendido,Normal,192.1.1.216,"276,11 GB","276,11 GB",Oracle Linux 6 (64-bit),192.1.1.21,0 Hz,"2,53 GB",1
+WEBSERVER,Encendido,Normal,192.1.1.216,"636,18 GB","636,18 GB",Debian GNU/Linux 10 (64-bit),"192.1.1.6, 172.23.0.1, 172.22.0.1, 192.168.176.1, 192.168.0.1, 172.18.0.1, 172.19.0.1, 172.20.0.1, 192.168.192.1, 172.25.0.1, 172.21.0.1, 172.24.0.1, fe80::250:56ff:fe99:bf0d, fe80::42:3cff:fe28:9fe, fe80::42:4aff:fef1:c02f, fe80::42:60ff:fe57:a634, fe80::42:6aff:fe34:8935, fe80::42:15ff:fe79:617b, fe80::42:d7ff:fe46:256",71 MHz,"6,03 GB",2
+Win10-test-python,Encendido,Alerta,192.1.1.222,"64,11 GB","64,11 GB",Microsoft Windows 10 (64-bit),,111 MHz,"4,05 GB",96
+WL-CLIENTES,Encendido,Normal,192.1.3.252,"60,15 GB","59,27 GB",Red Hat Enterprise Linux 6 (64-bit),172.18.5.40,"1,99 GHz","10,08 GB",3
+WL-GIAR,Encendido,Normal,192.1.3.252,"56,15 GB","55,13 GB",Red Hat Enterprise Linux 6 (64-bit),10.10.1.50,62 MHz,"6,06 GB",9
+WL-ROMAN,Encendido,Normal,192.1.3.252,"78,15 GB","73,34 GB",Red Hat Enterprise Linux 5 (64-bit),"172.18.5.39, fe80::20c:29ff:fe47:8aa8",188 MHz,"7,97 GB",8
+WL12-Clientes,Encendido,Normal,192.1.3.252,"232,16 GB","232,16 GB",Oracle Linux 7 (64-bit),,"3,06 GHz","11,73 GB",21
+WL12C-Desarrollo.2.54,Encendido,Normal,192.1.1.214,"162,13 GB","162,13 GB",Oracle Linux 7 (64-bit),192.1.2.54,252 MHz,"31,89 GB",7
+WL12C-PROD,Encendido,Normal,192.1.1.223,"130,15 GB","130,15 GB",Oracle Linux 7 (64-bit),192.1.1.1,83 MHz,"14,86 GB",2

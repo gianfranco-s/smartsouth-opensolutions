@@ -1,0 +1,113 @@
+Relevamiento general de infraestructura Docker
+Estado técnico inicial para validación con Desarrollo
+1. Objetivo
+El objetivo del relevamiento es identificar los servidores Docker existentes, los contenedores desplegados, su estado actual y la ubicación general de la información persistente.
+La información obtenida servirá como base para validar con Desarrollo qué servicios se encuentran vigentes, a qué ambiente pertenecen y cuáles podrían estar fuera de uso.
+2. Estado general
+Se identificaron y relevaron 9 servidores relacionados con Docker:
+9 servidores relevados
+68 contenedores identificados
+63 contenedores activos
+5 contenedores detenidos
+La clasificación funcional de los servicios es preliminar y deberá confirmarse con Desarrollo antes de definir backups, bajas o tareas de limpieza.
+3. Resumen general
+Servidor
+IP
+S.O.
+Contenedores
+Servicios identificados
+Portainer
+DOCKER-DEB
+192.1.1.37
+Debian 11
+3 (2 activos / 1 detenido)
+Nginx Proxy Manager, MariaDB y Sarha Online
+Relevado
+NUBE-OPEN-DOCKER
+192.1.1.33
+CentOS 7
+15 (14 activos / 1 detenido)
+Nextcloud, OnlyOffice, CEFAS, CLOPEN, CondorProv y bases de datos
+Relevado
+OPENDOCKER.57
+192.1.1.57
+CentOS 7
+11 (9 activos / 2 detenidos)
+JasperReports, CLTEST, SelfRex, Nagios y bases de datos
+Relevado
+OPENDOCKER01
+192.1.1.110
+Ubuntu 20.04
+16 (15 activos / 1 detenido)
+JasperReports, sitios Condor/Open y Portainer (ip:9000)
+Si
+OPENDOCKER02
+192.1.1.112
+Ubuntu 20.04
+11 activos
+Portal Work, PPC, SIGO, Portal Condor y CondorLink (ip:9000)
+Si
+OPENDOCKER03
+192.1.1.113
+Ubuntu 22.04
+1 activo
+Portainer (ip:9000)
+Si
+OPENDOCKER04
+10.77.7.5
+Ubuntu 22.04
+1 activo
+Nginx Proxy Manager
+Relevado
+VM-DOCKER-Clientes
+192.1.1.38
+Debian 10
+5 activos
+CEFAS, PostgreSQL, Nginx Proxy Manager y MariaDB
+Relevado
+VM-DOCKER-Clientes (1)
+192.1.3.4 / 10.10.1.43 / 172.18.5.123
+Debian 10
+5 activos
+CEFAS, PostgreSQL, Nginx Proxy Manager y MariaDB
+Relevado
+4. Estado particular por servidor
+DOCKER-DEB
+Posee Nginx Proxy Manager y MariaDB activos. También se encontró un contenedor de Sarha Online detenido desde hace aproximadamente dos años.
+La persistencia se concentra principalmente bajo /home/open/docker.
+Debe validarse qué servicios publica el proxy y si Sarha Online continúa siendo necesario.
+NUBE-OPEN-DOCKER
+Contiene 15 contenedores, de los cuales 14 están activos y 1 detenido.
+Se identificaron servicios de Nextcloud, OnlyOffice, CEFAS, CLOPEN, CondorProv, Watchtower y bases PostgreSQL/MariaDB.
+La persistencia se distribuye principalmente bajo /opt/cloud, /opt/cloud2, /opt/cefaslink y /opt/clopen, además de volúmenes Docker.
+Debe validarse la vigencia de los dos despliegues de Nextcloud, el contenedor Swagger detenido y los Compose sin contenedores activos asociados.
+OPENDOCKER.57
+Contiene JasperReports, CLTEST, SelfRex, PostgreSQL, MariaDB, MySQL asociado a Nagios y dos contenedores antiguos detenidos.
+Utiliza almacenamiento local y recursos NFS. Se detectó un montaje NFS con error y otro con alta ocupación.
+Debe validarse qué ambientes continúan vigentes.
+OPENDOCKER01
+Contiene múltiples instancias de JasperReports y MariaDB, además de sitios relacionados con Condor y Open. También posee Portainer.
+El almacenamiento de Docker presenta una ocupación elevada.
+Antes de intervenir debe confirmarse qué instancias continúan en uso.
+OPENDOCKER02
+Contiene Portal Work en producción, testing y desarrollo; PPC y PPC testing; SIGO; Portal Condor; CondorLink testing; Portainer y Watchtower.
+Es el servidor donde se observa con mayor claridad la convivencia de ambientes productivos y no productivos.
+Debe validarse qué aplicaciones requieren persistencia o pueden reconstruirse desde el registry.
+OPENDOCKER03
+Actualmente solo posee Portainer activo.
+Debe validarse si administra únicamente el Docker local o también endpoints remotos.
+OPENDOCKER04
+Posee únicamente Nginx Proxy Manager.
+Los datos y certificados se encuentran bajo /root/nginx-proxy.
+Debe identificarse qué servicios o dominios dependen de este proxy.
+VM-DOCKER-Clientes
+Contiene CEFAS frontend, backend y PostgreSQL, además de Nginx Proxy Manager y MariaDB.
+Utiliza almacenamiento local bajo /home/open y un recurso NFS externo.
+Por sus nombres y antigüedad aparenta ser un servicio de cliente en uso, pero debe confirmarse.
+VM-DOCKER-Clientes (1)
+Posee tres interfaces: 192.1.3.4, 10.10.1.43 y 172.18.5.123.
+Contiene los mismos cinco servicios identificados en VM-DOCKER-Clientes: CEFAS frontend, backend y PostgreSQL, Nginx Proxy Manager y MariaDB.
+La estructura, hostname y nombres de contenedores son muy similares al servidor 192.1.1.38; debe validarse si es una réplica, un ambiente distinto o una copia antigua.
+5. Validación con Desarrollo
+Con el relevamiento técnico completo, el siguiente paso es revisar el inventario con Desarrollo y clasificar cada servicio como producción, QA/testing, desarrollo, histórico o discontinuado.
+A partir de esa validación se determinará qué servicios deben mantenerse, cuáles pueden darse de baja, qué información debe conservarse y cuáles requieren una política de backup específica. La definición de backups y cualquier tarea de limpieza quedará supeditada a esta revisión.

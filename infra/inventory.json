@@ -1,0 +1,3672 @@
+{
+  "meta": {
+    "generated_from": [
+      "ExportList.csv (vCenter export, authoritative for VM existence/state)",
+      "Relevamiento (sin claves) - VM Linux.csv (manually curated client mapping, may be inaccurate/incomplete)"
+    ],
+    "vm_count": 129,
+    "esxi_host_count": 12,
+    "client_count_in_relevamiento": 13
+  },
+  "esxi_hosts": [
+    "192.1.1.214",
+    "192.1.1.215",
+    "192.1.1.216",
+    "192.1.1.217",
+    "192.1.1.218",
+    "192.1.1.219",
+    "192.1.1.220",
+    "192.1.1.221",
+    "192.1.1.222",
+    "192.1.1.223",
+    "192.1.1.224",
+    "192.1.3.252"
+  ],
+  "vms": [
+    {
+      "name": "CLIENTES-DB",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.224",
+      "provisioned": "594,17 GB",
+      "used": "594,17 GB",
+      "guest_os": "CentOS 7 (64-bit)",
+      "ipv4": [
+        "192.1.1.32"
+      ],
+      "all_ips": [
+        "192.1.1.32"
+      ],
+      "category": "database",
+      "used_by_clients": [
+        {
+          "client": "Cefas S.A.",
+          "code": "CEFAS",
+          "role": "database"
+        },
+        {
+          "client": "Club Atlético Boca Juniors",
+          "code": "BOCA",
+          "role": "database"
+        }
+      ]
+    },
+    {
+      "name": "CLIENTES-DB2",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.223",
+      "provisioned": "524,19 GB",
+      "used": "524,19 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [
+        "192.1.1.51"
+      ],
+      "all_ips": [
+        "192.1.1.51"
+      ],
+      "category": "database",
+      "used_by_clients": [
+        {
+          "client": "Enerflex Solutions Argentina SRL",
+          "code": "ENERFLEX",
+          "role": "database"
+        },
+        {
+          "client": "Jobs Servicios de Recursos Humanos SRL",
+          "code": "JOBS",
+          "role": "database"
+        }
+      ]
+    },
+    {
+      "name": "CliProFw01",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.223",
+      "provisioned": "74,1 GB",
+      "used": "74,1 GB",
+      "guest_os": "FreeBSD Pre-11 versions (64-bit)",
+      "ipv4": [
+        "192.1.3.5",
+        "10.77.6.1",
+        "10.77.8.1"
+      ],
+      "all_ips": [
+        "192.1.3.5",
+        "10.77.6.1",
+        "10.77.8.1",
+        "fe80::250:56ff:fe99:cc6f",
+        "fe80::250:56ff:fe99:9c3b",
+        "fe80::250:56ff:fe99:188d",
+        "fe80::250:56ff:fe99:e0bf"
+      ],
+      "category": "firewall_candidate_pfsense",
+      "used_by_clients": []
+    },
+    {
+      "name": "COCO ORT",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.221",
+      "provisioned": "83,23 GB",
+      "used": "80,04 GB",
+      "guest_os": "Microsoft Windows 7 (32-bit)",
+      "ipv4": [
+        "192.1.2.37"
+      ],
+      "all_ips": [
+        "192.1.2.37"
+      ],
+      "category": "workstation_or_jumphost",
+      "used_by_clients": []
+    },
+    {
+      "name": "DASADBPROD01",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.223",
+      "provisioned": "532,14 GB",
+      "used": "532,14 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [
+        "10.77.10.201"
+      ],
+      "all_ips": [
+        "10.77.10.201"
+      ],
+      "category": "database",
+      "used_by_clients": [
+        {
+          "client": "Maipú",
+          "code": "MAIPU",
+          "role": "database"
+        }
+      ]
+    },
+    {
+      "name": "Database .23",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.215",
+      "provisioned": "474,21 GB",
+      "used": "474,21 GB",
+      "guest_os": "Oracle Linux 6 (64-bit)",
+      "ipv4": [
+        "192.1.1.23"
+      ],
+      "all_ips": [
+        "192.1.1.23"
+      ],
+      "category": "database",
+      "used_by_clients": []
+    },
+    {
+      "name": "Database .27",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.215",
+      "provisioned": "424,16 GB",
+      "used": "424,16 GB",
+      "guest_os": "Oracle Linux 6 (64-bit)",
+      "ipv4": [
+        "192.168.122.1",
+        "192.1.1.27",
+        "10.101.2.180"
+      ],
+      "all_ips": [
+        "192.168.122.1",
+        "192.1.1.27",
+        "10.101.2.180",
+        "fe80::250:56ff:fe99:54d9"
+      ],
+      "category": "database",
+      "used_by_clients": []
+    },
+    {
+      "name": "Database .44 - Clientes TEST",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.215",
+      "provisioned": "402,2 GB",
+      "used": "402,2 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [
+        "192.1.1.44"
+      ],
+      "all_ips": [
+        "192.1.1.44"
+      ],
+      "category": "database",
+      "used_by_clients": []
+    },
+    {
+      "name": "Database .90",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.214",
+      "provisioned": "206,14 GB",
+      "used": "206,14 GB",
+      "guest_os": "Other Linux (64-bit)",
+      "ipv4": [
+        "192.1.1.90"
+      ],
+      "all_ips": [
+        "192.1.1.90"
+      ],
+      "category": "database",
+      "used_by_clients": []
+    },
+    {
+      "name": "Database 12c .17",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.216",
+      "provisioned": "354,22 GB",
+      "used": "330,01 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "database",
+      "used_by_clients": []
+    },
+    {
+      "name": "Database-24",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.220",
+      "provisioned": "524,19 GB",
+      "used": "524,19 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [
+        "192.1.1.24"
+      ],
+      "all_ips": [
+        "192.1.1.24"
+      ],
+      "category": "database",
+      "used_by_clients": []
+    },
+    {
+      "name": "Database.25.",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.224",
+      "provisioned": "310,1 GB",
+      "used": "310,1 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [
+        "192.1.1.25"
+      ],
+      "all_ips": [
+        "192.1.1.25"
+      ],
+      "category": "database",
+      "used_by_clients": []
+    },
+    {
+      "name": "Database.28",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.215",
+      "provisioned": "288,41 GB",
+      "used": "288,41 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "database",
+      "used_by_clients": []
+    },
+    {
+      "name": "Database12c .18",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.220",
+      "provisioned": "408,16 GB",
+      "used": "408,16 GB",
+      "guest_os": "Oracle Linux 6 (64-bit)",
+      "ipv4": [
+        "192.1.1.18"
+      ],
+      "all_ips": [
+        "192.1.1.18",
+        "fe80::250:56ff:fe97:3dd5"
+      ],
+      "category": "database",
+      "used_by_clients": []
+    },
+    {
+      "name": "DB-ARGOCEAN",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.3.252",
+      "provisioned": "216,12 GB",
+      "used": "176,38 GB",
+      "guest_os": "Oracle Linux 4/5 or later (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "database",
+      "used_by_clients": [
+        {
+          "client": "Argocean",
+          "code": "",
+          "role": "database"
+        }
+      ]
+    },
+    {
+      "name": "DB-GIAR",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.3.252",
+      "provisioned": "262,16 GB",
+      "used": "253,61 GB",
+      "guest_os": "Oracle Linux 6 (64-bit)",
+      "ipv4": [
+        "10.10.1.9"
+      ],
+      "all_ips": [
+        "10.10.1.9",
+        "fe80::20c:29ff:fe7f:c211"
+      ],
+      "category": "database",
+      "used_by_clients": [
+        {
+          "client": "Arris de Argentina S.A.",
+          "code": "GIAR",
+          "role": "database"
+        }
+      ]
+    },
+    {
+      "name": "DB-ROMAN",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.3.252",
+      "provisioned": "132,14 GB",
+      "used": "124,34 GB",
+      "guest_os": "Red Hat Enterprise Linux 5 (64-bit)",
+      "ipv4": [
+        "172.18.5.43"
+      ],
+      "all_ips": [
+        "172.18.5.43",
+        "fe80::20c:29ff:fe0d:97ab"
+      ],
+      "category": "database",
+      "used_by_clients": [
+        {
+          "client": "CSM Ciencia al Servicio del Movimiento S.A.",
+          "code": "ROMAN",
+          "role": "database"
+        }
+      ]
+    },
+    {
+      "name": "DB-ROMAN-HISTORICO",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.3.252",
+      "provisioned": "124,14 GB",
+      "used": "115,14 GB",
+      "guest_os": "Red Hat Enterprise Linux 5 (64-bit)",
+      "ipv4": [
+        "172.18.5.38"
+      ],
+      "all_ips": [
+        "172.18.5.38",
+        "fe80::20c:29ff:fe38:a92a"
+      ],
+      "category": "database",
+      "used_by_clients": [],
+      "name_hint_client": {
+        "client_code": "ROMAN",
+        "client_name": "CSM Ciencia al Servicio del Movimiento S.A.",
+        "basis": "name substring 'ROMAN' matches client code; likely a historical/archive DB for this client",
+        "confidence": "inferred_from_name_only_not_confirmed"
+      }
+    },
+    {
+      "name": "DB-TEST",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.3.252",
+      "provisioned": "412,25 GB",
+      "used": "396 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "database",
+      "used_by_clients": []
+    },
+    {
+      "name": "DBClientes-12C.31",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.218",
+      "provisioned": "237,19 GB",
+      "used": "237,19 GB",
+      "guest_os": "Oracle Linux 6 (64-bit)",
+      "ipv4": [
+        "192.1.1.31"
+      ],
+      "all_ips": [
+        "192.1.1.31"
+      ],
+      "category": "database",
+      "used_by_clients": [
+        {
+          "client": "ABB S.A.",
+          "code": "ABB",
+          "role": "database"
+        },
+        {
+          "client": "Ente Servicios y Obras Públicas (ESYOP)",
+          "code": "ESYOP",
+          "role": "database"
+        }
+      ]
+    },
+    {
+      "name": "DBClientes.190",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.218",
+      "provisioned": "412,15 GB",
+      "used": "412,15 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [
+        "192.1.1.190"
+      ],
+      "all_ips": [
+        "192.1.1.190"
+      ],
+      "category": "database",
+      "used_by_clients": [
+        {
+          "client": "ABB S.A.",
+          "code": "ABB",
+          "role": "database"
+        },
+        {
+          "client": "DC Viajes y Turismo S.A.",
+          "code": "DCVIAJES",
+          "role": "database"
+        }
+      ]
+    },
+    {
+      "name": "DBClientes.238",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.218",
+      "provisioned": "255,19 GB",
+      "used": "244,1 GB",
+      "guest_os": "Oracle Linux 4/5 or later (64-bit)",
+      "ipv4": [
+        "192.1.1.238"
+      ],
+      "all_ips": [
+        "192.1.1.238"
+      ],
+      "category": "database",
+      "used_by_clients": [
+        {
+          "client": "Dominique Val S.A.",
+          "code": "DVAL",
+          "role": "database"
+        }
+      ]
+    },
+    {
+      "name": "DC1",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.216",
+      "provisioned": "96,14 GB",
+      "used": "96,14 GB",
+      "guest_os": "Microsoft Windows Server 2016 (64-bit)",
+      "ipv4": [
+        "192.1.1.13"
+      ],
+      "all_ips": [
+        "192.1.1.13"
+      ],
+      "category": "domain_controller",
+      "used_by_clients": []
+    },
+    {
+      "name": "DEV12C",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.219",
+      "provisioned": "126,24 GB",
+      "used": "120,03 GB",
+      "guest_os": "Microsoft Windows 10 (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "unclear",
+      "used_by_clients": []
+    },
+    {
+      "name": "DMFW01",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.223",
+      "provisioned": "76,09 GB",
+      "used": "76,09 GB",
+      "guest_os": "FreeBSD 12 or later versions (64-bit)",
+      "ipv4": [
+        "200.55.240.146",
+        "192.1.3.93",
+        "10.77.10.1"
+      ],
+      "all_ips": [
+        "200.55.240.146",
+        "192.1.3.93",
+        "10.77.10.1",
+        "fe80::250:56ff:fe99:7af5",
+        "fe80::250:56ff:fe99:7943",
+        "fe80::250:56ff:fe99:ae85"
+      ],
+      "category": "firewall_candidate_pfsense",
+      "used_by_clients": []
+    },
+    {
+      "name": "DMWL01",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.223",
+      "provisioned": "246,1 GB",
+      "used": "246,1 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [
+        "10.77.10.101"
+      ],
+      "all_ips": [
+        "10.77.10.101"
+      ],
+      "category": "weblogic_app",
+      "used_by_clients": [
+        {
+          "client": "Maipú",
+          "code": "MAIPU",
+          "role": "weblogic"
+        }
+      ]
+    },
+    {
+      "name": "DOCKER-DEB",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.223",
+      "provisioned": "176,12 GB",
+      "used": "176,12 GB",
+      "guest_os": "Debian GNU/Linux 10 (64-bit)",
+      "ipv4": [
+        "192.1.1.37",
+        "172.19.0.1",
+        "172.18.0.1"
+      ],
+      "all_ips": [
+        "192.1.1.37",
+        "172.19.0.1",
+        "172.18.0.1",
+        "fe80::250:56ff:fe99:64b1",
+        "fe80::6815:5bff:fe3d:997"
+      ],
+      "category": "docker_host_confirmed_nginx_proxy_manager",
+      "used_by_clients": [],
+      "docker_detail": {
+        "portainer_status": "Relevado",
+        "containers_total": 3,
+        "containers_active": 2,
+        "containers_stopped": 1,
+        "services": [
+          "Nginx Proxy Manager",
+          "MariaDB",
+          "Sarha Online (detenido ~2 años)"
+        ],
+        "runs_nginx_proxy_manager": true,
+        "notes": "Persistence under /home/open/docker. Validate what the proxy publishes and whether Sarha Online is still needed."
+      }
+    },
+    {
+      "name": "FW",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.3.252",
+      "provisioned": "48,14 GB",
+      "used": "9,85 GB",
+      "guest_os": "FreeBSD (64-bit)",
+      "ipv4": [
+        "10.10.1.1",
+        "192.1.3.1",
+        "172.18.5.2",
+        "200.55.243.116",
+        "200.55.243.117"
+      ],
+      "all_ips": [
+        "10.10.1.1",
+        "192.1.3.1",
+        "172.18.5.2",
+        "200.55.243.116",
+        "200.55.243.117",
+        "fe80::20c:29ff:fe86:fbb2",
+        "fe80::250:56ff:fe99:3f39",
+        "fe80::20c:29ff:fe86:fb9e",
+        "fe80::20c:29ff:fe86:fba8"
+      ],
+      "category": "firewall_candidate_pfsense",
+      "used_by_clients": []
+    },
+    {
+      "name": "FWOPEN",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.217",
+      "provisioned": "104,15 GB",
+      "used": "104,15 GB",
+      "guest_os": "FreeBSD Pre-11 versions (64-bit)",
+      "ipv4": [
+        "192.1.1.11",
+        "200.55.243.90",
+        "200.55.243.94",
+        "172.18.5.1"
+      ],
+      "all_ips": [
+        "192.1.1.11",
+        "200.55.243.90",
+        "200.55.243.94",
+        "172.18.5.1",
+        "fe80::250:56ff:fe99:facf",
+        "fe80::250:56ff:fe99:7f61",
+        "fe80::250:56ff:fe99:33",
+        "fe80::250:56ff:fe99:facf",
+        "fe80::250:56ff:fe99:facf"
+      ],
+      "category": "firewall_candidate_pfsense",
+      "used_by_clients": []
+    },
+    {
+      "name": "Jasper-Server",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.219",
+      "provisioned": "33,13 GB",
+      "used": "33,13 GB",
+      "guest_os": "Ubuntu Linux (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "bi_reporting",
+      "used_by_clients": []
+    },
+    {
+      "name": "MAGUILERA-OPEN1",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.221",
+      "provisioned": "83,21 GB",
+      "used": "80,02 GB",
+      "guest_os": "Microsoft Windows 7 (32-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "workstation_or_jumphost",
+      "used_by_clients": []
+    },
+    {
+      "name": "MAGUILERA-OPEN2",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.221",
+      "provisioned": "83,21 GB",
+      "used": "80,03 GB",
+      "guest_os": "Microsoft Windows 7 (32-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "workstation_or_jumphost",
+      "used_by_clients": []
+    },
+    {
+      "name": "MAGUILERA-OPEN3",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.221",
+      "provisioned": "83,2 GB",
+      "used": "80,01 GB",
+      "guest_os": "Microsoft Windows 7 (32-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "workstation_or_jumphost",
+      "used_by_clients": []
+    },
+    {
+      "name": "MARCO-OPEN1",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.221",
+      "provisioned": "83,23 GB",
+      "used": "80,04 GB",
+      "guest_os": "Microsoft Windows 7 (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "workstation_or_jumphost",
+      "used_by_clients": []
+    },
+    {
+      "name": "MARCO-OPEN2",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.221",
+      "provisioned": "85,26 GB",
+      "used": "80,07 GB",
+      "guest_os": "Microsoft Windows 7 (32-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "workstation_or_jumphost",
+      "used_by_clients": []
+    },
+    {
+      "name": "MARCO-OPEN3",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.221",
+      "provisioned": "83,24 GB",
+      "used": "80,05 GB",
+      "guest_os": "Microsoft Windows 7 (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "workstation_or_jumphost",
+      "used_by_clients": []
+    },
+    {
+      "name": "MICRO",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.214",
+      "provisioned": "304,24 GB",
+      "used": "280,02 GB",
+      "guest_os": "Microsoft Windows Server 2016 (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "unclear",
+      "used_by_clients": []
+    },
+    {
+      "name": "Microstrategy.111",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.218",
+      "provisioned": "276,13 GB",
+      "used": "271,43 GB",
+      "guest_os": "Microsoft Windows Server 2008 R2 (64-bit)",
+      "ipv4": [
+        "192.1.1.111"
+      ],
+      "all_ips": [
+        "192.1.1.111"
+      ],
+      "category": "bi_reporting",
+      "used_by_clients": []
+    },
+    {
+      "name": "NUBE-OPEN-DOCKER",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.219",
+      "provisioned": "868,19 GB",
+      "used": "868,19 GB",
+      "guest_os": "CentOS 7 (64-bit)",
+      "ipv4": [
+        "192.1.1.33",
+        "172.19.0.1",
+        "172.23.0.1",
+        "172.20.0.1",
+        "172.21.0.1",
+        "172.31.0.1",
+        "172.18.0.1"
+      ],
+      "all_ips": [
+        "192.1.1.33",
+        "172.19.0.1",
+        "172.23.0.1",
+        "172.20.0.1",
+        "172.21.0.1",
+        "172.31.0.1",
+        "172.18.0.1",
+        "fe80::250:56ff:fe99:ddcd",
+        "fe80::42:22ff:fe70:b7d4",
+        "fe80::42:54ff:fe3c:a119",
+        "fe80::42:93ff:fe76:6ee",
+        "fe80::42:33ff:fe01:52f5",
+        "fe80::42:28ff:fef3:8e6d"
+      ],
+      "category": "docker_host_confirmed",
+      "used_by_clients": [],
+      "docker_detail": {
+        "portainer_status": "Relevado",
+        "containers_total": 15,
+        "containers_active": 14,
+        "containers_stopped": 1,
+        "services": [
+          "Nextcloud (x2 deployments)",
+          "OnlyOffice",
+          "CEFAS",
+          "CLOPEN",
+          "CondorProv",
+          "Watchtower",
+          "PostgreSQL",
+          "MariaDB",
+          "Swagger (detenido)"
+        ],
+        "runs_nginx_proxy_manager": false,
+        "notes": "Persistence under /opt/cloud, /opt/cloud2, /opt/cefaslink, /opt/clopen + docker volumes. Validate duplicate Nextcloud deployments."
+      }
+    },
+    {
+      "name": "OL8DBMULTI01",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.222",
+      "provisioned": "371,22 GB",
+      "used": "347,01 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "database",
+      "used_by_clients": []
+    },
+    {
+      "name": "OL8LABWL01",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.3.252",
+      "provisioned": "152,11 GB",
+      "used": "152,11 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [
+        "192.1.2.195"
+      ],
+      "all_ips": [
+        "192.1.2.195"
+      ],
+      "category": "weblogic_app",
+      "used_by_clients": [
+        {
+          "client": "Heinlein",
+          "code": "HEINLEIN",
+          "role": "weblogic"
+        }
+      ]
+    },
+    {
+      "name": "OPEN01",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.221",
+      "provisioned": "62,17 GB",
+      "used": "62,17 GB",
+      "guest_os": "Microsoft Windows 10 (64-bit)",
+      "ipv4": [
+        "192.1.1.166"
+      ],
+      "all_ips": [
+        "192.1.1.166"
+      ],
+      "category": "workstation_or_jumphost",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPEN1",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.221",
+      "provisioned": "85,25 GB",
+      "used": "80,06 GB",
+      "guest_os": "Microsoft Windows 7 (32-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "workstation_or_jumphost",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPEN1-SABRINA",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.221",
+      "provisioned": "82,13 GB",
+      "used": "82,13 GB",
+      "guest_os": "Microsoft Windows 7 (64-bit)",
+      "ipv4": [
+        "169.254.222.144",
+        "169.254.102.215",
+        "169.254.156.216",
+        "169.254.194.22",
+        "192.1.1.189"
+      ],
+      "all_ips": [
+        "169.254.222.144",
+        "169.254.102.215",
+        "169.254.156.216",
+        "169.254.194.22",
+        "192.1.1.189",
+        "fe80::fd81:b0d7:8e83:de90",
+        "fe80::5512:aba1:398e:66d7",
+        "fe80::f9b8:231a:f076:9cd8",
+        "fe80::ccb5:9e3b:393:c216"
+      ],
+      "category": "workstation_or_jumphost",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPEN1-W10",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.221",
+      "provisioned": "54,21 GB",
+      "used": "50 GB",
+      "guest_os": "Microsoft Windows 10 (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "workstation_or_jumphost",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPEN2",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.221",
+      "provisioned": "86,83 GB",
+      "used": "81,65 GB",
+      "guest_os": "Microsoft Windows 7 (32-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "workstation_or_jumphost",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPEN2-W10",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.221",
+      "provisioned": "54,21 GB",
+      "used": "50 GB",
+      "guest_os": "Microsoft Windows 10 (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "workstation_or_jumphost",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPEN3",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.221",
+      "provisioned": "90,74 GB",
+      "used": "83,47 GB",
+      "guest_os": "Microsoft Windows 7 (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "workstation_or_jumphost",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPEN3-W10",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.221",
+      "provisioned": "54,21 GB",
+      "used": "50 GB",
+      "guest_os": "Microsoft Windows 10 (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "workstation_or_jumphost",
+      "used_by_clients": []
+    },
+    {
+      "name": "openbackend01",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.3.252",
+      "provisioned": "76,19 GB",
+      "used": "60 GB",
+      "guest_os": "Ubuntu Linux (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "unclear",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENBI001",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.214",
+      "provisioned": "188,12 GB",
+      "used": "188,12 GB",
+      "guest_os": "Microsoft Windows 10 (64-bit)",
+      "ipv4": [
+        "192.1.2.196"
+      ],
+      "all_ips": [
+        "192.1.2.196"
+      ],
+      "category": "bi_reporting",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENBK",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.217",
+      "provisioned": "3,62 TB",
+      "used": "3,62 TB",
+      "guest_os": "Microsoft Windows Server 2016 (64-bit)",
+      "ipv4": [
+        "192.1.1.14",
+        "10.77.254.114"
+      ],
+      "all_ips": [
+        "192.1.1.14",
+        "10.77.254.114"
+      ],
+      "category": "backup",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENCLIRDP02",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.221",
+      "provisioned": "128,23 GB",
+      "used": "112,02 GB",
+      "guest_os": "Microsoft Windows 10 (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "workstation_or_jumphost",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENCLIVPN02",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.221",
+      "provisioned": "90,27 GB",
+      "used": "82,06 GB",
+      "guest_os": "Microsoft Windows 10 (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "workstation_or_jumphost",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENCLIVPN03",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.221",
+      "provisioned": "90,21 GB",
+      "used": "82 GB",
+      "guest_os": "Microsoft Windows 10 (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "workstation_or_jumphost",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENCLIVPN04",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.221",
+      "provisioned": "90,21 GB",
+      "used": "82 GB",
+      "guest_os": "Microsoft Windows 10 (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "workstation_or_jumphost",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENCLOUD - Jasper .4",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.215",
+      "provisioned": "262,13 GB",
+      "used": "262,13 GB",
+      "guest_os": "Ubuntu Linux (64-bit)",
+      "ipv4": [
+        "192.1.1.4"
+      ],
+      "all_ips": [
+        "192.1.1.4",
+        "fe80::250:56ff:fe97:8e4c"
+      ],
+      "category": "bi_reporting",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENDB19DEV01",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.218",
+      "provisioned": "138,11 GB",
+      "used": "138,11 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [
+        "192.1.2.240"
+      ],
+      "all_ips": [
+        "192.1.2.240"
+      ],
+      "category": "database",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENDBDES011",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.224",
+      "provisioned": "332,12 GB",
+      "used": "332,12 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [
+        "10.77.7.151"
+      ],
+      "all_ips": [
+        "10.77.7.151"
+      ],
+      "category": "database",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENDBPR001",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.223",
+      "provisioned": "392,14 GB",
+      "used": "392,14 GB",
+      "guest_os": "Oracle Linux 8 (64-bit)",
+      "ipv4": [
+        "192.1.3.30"
+      ],
+      "all_ips": [
+        "192.1.3.30"
+      ],
+      "category": "database",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENDBPROD001",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.224",
+      "provisioned": "732,13 GB",
+      "used": "732,13 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [
+        "10.77.7.11"
+      ],
+      "all_ips": [
+        "10.77.7.11"
+      ],
+      "category": "database",
+      "used_by_clients": [
+        {
+          "client": "Heinlein",
+          "code": "HEINLEIN",
+          "role": "database"
+        }
+      ]
+    },
+    {
+      "name": "OPENDBPROD005",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.224",
+      "provisioned": "332,13 GB",
+      "used": "332,13 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [
+        "10.77.7.15"
+      ],
+      "all_ips": [
+        "10.77.7.15"
+      ],
+      "category": "database",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENDBPROD006",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.217",
+      "provisioned": "700,11 GB",
+      "used": "700,11 GB",
+      "guest_os": "Oracle Linux 8 (64-bit)",
+      "ipv4": [
+        "192.1.1.22"
+      ],
+      "all_ips": [
+        "192.1.1.22",
+        "fe80::250:56ff:fe99:afcb"
+      ],
+      "category": "database",
+      "used_by_clients": [
+        {
+          "client": "Entidad Binacional Yacyretá",
+          "code": "EBY",
+          "role": "database"
+        }
+      ]
+    },
+    {
+      "name": "OPENDBPROD011",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.218",
+      "provisioned": "196,11 GB",
+      "used": "196,11 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [
+        "192.1.3.21"
+      ],
+      "all_ips": [
+        "192.1.3.21"
+      ],
+      "category": "database",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENDBPROD03",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.224",
+      "provisioned": "580,09 GB",
+      "used": "580,09 GB",
+      "guest_os": "Other 4.x or later Linux (64-bit)",
+      "ipv4": [
+        "10.77.7.30"
+      ],
+      "all_ips": [
+        "10.77.7.30",
+        "fe80::250:56ff:fe99:b29"
+      ],
+      "category": "database",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENDBQA01",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.224",
+      "provisioned": "436,09 GB",
+      "used": "436,09 GB",
+      "guest_os": "Oracle Linux 8 (64-bit)",
+      "ipv4": [
+        "10.77.7.70"
+      ],
+      "all_ips": [
+        "10.77.7.70"
+      ],
+      "category": "database",
+      "used_by_clients": []
+    },
+    {
+      "name": "OpenDevServices",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.220",
+      "provisioned": "262,22 GB",
+      "used": "250,03 GB",
+      "guest_os": "Ubuntu Linux (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "unclear",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENDOCKER.57",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.216",
+      "provisioned": "188,13 GB",
+      "used": "188,13 GB",
+      "guest_os": "CentOS 7 (64-bit)",
+      "ipv4": [
+        "192.1.1.57",
+        "172.28.0.1",
+        "192.168.80.1",
+        "172.20.0.1",
+        "192.168.16.1"
+      ],
+      "all_ips": [
+        "192.1.1.57",
+        "172.28.0.1",
+        "192.168.80.1",
+        "172.20.0.1",
+        "192.168.16.1",
+        "fe80::250:56ff:fe99:7b06",
+        "fe80::42:a1ff:fed8:b901",
+        "fe80::42:2ff:fe2b:9319",
+        "fe80::42:83ff:fe93:3418",
+        "fe80::42:88ff:fefe:db93"
+      ],
+      "category": "docker_host_confirmed",
+      "used_by_clients": [],
+      "docker_detail": {
+        "portainer_status": "Relevado",
+        "containers_total": 11,
+        "containers_active": 9,
+        "containers_stopped": 2,
+        "services": [
+          "JasperReports",
+          "CLTEST",
+          "SelfRex",
+          "Nagios",
+          "PostgreSQL",
+          "MariaDB",
+          "MySQL (Nagios)"
+        ],
+        "runs_nginx_proxy_manager": false,
+        "notes": "Uses local storage + NFS mounts; one NFS mount errored, another near-full. Validate which environments are still live."
+      }
+    },
+    {
+      "name": "OPENDOCKER01",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.219",
+      "provisioned": "126,14 GB",
+      "used": "126,14 GB",
+      "guest_os": "Ubuntu Linux (64-bit)",
+      "ipv4": [
+        "192.1.1.110",
+        "172.19.0.1",
+        "172.18.0.1"
+      ],
+      "all_ips": [
+        "192.1.1.110",
+        "172.19.0.1",
+        "172.18.0.1"
+      ],
+      "category": "docker_host_confirmed",
+      "used_by_clients": [],
+      "docker_detail": {
+        "portainer_status": "Sí (self-managed via Portainer at :9000)",
+        "containers_total": 16,
+        "containers_active": 15,
+        "containers_stopped": 1,
+        "services": [
+          "JasperReports (multiple instances)",
+          "MariaDB",
+          "Condor/Open sites",
+          "Portainer"
+        ],
+        "runs_nginx_proxy_manager": false,
+        "notes": "High docker storage utilization. Confirm which instances are still in use before touching."
+      }
+    },
+    {
+      "name": "OPENDOCKER02",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.220",
+      "provisioned": "126,14 GB",
+      "used": "126,14 GB",
+      "guest_os": "Ubuntu Linux (64-bit)",
+      "ipv4": [
+        "192.1.1.112",
+        "198.11.1.1",
+        "198.11.11.1",
+        "198.11.9.1",
+        "198.11.6.1",
+        "198.11.12.1",
+        "198.11.5.1",
+        "198.11.7.1",
+        "198.11.3.1",
+        "198.11.10.1",
+        "198.11.4.1",
+        "198.11.8.1"
+      ],
+      "all_ips": [
+        "192.1.1.112",
+        "198.11.1.1",
+        "198.11.11.1",
+        "198.11.9.1",
+        "198.11.6.1",
+        "198.11.12.1",
+        "198.11.5.1",
+        "198.11.7.1",
+        "198.11.3.1",
+        "198.11.10.1",
+        "198.11.4.1",
+        "198.11.8.1",
+        "fe80::250:56ff:fe99:e46f"
+      ],
+      "category": "docker_host_confirmed",
+      "used_by_clients": [],
+      "docker_detail": {
+        "portainer_status": "Sí (self-managed via Portainer at :9000)",
+        "containers_total": 11,
+        "containers_active": 11,
+        "containers_stopped": 0,
+        "services": [
+          "Portal Work (prod/test/dev)",
+          "PPC",
+          "PPC testing",
+          "SIGO",
+          "Portal Condor",
+          "CondorLink testing",
+          "Portainer",
+          "Watchtower"
+        ],
+        "runs_nginx_proxy_manager": false,
+        "notes": "Clearest example of prod and non-prod environments coexisting on one host."
+      }
+    },
+    {
+      "name": "OPENDOCKER03",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.220",
+      "provisioned": "326,23 GB",
+      "used": "310,04 GB",
+      "guest_os": "Ubuntu Linux (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "docker_host_confirmed",
+      "used_by_clients": [],
+      "docker_detail": {
+        "portainer_status": "Sí (self-managed via Portainer at :9000)",
+        "containers_total": 1,
+        "containers_active": 1,
+        "containers_stopped": 0,
+        "services": [
+          "Portainer only"
+        ],
+        "runs_nginx_proxy_manager": false,
+        "notes": "Confirm whether it manages only local Docker or also remote endpoints."
+      }
+    },
+    {
+      "name": "OPENDOCKER04",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.224",
+      "provisioned": "96,09 GB",
+      "used": "96,09 GB",
+      "guest_os": "Ubuntu Linux (64-bit)",
+      "ipv4": [
+        "10.77.7.5",
+        "172.18.0.1"
+      ],
+      "all_ips": [
+        "10.77.7.5",
+        "172.18.0.1",
+        "fe80::250:56ff:fe99:afbf",
+        "fe80::68e9:adff:feb2:1350"
+      ],
+      "category": "docker_host_confirmed_nginx_proxy_manager",
+      "used_by_clients": [],
+      "docker_detail": {
+        "portainer_status": "Relevado",
+        "containers_total": 1,
+        "containers_active": 1,
+        "containers_stopped": 0,
+        "services": [
+          "Nginx Proxy Manager"
+        ],
+        "runs_nginx_proxy_manager": true,
+        "notes": "Data/certs under /root/nginx-proxy. Identify which services/domains depend on this proxy."
+      }
+    },
+    {
+      "name": "OPENFILE",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.219",
+      "provisioned": "1,45 TB",
+      "used": "1,45 TB",
+      "guest_os": "Microsoft Windows Server 2008 R2 (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "file_server",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENFWCLI001",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.223",
+      "provisioned": "66,08 GB",
+      "used": "66,08 GB",
+      "guest_os": "FreeBSD Pre-11 versions (64-bit)",
+      "ipv4": [
+        "200.55.243.93",
+        "192.1.3.250"
+      ],
+      "all_ips": [
+        "200.55.243.93",
+        "192.1.3.250",
+        "fe80::250:56ff:fe99:31d1",
+        "fe80::250:56ff:fe99:13b8",
+        "fe80::250:56ff:fe99:ffb5"
+      ],
+      "category": "firewall_candidate_pfsense",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENFWCLI02",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.217",
+      "provisioned": "66,11 GB",
+      "used": "66,11 GB",
+      "guest_os": "FreeBSD Pre-11 versions (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "firewall_candidate_pfsense",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENFWCLI10",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.224",
+      "provisioned": "58,08 GB",
+      "used": "58,08 GB",
+      "guest_os": "FreeBSD Pre-11 versions (64-bit)",
+      "ipv4": [
+        "200.55.240.147",
+        "192.1.3.6",
+        "10.77.7.1"
+      ],
+      "all_ips": [
+        "200.55.240.147",
+        "192.1.3.6",
+        "10.77.7.1",
+        "fe80::250:56ff:fe99:51da",
+        "fe80::250:56ff:fe99:2c63",
+        "fe80::250:56ff:fe99:94e6"
+      ],
+      "category": "firewall_candidate_pfsense",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENHUMHUB",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.219",
+      "provisioned": "158,11 GB",
+      "used": "158,11 GB",
+      "guest_os": "Ubuntu Linux (64-bit)",
+      "ipv4": [
+        "192.1.2.238"
+      ],
+      "all_ips": [
+        "192.1.2.238",
+        "fe80::250:56ff:fe99:1715"
+      ],
+      "category": "unclear",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENINFR01",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.3.252",
+      "provisioned": "23,25 GB",
+      "used": "23,25 GB",
+      "guest_os": "Red Hat Enterprise Linux 7 (64-bit)",
+      "ipv4": [
+        "192.1.1.128"
+      ],
+      "all_ips": [
+        "192.1.1.128",
+        "fe80::250:56ff:fe99:a3a0"
+      ],
+      "category": "infra_generic_unclear",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENINFR02",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.220",
+      "provisioned": "268,23 GB",
+      "used": "268,23 GB",
+      "guest_os": "Other Linux (64-bit)",
+      "ipv4": [
+        "192.1.1.200"
+      ],
+      "all_ips": [
+        "192.1.1.200"
+      ],
+      "category": "infra_generic_unclear",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENINFR04",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.215",
+      "provisioned": "32,31 GB",
+      "used": "32,31 GB",
+      "guest_os": "Red Hat Enterprise Linux 7 (64-bit)",
+      "ipv4": [
+        "192.1.1.124"
+      ],
+      "all_ips": [
+        "192.1.1.124",
+        "fe80::250:56ff:fe99:ea5b"
+      ],
+      "category": "infra_generic_unclear",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENINFR05",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.216",
+      "provisioned": "208,24 GB",
+      "used": "208,24 GB",
+      "guest_os": "Red Hat Enterprise Linux 7 (64-bit)",
+      "ipv4": [
+        "192.1.1.123"
+      ],
+      "all_ips": [
+        "192.1.1.123",
+        "fe80::250:56ff:fe99:6302"
+      ],
+      "category": "infra_generic_unclear",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENINFR06",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.218",
+      "provisioned": "20,22 GB",
+      "used": "20,22 GB",
+      "guest_os": "Red Hat Enterprise Linux 7 (64-bit)",
+      "ipv4": [
+        "192.1.1.126"
+      ],
+      "all_ips": [
+        "192.1.1.126",
+        "fe80::250:56ff:fe99:1f8"
+      ],
+      "category": "infra_generic_unclear",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENINFR07",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.219",
+      "provisioned": "20,21 GB",
+      "used": "20,21 GB",
+      "guest_os": "Red Hat Enterprise Linux 7 (64-bit)",
+      "ipv4": [
+        "192.1.1.127"
+      ],
+      "all_ips": [
+        "192.1.1.127",
+        "fe80::250:56ff:fe99:aa34"
+      ],
+      "category": "infra_generic_unclear",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENINFR10",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.221",
+      "provisioned": "28,11 GB",
+      "used": "28,11 GB",
+      "guest_os": "Red Hat Enterprise Linux 7 (64-bit)",
+      "ipv4": [
+        "192.1.1.120"
+      ],
+      "all_ips": [
+        "192.1.1.120"
+      ],
+      "category": "infra_generic_unclear",
+      "used_by_clients": []
+    },
+    {
+      "name": "openinfr214",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.214",
+      "provisioned": "32,12 GB",
+      "used": "32,12 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [
+        "192.1.2.214"
+      ],
+      "all_ips": [
+        "192.1.2.214",
+        "fe80::250:56ff:fe99:861"
+      ],
+      "category": "infra_generic_unclear",
+      "used_by_clients": []
+    },
+    {
+      "name": "openinfr217",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.217",
+      "provisioned": "32,12 GB",
+      "used": "32,12 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [
+        "192.1.2.217"
+      ],
+      "all_ips": [
+        "192.1.2.217",
+        "fe80::250:56ff:fe99:650c"
+      ],
+      "category": "infra_generic_unclear",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENINFR222",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.222",
+      "provisioned": "48,11 GB",
+      "used": "48,11 GB",
+      "guest_os": "Ubuntu Linux (64-bit)",
+      "ipv4": [
+        "192.1.2.222"
+      ],
+      "all_ips": [
+        "192.1.2.222",
+        "fe80::250:56ff:fe99:ef36"
+      ],
+      "category": "infra_generic_unclear",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENINFR223",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.223",
+      "provisioned": "36,39 GB",
+      "used": "36,39 GB",
+      "guest_os": "Red Hat Enterprise Linux 7 (64-bit)",
+      "ipv4": [
+        "192.1.2.223"
+      ],
+      "all_ips": [
+        "192.1.2.223"
+      ],
+      "category": "infra_generic_unclear",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENINFR224",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.224",
+      "provisioned": "66,24 GB",
+      "used": "66,24 GB",
+      "guest_os": "Red Hat Enterprise Linux 7 (64-bit)",
+      "ipv4": [
+        "192.1.2.224"
+      ],
+      "all_ips": [
+        "192.1.2.224",
+        "fe80::e3b2:7fce:67c8:d6ce"
+      ],
+      "category": "infra_generic_unclear",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENOEM24ai",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.223",
+      "provisioned": "304,1 GB",
+      "used": "304,1 GB",
+      "guest_os": "Oracle Linux 8 (64-bit)",
+      "ipv4": [
+        "10.77.8.15"
+      ],
+      "all_ips": [
+        "10.77.8.15"
+      ],
+      "category": "unclear",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENORACLEDB01",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.223",
+      "provisioned": "314,15 GB",
+      "used": "314,15 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [
+        "192.1.1.80",
+        "10.5.1.177"
+      ],
+      "all_ips": [
+        "192.1.1.80",
+        "10.5.1.177"
+      ],
+      "category": "database",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENORACLEDB02",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.222",
+      "provisioned": "338,23 GB",
+      "used": "306,01 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "database",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENPORTAL01",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.223",
+      "provisioned": "292,12 GB",
+      "used": "292,12 GB",
+      "guest_os": "Ubuntu Linux (64-bit)",
+      "ipv4": [
+        "10.77.10.5",
+        "172.18.0.1",
+        "172.19.0.1"
+      ],
+      "all_ips": [
+        "10.77.10.5",
+        "172.18.0.1",
+        "172.19.0.1",
+        "fe80::250:56ff:fe99:ae3b"
+      ],
+      "category": "unclear",
+      "used_by_clients": [],
+      "notes": "Previously guessed as nginx candidate by name; Relevamiento_general_infraestructura_Docker_actualizado.docx shows Nginx Proxy Manager actually runs as a container on DOCKER-DEB, OPENDOCKER04, VM-DOCKER-Clientes, and VM-DOCKER-Clientes (1) instead. This VM's real role is unconfirmed."
+    },
+    {
+      "name": "OPENPORTALCLI02",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.223",
+      "provisioned": "96,09 GB",
+      "used": "96,09 GB",
+      "guest_os": "Ubuntu Linux (64-bit)",
+      "ipv4": [
+        "10.77.8.2",
+        "172.20.0.1",
+        "172.19.0.1",
+        "172.18.0.1"
+      ],
+      "all_ips": [
+        "10.77.8.2",
+        "172.20.0.1",
+        "172.19.0.1",
+        "172.18.0.1",
+        "fe80::250:56ff:fe99:3d48",
+        "fe80::42:fcff:fedd:96d5"
+      ],
+      "category": "unclear",
+      "used_by_clients": [],
+      "notes": "Previously guessed as nginx candidate by name; Relevamiento_general_infraestructura_Docker_actualizado.docx shows Nginx Proxy Manager actually runs as a container on DOCKER-DEB, OPENDOCKER04, VM-DOCKER-Clientes, and VM-DOCKER-Clientes (1) instead. This VM's real role is unconfirmed."
+    },
+    {
+      "name": "OPENREMOTECLI01",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.222",
+      "provisioned": "130,11 GB",
+      "used": "130,11 GB",
+      "guest_os": "Microsoft Windows 10 (64-bit)",
+      "ipv4": [
+        "169.254.8.113",
+        "192.1.1.102",
+        "169.254.7.97",
+        "192.168.25.1",
+        "192.168.72.1"
+      ],
+      "all_ips": [
+        "169.254.8.113",
+        "192.1.1.102",
+        "169.254.7.97",
+        "192.168.25.1",
+        "192.168.72.1",
+        "fe80::856d:d391:db7:1e8c",
+        "fe80::eda0:ab62:fed2:9c22",
+        "fe80::d597:579e:ac2c:37ad",
+        "fe80::7734:4e90:a0dd:8a00"
+      ],
+      "category": "unclear",
+      "used_by_clients": []
+    },
+    {
+      "name": "OpenRepo",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.220",
+      "provisioned": "158,21 GB",
+      "used": "131,88 GB",
+      "guest_os": "Ubuntu Linux (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "source_repo",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENSVNLINUX .3",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.220",
+      "provisioned": "208,2 GB",
+      "used": "208,2 GB",
+      "guest_os": "CentOS 4/5 or later (64-bit)",
+      "ipv4": [
+        "192.1.1.3"
+      ],
+      "all_ips": [
+        "192.1.1.3",
+        "fe80::250:56ff:fea0:3dd1"
+      ],
+      "category": "source_repo",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENSYTDB01",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.3.252",
+      "provisioned": "176,22 GB",
+      "used": "160 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "database",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENTECNO",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.216",
+      "provisioned": "221,16 GB",
+      "used": "221,16 GB",
+      "guest_os": "Ubuntu Linux (64-bit)",
+      "ipv4": [
+        "192.1.1.8"
+      ],
+      "all_ips": [
+        "192.1.1.8",
+        "fe80::20c:29ff:fefc:f79c"
+      ],
+      "category": "unclear",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENVPNFW01",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.216",
+      "provisioned": "52,13 GB",
+      "used": "52,13 GB",
+      "guest_os": "FreeBSD 12 or later versions (64-bit)",
+      "ipv4": [
+        "200.55.243.92",
+        "200.55.243.115",
+        "192.1.2.11",
+        "192.1.3.11"
+      ],
+      "all_ips": [
+        "200.55.243.92",
+        "200.55.243.115",
+        "192.1.2.11",
+        "192.1.3.11",
+        "fe80::250:56ff:fe99:93db",
+        "fe80::250:56ff:fe99:cc39"
+      ],
+      "category": "firewall_confirmed_pfsense",
+      "used_by_clients": [],
+      "confirmation": "IP 200.55.243.92 matches the on-premise pfSense VPN peer named in Azure's Site-to-Site VPN config (Analisis Azure.docx: 'open-pfsense-connection' / 'open-pfsense-connection-devtest'), confirming this host is the pfSense edge firewall terminating the Azure<->datacenter VPN."
+    },
+    {
+      "name": "OPENWLCLI01",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.223",
+      "provisioned": "246,22 GB",
+      "used": "230,01 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "weblogic_app",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENWLDES010",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.224",
+      "provisioned": "146,09 GB",
+      "used": "146,09 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [
+        "10.77.7.51"
+      ],
+      "all_ips": [
+        "10.77.7.51"
+      ],
+      "category": "weblogic_app",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENWLPROD001",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.224",
+      "provisioned": "146,21 GB",
+      "used": "130 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "weblogic_app",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENWLPROD01",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.224",
+      "provisioned": "246,1 GB",
+      "used": "246,1 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [
+        "10.77.7.201"
+      ],
+      "all_ips": [
+        "10.77.7.201"
+      ],
+      "category": "weblogic_app",
+      "used_by_clients": [
+        {
+          "client": "Arris de Argentina S.A.",
+          "code": "GIAR",
+          "role": "weblogic"
+        }
+      ]
+    },
+    {
+      "name": "OPENWLPROD02",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.224",
+      "provisioned": "206,22 GB",
+      "used": "190 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "weblogic_app",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENWLQA01",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.224",
+      "provisioned": "258,09 GB",
+      "used": "258,09 GB",
+      "guest_os": "Oracle Linux 8 (64-bit)",
+      "ipv4": [
+        "10.77.7.80"
+      ],
+      "all_ips": [
+        "10.77.7.80"
+      ],
+      "category": "weblogic_app",
+      "used_by_clients": []
+    },
+    {
+      "name": "OPENZABBIX03",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.224",
+      "provisioned": "136,09 GB",
+      "used": "136,09 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [
+        "192.1.1.5"
+      ],
+      "all_ips": [
+        "192.1.1.5"
+      ],
+      "category": "monitoring",
+      "used_by_clients": []
+    },
+    {
+      "name": "PIVOT-INTEGRACIONES01",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.216",
+      "provisioned": "64,11 GB",
+      "used": "64,11 GB",
+      "guest_os": "Oracle Linux 8 (64-bit)",
+      "ipv4": [
+        "192.1.2.60"
+      ],
+      "all_ips": [
+        "192.1.2.60",
+        "fe80::250:56ff:fe99:f776"
+      ],
+      "category": "unclear",
+      "used_by_clients": []
+    },
+    {
+      "name": "SARHA_ONLINE .109",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.216",
+      "provisioned": "26,12 GB",
+      "used": "26,12 GB",
+      "guest_os": "Debian GNU/Linux 6 (64-bit)",
+      "ipv4": [
+        "192.1.1.109"
+      ],
+      "all_ips": [
+        "192.1.1.109",
+        "fe80::250:56ff:feac:175f"
+      ],
+      "category": "unclear",
+      "used_by_clients": []
+    },
+    {
+      "name": "SMTP-OPEN",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.220",
+      "provisioned": "86,13 GB",
+      "used": "86,13 GB",
+      "guest_os": "CentOS 7 (64-bit)",
+      "ipv4": [
+        "192.1.1.46"
+      ],
+      "all_ips": [
+        "192.1.1.46"
+      ],
+      "category": "mail",
+      "used_by_clients": []
+    },
+    {
+      "name": "TRUENAS",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.216",
+      "provisioned": "1,82 TB",
+      "used": "1,82 TB",
+      "guest_os": "FreeBSD Pre-11 versions (64-bit)",
+      "ipv4": [
+        "192.1.1.41"
+      ],
+      "all_ips": [
+        "192.1.1.41"
+      ],
+      "category": "storage_nas",
+      "used_by_clients": []
+    },
+    {
+      "name": "vCenter",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.217",
+      "provisioned": "295,8 GB",
+      "used": "295,8 GB",
+      "guest_os": "VMware Photon OS (64-bit)",
+      "ipv4": [
+        "192.1.1.29"
+      ],
+      "all_ips": [
+        "192.1.1.29"
+      ],
+      "category": "virtualization_mgmt",
+      "used_by_clients": []
+    },
+    {
+      "name": "VEEAM-PIEDRAS",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.221",
+      "provisioned": "188,11 GB",
+      "used": "188,11 GB",
+      "guest_os": "Microsoft Windows Server 2016 (64-bit)",
+      "ipv4": [
+        "192.1.1.195"
+      ],
+      "all_ips": [
+        "192.1.1.195",
+        "fe80::53b:aeb5:62aa:af6d"
+      ],
+      "category": "backup",
+      "used_by_clients": []
+    },
+    {
+      "name": "VM-DOCKER-Clientes",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.223",
+      "provisioned": "214,09 GB",
+      "used": "214,09 GB",
+      "guest_os": "Debian GNU/Linux 10 (64-bit)",
+      "ipv4": [
+        "192.1.1.38",
+        "172.18.0.1",
+        "172.19.0.1"
+      ],
+      "all_ips": [
+        "192.1.1.38",
+        "172.18.0.1",
+        "172.19.0.1",
+        "fe80::250:56ff:fe99:4b31",
+        "fe80::42:d5ff:fe6e:6544",
+        "fe80::42:9cff:fe6c:e99f"
+      ],
+      "category": "docker_host_confirmed_nginx_proxy_manager",
+      "used_by_clients": [],
+      "docker_detail": {
+        "portainer_status": "Relevado",
+        "containers_total": 5,
+        "containers_active": 5,
+        "containers_stopped": 0,
+        "services": [
+          "CEFAS frontend",
+          "CEFAS backend",
+          "PostgreSQL",
+          "Nginx Proxy Manager",
+          "MariaDB"
+        ],
+        "runs_nginx_proxy_manager": true,
+        "notes": "Local storage under /home/open + external NFS. Naming suggests an in-use client service; confirm."
+      }
+    },
+    {
+      "name": "VM-DOCKER-Clientes (1)",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.3.252",
+      "provisioned": "214,18 GB",
+      "used": "214,18 GB",
+      "guest_os": "Debian GNU/Linux 10 (64-bit)",
+      "ipv4": [
+        "172.18.5.123",
+        "10.10.1.43",
+        "172.18.0.1",
+        "172.19.0.1",
+        "192.1.3.4"
+      ],
+      "all_ips": [
+        "172.18.5.123",
+        "10.10.1.43",
+        "172.18.0.1",
+        "172.19.0.1",
+        "192.1.3.4",
+        "fe80::250:56ff:fe99:90d5",
+        "fe80::20c:29ff:fe11:a548",
+        "fe80::42:79ff:fe54:d9cf",
+        "fe80::42:dcff:fe85:c7a4",
+        "fe80::20c:29ff:fe11:a552"
+      ],
+      "category": "docker_host_confirmed_nginx_proxy_manager",
+      "used_by_clients": [],
+      "docker_detail": {
+        "portainer_status": "Relevado",
+        "containers_total": 5,
+        "containers_active": 5,
+        "containers_stopped": 0,
+        "services": [
+          "CEFAS frontend",
+          "CEFAS backend",
+          "PostgreSQL",
+          "Nginx Proxy Manager",
+          "MariaDB"
+        ],
+        "runs_nginx_proxy_manager": true,
+        "notes": "Same 5 services as VM-DOCKER-Clientes (192.1.1.38); near-identical naming/containers. Confirm whether this is a replica, a distinct environment, or a stale copy."
+      }
+    },
+    {
+      "name": "VM_FW",
+      "power_state": "Apagado",
+      "condition": "Normal",
+      "esxi_host": "192.1.3.252",
+      "provisioned": "44,21 GB",
+      "used": "40,02 GB",
+      "guest_os": "FreeBSD (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "firewall_candidate_pfsense",
+      "used_by_clients": []
+    },
+    {
+      "name": "VPNCLIENTESRDP",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.221",
+      "provisioned": "58,11 GB",
+      "used": "58,11 GB",
+      "guest_os": "Microsoft Windows 10 (64-bit)",
+      "ipv4": [
+        "169.254.193.114",
+        "192.1.1.136"
+      ],
+      "all_ips": [
+        "169.254.193.114",
+        "192.1.1.136",
+        "fe80::69ee:ffbd:22f2:f29f"
+      ],
+      "category": "workstation_or_jumphost",
+      "used_by_clients": []
+    },
+    {
+      "name": "Weblogic .16",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.215",
+      "provisioned": "122,13 GB",
+      "used": "122,13 GB",
+      "guest_os": "Oracle Linux 4/5 or later (64-bit)",
+      "ipv4": [
+        "192.1.1.16"
+      ],
+      "all_ips": [
+        "192.1.1.16",
+        "fe80::250:56ff:fea0:a070"
+      ],
+      "category": "weblogic_app",
+      "used_by_clients": []
+    },
+    {
+      "name": "WebLogic.19",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.223",
+      "provisioned": "226,14 GB",
+      "used": "226,14 GB",
+      "guest_os": "Oracle Linux 6 (64-bit)",
+      "ipv4": [
+        "192.1.1.19"
+      ],
+      "all_ips": [
+        "192.1.1.19",
+        "fe80::250:56ff:fe97:c510"
+      ],
+      "category": "weblogic_app",
+      "used_by_clients": [
+        {
+          "client": "Ente Servicios y Obras Públicas (ESYOP)",
+          "code": "ESYOP",
+          "role": "weblogic"
+        }
+      ]
+    },
+    {
+      "name": "WebLogic.191",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.217",
+      "provisioned": "366,12 GB",
+      "used": "362,71 GB",
+      "guest_os": "Red Hat Enterprise Linux 6 (64-bit)",
+      "ipv4": [
+        "192.1.1.191"
+      ],
+      "all_ips": [
+        "192.1.1.191"
+      ],
+      "category": "weblogic_app",
+      "used_by_clients": [
+        {
+          "client": "Cefas S.A.",
+          "code": "CEFAS",
+          "role": "weblogic"
+        },
+        {
+          "client": "DC Viajes y Turismo S.A.",
+          "code": "DCVIAJES",
+          "role": "weblogic"
+        },
+        {
+          "client": "Dominique Val S.A.",
+          "code": "DVAL",
+          "role": "weblogic"
+        }
+      ]
+    },
+    {
+      "name": "Weblogic.21",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.216",
+      "provisioned": "276,11 GB",
+      "used": "276,11 GB",
+      "guest_os": "Oracle Linux 6 (64-bit)",
+      "ipv4": [
+        "192.1.1.21"
+      ],
+      "all_ips": [
+        "192.1.1.21"
+      ],
+      "category": "weblogic_app",
+      "used_by_clients": []
+    },
+    {
+      "name": "WEBSERVER",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.216",
+      "provisioned": "636,18 GB",
+      "used": "636,18 GB",
+      "guest_os": "Debian GNU/Linux 10 (64-bit)",
+      "ipv4": [
+        "192.1.1.6",
+        "172.23.0.1",
+        "172.22.0.1",
+        "192.168.176.1",
+        "192.168.0.1",
+        "172.18.0.1",
+        "172.19.0.1",
+        "172.20.0.1",
+        "192.168.192.1",
+        "172.25.0.1",
+        "172.21.0.1",
+        "172.24.0.1"
+      ],
+      "all_ips": [
+        "192.1.1.6",
+        "172.23.0.1",
+        "172.22.0.1",
+        "192.168.176.1",
+        "192.168.0.1",
+        "172.18.0.1",
+        "172.19.0.1",
+        "172.20.0.1",
+        "192.168.192.1",
+        "172.25.0.1",
+        "172.21.0.1",
+        "172.24.0.1",
+        "fe80::250:56ff:fe99:bf0d",
+        "fe80::42:3cff:fe28:9fe",
+        "fe80::42:4aff:fef1:c02f",
+        "fe80::42:60ff:fe57:a634",
+        "fe80::42:6aff:fe34:8935",
+        "fe80::42:15ff:fe79:617b",
+        "fe80::42:d7ff:fe46:256"
+      ],
+      "category": "unclear",
+      "used_by_clients": [],
+      "notes": "Previously guessed as nginx candidate by name; Relevamiento_general_infraestructura_Docker_actualizado.docx shows Nginx Proxy Manager actually runs as a container on DOCKER-DEB, OPENDOCKER04, VM-DOCKER-Clientes, and VM-DOCKER-Clientes (1) instead. This VM's real role is unconfirmed."
+    },
+    {
+      "name": "Win10-test-python",
+      "power_state": "Encendido",
+      "condition": "Alerta",
+      "esxi_host": "192.1.1.222",
+      "provisioned": "64,11 GB",
+      "used": "64,11 GB",
+      "guest_os": "Microsoft Windows 10 (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "unclear",
+      "used_by_clients": []
+    },
+    {
+      "name": "WL-CLIENTES",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.3.252",
+      "provisioned": "60,15 GB",
+      "used": "59,27 GB",
+      "guest_os": "Red Hat Enterprise Linux 6 (64-bit)",
+      "ipv4": [
+        "172.18.5.40"
+      ],
+      "all_ips": [
+        "172.18.5.40"
+      ],
+      "category": "weblogic_app",
+      "used_by_clients": [
+        {
+          "client": "CSM Ciencia al Servicio del Movimiento S.A.",
+          "code": "ROMAN",
+          "role": "weblogic"
+        }
+      ]
+    },
+    {
+      "name": "WL-GIAR",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.3.252",
+      "provisioned": "56,15 GB",
+      "used": "55,13 GB",
+      "guest_os": "Red Hat Enterprise Linux 6 (64-bit)",
+      "ipv4": [
+        "10.10.1.50"
+      ],
+      "all_ips": [
+        "10.10.1.50"
+      ],
+      "category": "weblogic_app",
+      "used_by_clients": [],
+      "name_hint_client": {
+        "client_code": "GIAR",
+        "client_name": "Arris de Argentina S.A.",
+        "basis": "name substring 'GIAR' matches client code; likely an additional WebLogic instance for this client not captured in Relevamiento (which only tracks one WL per client)",
+        "confidence": "inferred_from_name_only_not_confirmed"
+      }
+    },
+    {
+      "name": "WL-ROMAN",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.3.252",
+      "provisioned": "78,15 GB",
+      "used": "73,34 GB",
+      "guest_os": "Red Hat Enterprise Linux 5 (64-bit)",
+      "ipv4": [
+        "172.18.5.39"
+      ],
+      "all_ips": [
+        "172.18.5.39",
+        "fe80::20c:29ff:fe47:8aa8"
+      ],
+      "category": "weblogic_app",
+      "used_by_clients": [],
+      "name_hint_client": {
+        "client_code": "ROMAN",
+        "client_name": "CSM Ciencia al Servicio del Movimiento S.A.",
+        "basis": "name substring 'ROMAN' matches client code; likely an additional WebLogic instance for this client not captured in Relevamiento",
+        "confidence": "inferred_from_name_only_not_confirmed"
+      }
+    },
+    {
+      "name": "WL12-Clientes",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.3.252",
+      "provisioned": "232,16 GB",
+      "used": "232,16 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [],
+      "all_ips": [],
+      "category": "weblogic_app",
+      "used_by_clients": []
+    },
+    {
+      "name": "WL12C-Desarrollo.2.54",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.214",
+      "provisioned": "162,13 GB",
+      "used": "162,13 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [
+        "192.1.2.54"
+      ],
+      "all_ips": [
+        "192.1.2.54"
+      ],
+      "category": "weblogic_app",
+      "used_by_clients": [
+        {
+          "client": "ABB S.A.",
+          "code": "ABB",
+          "role": "weblogic"
+        },
+        {
+          "client": "Club Atlético Boca Juniors",
+          "code": "BOCA",
+          "role": "weblogic"
+        },
+        {
+          "client": "Entidad Binacional Yacyretá",
+          "code": "EBY",
+          "role": "weblogic"
+        }
+      ]
+    },
+    {
+      "name": "WL12C-PROD",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": "192.1.1.223",
+      "provisioned": "130,15 GB",
+      "used": "130,15 GB",
+      "guest_os": "Oracle Linux 7 (64-bit)",
+      "ipv4": [
+        "192.1.1.1"
+      ],
+      "all_ips": [
+        "192.1.1.1"
+      ],
+      "category": "weblogic_app",
+      "used_by_clients": [
+        {
+          "client": "Enerflex Solutions Argentina SRL",
+          "code": "ENERFLEX",
+          "role": "weblogic"
+        },
+        {
+          "client": "Jobs Servicios de Recursos Humanos SRL",
+          "code": "JOBS",
+          "role": "weblogic"
+        }
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "name": "ABB S.A.",
+      "code": "ABB",
+      "status": "Mantenimiento solamente",
+      "weblogic": {
+        "claimed_name": "WL12C-Desarrollo.2.54",
+        "guest_os_relevamiento": "Oracle Linux 7",
+        "wl_version": "12.2",
+        "esxi_host_relevamiento": "192.1.1.214",
+        "resolved": [
+          {
+            "claimed_name": "WL12C-Desarrollo.2.54",
+            "resolved_vm": "WL12C-Desarrollo.2.54",
+            "ip": "192.1.2.54",
+            "resolved_by": "name",
+            "match": true
+          }
+        ]
+      },
+      "database": {
+        "claimed_name": "dbclientes / dbclientes.190",
+        "guest_os_relevamiento": "Oracle Linux 6/7",
+        "resolved": [
+          {
+            "claimed_name": "dbclientes",
+            "resolved_vm": "DBClientes-12C.31",
+            "ip": "192.1.1.31",
+            "resolved_by": "ip",
+            "match": false
+          },
+          {
+            "claimed_name": "dbclientes.190",
+            "resolved_vm": "DBClientes.190",
+            "ip": "192.1.1.190",
+            "resolved_by": "name",
+            "match": true
+          }
+        ]
+      },
+      "admin_user": "soportesmart",
+      "matrix_detail": {
+        "sid_actual": "ABB",
+        "version_db": "12.2.0.1.0",
+        "edicion_db": "SE",
+        "tamano": "20G",
+        "charset": "WE8ISO8859P1",
+        "servidor_db_destino": "BD 10.77.7.12",
+        "ip_db_destino": "10.77.7.12",
+        "sid_nuevo": "prodabb",
+        "version_condor": "2024",
+        "productos": {
+          "Work": "Sí",
+          "Enterprise": "No",
+          "AFIP": "",
+          "Condor Link": "",
+          "Self Service": "",
+          "Jasper": "",
+          "Discoverer": "",
+          "MicroStrategy": ""
+        },
+        "observaciones": "",
+        "validacion_pendiente": "Confirmar qué IP DB actual corresponde a producción y el servidor WL definitivo."
+      },
+      "source": [
+        "Relevamiento (sin claves) - VM Linux.csv",
+        "Matriz_servicios_por_cliente_Hosting_V2.xlsx"
+      ],
+      "status_note": "Per Matriz_servicios_por_cliente_Hosting_V2.xlsx: client is decommissioned ('de baja'); database is being retained temporarily. Estos dos clientes estan de baja pero por el momento se mantiene sus bases"
+    },
+    {
+      "name": "Arris de Argentina S.A.",
+      "code": "GIAR",
+      "status": "Mantenimiento solamente",
+      "weblogic": {
+        "claimed_name": "OPENWLPROD01",
+        "guest_os_relevamiento": "Oracle Linux 8",
+        "wl_version": "12.2",
+        "esxi_host_relevamiento": "192.1.1.224",
+        "resolved": [
+          {
+            "claimed_name": "OPENWLPROD01",
+            "resolved_vm": "OPENWLPROD01",
+            "ip": "10.77.7.201",
+            "resolved_by": "name",
+            "match": true
+          }
+        ]
+      },
+      "database": {
+        "claimed_name": "DB-GIAR",
+        "guest_os_relevamiento": "Oracle Linux 6",
+        "resolved": [
+          {
+            "claimed_name": "DB-GIAR",
+            "resolved_vm": "DB-GIAR",
+            "ip": "10.10.1.9",
+            "resolved_by": "name",
+            "match": true
+          }
+        ]
+      },
+      "admin_user": "soportesmart",
+      "matrix_detail": {
+        "sid_actual": "GIARG",
+        "version_db": "11.2.0.4.0",
+        "edicion_db": "EE",
+        "tamano": "60G",
+        "charset": "WE8ISO8859P1",
+        "servidor_db_destino": "BD 10.77.7.11",
+        "ip_db_destino": "10.77.7.11",
+        "sid_nuevo": "prodgiar",
+        "version_condor": "2025",
+        "productos": {
+          "Work": "No",
+          "Enterprise": "Sí",
+          "AFIP": "Sí",
+          "Condor Link": "",
+          "Self Service": "",
+          "Jasper": "",
+          "Discoverer": "No se",
+          "MicroStrategy": ""
+        },
+        "observaciones": "Ya se está usando como producción.",
+        "validacion_pendiente": "La versión WL difiere: tabla funcional indica WL 11 e infraestructura 12.2. Confirmar versión real."
+      },
+      "source": [
+        "Relevamiento (sin claves) - VM Linux.csv",
+        "Matriz_servicios_por_cliente_Hosting_V2.xlsx"
+      ],
+      "status_note": "Per Matriz_servicios_por_cliente_Hosting_V2.xlsx: client is decommissioned ('de baja'); database is being retained temporarily. Estos dos clientes estan de baja pero por el momento se mantiene sus bases"
+    },
+    {
+      "name": "Cefas S.A.",
+      "code": "CEFAS",
+      "status": "Migrado / actualización pendiente",
+      "weblogic": {
+        "claimed_name": "WebLogic.191",
+        "guest_os_relevamiento": "Oracle Linux 6",
+        "wl_version": "11",
+        "esxi_host_relevamiento": "192.1.1.217",
+        "resolved": [
+          {
+            "claimed_name": "WebLogic.191",
+            "resolved_vm": "WebLogic.191",
+            "ip": "192.1.1.191",
+            "resolved_by": "name",
+            "match": true
+          }
+        ]
+      },
+      "database": {
+        "claimed_name": "clientes-db",
+        "guest_os_relevamiento": "CentOS 7",
+        "resolved": [
+          {
+            "claimed_name": "clientes-db",
+            "resolved_vm": "CLIENTES-DB",
+            "ip": "192.1.1.32",
+            "resolved_by": "name",
+            "match": true
+          }
+        ]
+      },
+      "admin_user": "soportesmart",
+      "matrix_detail": {
+        "sid_actual": "CEFAS / CEFASPDB",
+        "version_db": "19.24.0.0.0",
+        "edicion_db": "SE",
+        "tamano": "50G",
+        "charset": "WE8MSWIN1252",
+        "servidor_db_destino": "BD 10.77.7.11",
+        "ip_db_destino": "10.77.7.11",
+        "sid_nuevo": "prodcefas",
+        "version_condor": "2025",
+        "productos": {
+          "Work": "Sí",
+          "Enterprise": "No",
+          "AFIP": "",
+          "Condor Link": "",
+          "Self Service": "Sí",
+          "Jasper": "Sí",
+          "Discoverer": "Sí",
+          "MicroStrategy": "Sí"
+        },
+        "observaciones": "BD y WL migrados; falta actualizar la base mediante import, configurar VPN del cliente y revisar FSAL.",
+        "validacion_pendiente": "Confirmar SID actual definitivo: CEFAS o CEFASPDB; validar cierre de migración."
+      },
+      "source": [
+        "Relevamiento (sin claves) - VM Linux.csv",
+        "Matriz_servicios_por_cliente_Hosting_V2.xlsx"
+      ]
+    },
+    {
+      "name": "Club Atlético Boca Juniors",
+      "code": "BOCA",
+      "status": "Destino definido / sin WL nuevo",
+      "weblogic": {
+        "claimed_name": "WL12C-Desarrollo.2.54",
+        "guest_os_relevamiento": "Oracle Linux 7",
+        "wl_version": "12.2",
+        "esxi_host_relevamiento": "192.1.1.214",
+        "resolved": [
+          {
+            "claimed_name": "WL12C-Desarrollo.2.54",
+            "resolved_vm": "WL12C-Desarrollo.2.54",
+            "ip": "192.1.2.54",
+            "resolved_by": "name",
+            "match": true
+          }
+        ]
+      },
+      "database": {
+        "claimed_name": "clientes-db",
+        "guest_os_relevamiento": "CentOS 7",
+        "resolved": [
+          {
+            "claimed_name": "clientes-db",
+            "resolved_vm": "CLIENTES-DB",
+            "ip": "192.1.1.32",
+            "resolved_by": "name",
+            "match": true
+          }
+        ]
+      },
+      "admin_user": "soportesmart",
+      "matrix_detail": {
+        "sid_actual": "BOCA / BOCAPDB",
+        "version_db": "19.24.0.0.0",
+        "edicion_db": "SE",
+        "tamano": "18G",
+        "charset": "WE8MSWIN1252",
+        "servidor_db_destino": "BD 10.77.7.13",
+        "ip_db_destino": "10.77.7.13",
+        "sid_nuevo": "prodboca",
+        "version_condor": "2025",
+        "productos": {
+          "Work": "Sí",
+          "Enterprise": "No",
+          "AFIP": "",
+          "Condor Link": "Sí",
+          "Self Service": "",
+          "Jasper": "Sí",
+          "Discoverer": "Sí",
+          "MicroStrategy": ""
+        },
+        "observaciones": "No realizar tareas los domingos.",
+        "validacion_pendiente": "Confirmar SID actual: BOCA o BOCAPDB y plan para WL nuevo."
+      },
+      "source": [
+        "Relevamiento (sin claves) - VM Linux.csv",
+        "Matriz_servicios_por_cliente_Hosting_V2.xlsx"
+      ]
+    },
+    {
+      "name": "CSM Ciencia al Servicio del Movimiento S.A.",
+      "code": "ROMAN",
+      "status": "Entorno actual / posible test",
+      "weblogic": {
+        "claimed_name": "WL-CLIENTES",
+        "guest_os_relevamiento": "Oracle Linux 6",
+        "wl_version": "10",
+        "esxi_host_relevamiento": "192.1.3.252",
+        "resolved": [
+          {
+            "claimed_name": "WL-CLIENTES",
+            "resolved_vm": "WL-CLIENTES",
+            "ip": "172.18.5.40",
+            "resolved_by": "name",
+            "match": true
+          }
+        ]
+      },
+      "database": {
+        "claimed_name": "DB-02",
+        "guest_os_relevamiento": "Oracle Linux 4/5",
+        "resolved": [
+          {
+            "claimed_name": "DB-02",
+            "resolved_vm": "DB-ROMAN",
+            "ip": "172.18.5.43",
+            "resolved_by": "ip",
+            "match": false
+          }
+        ]
+      },
+      "admin_user": "soportesmart",
+      "matrix_detail": {
+        "sid_actual": "TEST / romanstest",
+        "version_db": "11.2.0.4.0",
+        "edicion_db": "",
+        "tamano": "26G",
+        "charset": "WE8ISO8859P1",
+        "servidor_db_destino": "",
+        "ip_db_destino": "",
+        "sid_nuevo": "",
+        "version_condor": "2025",
+        "productos": {
+          "Work": "Sí",
+          "Enterprise": "Sí",
+          "AFIP": "Sí",
+          "Condor Link": "Sí",
+          "Self Service": "",
+          "Jasper": "Sí",
+          "Discoverer": "Sí",
+          "MicroStrategy": ""
+        },
+        "observaciones": "Interfaces: Andrés Schemper.",
+        "validacion_pendiente": "Versiones WL difieren (10 vs 11). Confirmar si la base/servicio es TEST o producción."
+      },
+      "source": [
+        "Relevamiento (sin claves) - VM Linux.csv",
+        "Matriz_servicios_por_cliente_Hosting_V2.xlsx"
+      ]
+    },
+    {
+      "name": "DC Viajes y Turismo S.A.",
+      "code": "DCVIAJES",
+      "status": "Pendiente de migración",
+      "weblogic": {
+        "claimed_name": "WebLogic.191",
+        "guest_os_relevamiento": "Oracle Linux 6",
+        "wl_version": "11",
+        "esxi_host_relevamiento": "192.1.1.217",
+        "resolved": [
+          {
+            "claimed_name": "WebLogic.191",
+            "resolved_vm": "WebLogic.191",
+            "ip": "192.1.1.191",
+            "resolved_by": "name",
+            "match": true
+          }
+        ]
+      },
+      "database": {
+        "claimed_name": "dbclientes.190",
+        "guest_os_relevamiento": "Oracle Linux 7",
+        "resolved": [
+          {
+            "claimed_name": "dbclientes.190",
+            "resolved_vm": "DBClientes.190",
+            "ip": "192.1.1.190",
+            "resolved_by": "name",
+            "match": true
+          }
+        ]
+      },
+      "admin_user": "soportesmart",
+      "matrix_detail": {
+        "sid_actual": "DCVIAJES",
+        "version_db": "11.2.0.4.0",
+        "edicion_db": "",
+        "tamano": "26G",
+        "charset": "WE8ISO8859P1",
+        "servidor_db_destino": "BD 10.77.7.12",
+        "ip_db_destino": "10.77.7.12",
+        "sid_nuevo": "No existe, crear",
+        "version_condor": "2012.01",
+        "productos": {
+          "Work": "No",
+          "Enterprise": "Sí",
+          "AFIP": "",
+          "Condor Link": "",
+          "Self Service": "",
+          "Jasper": "",
+          "Discoverer": "",
+          "MicroStrategy": ""
+        },
+        "observaciones": "",
+        "validacion_pendiente": "Definir SID nuevo y confirmar si requiere nuevo WL."
+      },
+      "source": [
+        "Relevamiento (sin claves) - VM Linux.csv",
+        "Matriz_servicios_por_cliente_Hosting_V2.xlsx"
+      ]
+    },
+    {
+      "name": "Dominique Val S.A.",
+      "code": "DVAL",
+      "status": "Pendiente de migración",
+      "weblogic": {
+        "claimed_name": "WebLogic.191",
+        "guest_os_relevamiento": "Oracle Linux 6",
+        "wl_version": "11",
+        "esxi_host_relevamiento": "192.1.1.217",
+        "resolved": [
+          {
+            "claimed_name": "WebLogic.191",
+            "resolved_vm": "WebLogic.191",
+            "ip": "192.1.1.191",
+            "resolved_by": "name",
+            "match": true
+          }
+        ]
+      },
+      "database": {
+        "claimed_name": "dbclientes238",
+        "guest_os_relevamiento": "Oracle Linux 7",
+        "resolved": [
+          {
+            "claimed_name": "dbclientes238",
+            "resolved_vm": "DBClientes.238",
+            "ip": "192.1.1.238",
+            "resolved_by": "ip",
+            "match": false
+          }
+        ]
+      },
+      "admin_user": "soportesmart",
+      "matrix_detail": {
+        "sid_actual": "DVAL",
+        "version_db": "11.2.0.4.0",
+        "edicion_db": "",
+        "tamano": "24G",
+        "charset": "WE8ISO8859P1",
+        "servidor_db_destino": "BD 10.77.7.14",
+        "ip_db_destino": "10.77.7.14",
+        "sid_nuevo": "PRODDVAL",
+        "version_condor": "2025",
+        "productos": {
+          "Work": "No",
+          "Enterprise": "Sí",
+          "AFIP": "Sí",
+          "Condor Link": "",
+          "Self Service": "",
+          "Jasper": "",
+          "Discoverer": "No se",
+          "MicroStrategy": ""
+        },
+        "observaciones": "",
+        "validacion_pendiente": "Confirmar plan y fecha de migración."
+      },
+      "source": [
+        "Relevamiento (sin claves) - VM Linux.csv",
+        "Matriz_servicios_por_cliente_Hosting_V2.xlsx"
+      ]
+    },
+    {
+      "name": "Enerflex Solutions Argentina SRL",
+      "code": "ENERFLEX",
+      "status": "Actual / sin destino informado",
+      "weblogic": {
+        "claimed_name": "WL12C-PROD",
+        "guest_os_relevamiento": "Oracle Linux 7",
+        "wl_version": "12.2",
+        "esxi_host_relevamiento": "192.1.1.223",
+        "resolved": [
+          {
+            "claimed_name": "WL12C-PROD",
+            "resolved_vm": "WL12C-PROD",
+            "ip": "192.1.1.1",
+            "resolved_by": "name",
+            "match": true
+          }
+        ]
+      },
+      "database": {
+        "claimed_name": "clientes-db2",
+        "guest_os_relevamiento": "Oracle Linux 7",
+        "resolved": [
+          {
+            "claimed_name": "clientes-db2",
+            "resolved_vm": "CLIENTES-DB2",
+            "ip": "192.1.1.51",
+            "resolved_by": "name",
+            "match": true
+          }
+        ]
+      },
+      "admin_user": "soportesmart",
+      "matrix_detail": {
+        "sid_actual": "ENERFLEX",
+        "version_db": "19.24.0.0.0",
+        "edicion_db": "EE",
+        "tamano": "41G",
+        "charset": "WE8ISO8859P15",
+        "servidor_db_destino": "",
+        "ip_db_destino": "",
+        "sid_nuevo": "",
+        "version_condor": "2025",
+        "productos": {
+          "Work": "Sí",
+          "Enterprise": "No",
+          "AFIP": "",
+          "Condor Link": "",
+          "Self Service": "",
+          "Jasper": "",
+          "Discoverer": "No se",
+          "MicroStrategy": ""
+        },
+        "observaciones": "",
+        "validacion_pendiente": "Validar charset: WE8ISO8859P15 parece requerir confirmación."
+      },
+      "source": [
+        "Relevamiento (sin claves) - VM Linux.csv",
+        "Matriz_servicios_por_cliente_Hosting_V2.xlsx"
+      ]
+    },
+    {
+      "name": "Ente Servicios y Obras Públicas (ESYOP)",
+      "code": "ESYOP",
+      "status": "Pendiente de migración",
+      "weblogic": {
+        "claimed_name": "WebLogic.19",
+        "guest_os_relevamiento": "Oracle Linux 6",
+        "wl_version": "11",
+        "esxi_host_relevamiento": "192.1.1.223",
+        "resolved": [
+          {
+            "claimed_name": "WebLogic.19",
+            "resolved_vm": "WebLogic.19",
+            "ip": "192.1.1.19",
+            "resolved_by": "name",
+            "match": true
+          }
+        ]
+      },
+      "database": {
+        "claimed_name": "dbclientes",
+        "guest_os_relevamiento": "Oracle Linux 6",
+        "resolved": [
+          {
+            "claimed_name": "dbclientes",
+            "resolved_vm": "DBClientes-12C.31",
+            "ip": "192.1.1.31",
+            "resolved_by": "ip",
+            "match": false
+          }
+        ]
+      },
+      "admin_user": "soportesmart",
+      "matrix_detail": {
+        "sid_actual": "ESYOP",
+        "version_db": "12.2.0.1.0",
+        "edicion_db": "SE",
+        "tamano": "23G",
+        "charset": "WE8ISO8859P1",
+        "servidor_db_destino": "BD 10.77.7.14",
+        "ip_db_destino": "10.77.7.14",
+        "sid_nuevo": "PRODESYOP",
+        "version_condor": "2024",
+        "productos": {
+          "Work": "Sí",
+          "Enterprise": "Sí",
+          "AFIP": "",
+          "Condor Link": "",
+          "Self Service": "",
+          "Jasper": "Sí",
+          "Discoverer": "No se",
+          "MicroStrategy": ""
+        },
+        "observaciones": "",
+        "validacion_pendiente": "Confirmar destino WL y alcance de migración."
+      },
+      "source": [
+        "Relevamiento (sin claves) - VM Linux.csv",
+        "Matriz_servicios_por_cliente_Hosting_V2.xlsx"
+      ]
+    },
+    {
+      "name": "Entidad Binacional Yacyretá",
+      "code": "EBY",
+      "status": "Migrado / actualización pendiente",
+      "weblogic": {
+        "claimed_name": "WL12C-Desarrollo.2.54",
+        "guest_os_relevamiento": "Oracle Linux 7",
+        "wl_version": "11",
+        "esxi_host_relevamiento": "192.1.1.214",
+        "resolved": [
+          {
+            "claimed_name": "WL12C-Desarrollo.2.54",
+            "resolved_vm": "WL12C-Desarrollo.2.54",
+            "ip": "192.1.2.54",
+            "resolved_by": "name",
+            "match": true
+          }
+        ]
+      },
+      "database": {
+        "claimed_name": "DB_YACY.22",
+        "guest_os_relevamiento": "Oracle Linux 4/5",
+        "resolved": [
+          {
+            "claimed_name": "DB_YACY.22",
+            "resolved_vm": "OPENDBPROD006",
+            "ip": "192.1.1.22",
+            "resolved_by": "ip",
+            "match": false
+          }
+        ]
+      },
+      "admin_user": "soportesmart",
+      "matrix_detail": {
+        "sid_actual": "MBA",
+        "version_db": "11.2.0.4.0",
+        "edicion_db": "EE",
+        "tamano": "51G",
+        "charset": "WE8ISO8859P1",
+        "servidor_db_destino": "BD 10.77.7.15",
+        "ip_db_destino": "10.77.7.15",
+        "sid_nuevo": "EBYPROD",
+        "version_condor": "2025",
+        "productos": {
+          "Work": "Sí",
+          "Enterprise": "No",
+          "AFIP": "",
+          "Condor Link": "Sí",
+          "Self Service": "",
+          "Jasper": "Sí",
+          "Discoverer": "Sí",
+          "MicroStrategy": ""
+        },
+        "observaciones": "BD y WL migrados; falta actualizar la base mediante import, configurar VPN del cliente y revisar FSAL.",
+        "validacion_pendiente": "Confirmar si el WL actual es realmente de desarrollo y validar la nueva VM DB ya creada."
+      },
+      "source": [
+        "Relevamiento (sin claves) - VM Linux.csv",
+        "Matriz_servicios_por_cliente_Hosting_V2.xlsx"
+      ]
+    },
+    {
+      "name": "Jobs Servicios de Recursos Humanos SRL",
+      "code": "JOBS",
+      "status": "Destino definido / sin WL nuevo",
+      "weblogic": {
+        "claimed_name": "WL12C-PROD",
+        "guest_os_relevamiento": "Oracle Linux 7",
+        "wl_version": "11",
+        "esxi_host_relevamiento": "192.1.1.223",
+        "resolved": [
+          {
+            "claimed_name": "WL12C-PROD",
+            "resolved_vm": "WL12C-PROD",
+            "ip": "192.1.1.1",
+            "resolved_by": "name",
+            "match": true
+          }
+        ]
+      },
+      "database": {
+        "claimed_name": "clientes-db2",
+        "guest_os_relevamiento": "Oracle Linux 7",
+        "resolved": [
+          {
+            "claimed_name": "clientes-db2",
+            "resolved_vm": "CLIENTES-DB2",
+            "ip": "192.1.1.51",
+            "resolved_by": "name",
+            "match": true
+          }
+        ]
+      },
+      "admin_user": "soportesmart",
+      "matrix_detail": {
+        "sid_actual": "JOBS",
+        "version_db": "19.24.0.0.0",
+        "edicion_db": "EE",
+        "tamano": "35G",
+        "charset": "WE8MSWIN1252",
+        "servidor_db_destino": "BD 10.77.7.13",
+        "ip_db_destino": "10.77.7.13",
+        "sid_nuevo": "prodjobs",
+        "version_condor": "2025",
+        "productos": {
+          "Work": "Sí",
+          "Enterprise": "No",
+          "AFIP": "",
+          "Condor Link": "Sí",
+          "Self Service": "",
+          "Jasper": "Sí",
+          "Discoverer": "Sí",
+          "MicroStrategy": ""
+        },
+        "observaciones": "",
+        "validacion_pendiente": "Versiones WL difieren (infra 11, funcional WL 12). Confirmar versión real y plan de WL nuevo."
+      },
+      "source": [
+        "Relevamiento (sin claves) - VM Linux.csv",
+        "Matriz_servicios_por_cliente_Hosting_V2.xlsx"
+      ]
+    },
+    {
+      "name": "Heinlein",
+      "code": "HEINLEIN",
+      "status": "Solo infraestructura",
+      "weblogic": {
+        "claimed_name": "OL8LABWL01",
+        "guest_os_relevamiento": "Oracle Linux 7",
+        "wl_version": "12.2",
+        "esxi_host_relevamiento": "192.1.3.252",
+        "resolved": [
+          {
+            "claimed_name": "OL8LABWL01",
+            "resolved_vm": "OL8LABWL01",
+            "ip": "192.1.2.195",
+            "resolved_by": "name",
+            "match": true
+          }
+        ]
+      },
+      "database": {
+        "claimed_name": "OPENDBPROD001",
+        "guest_os_relevamiento": "Oracle Linux 7",
+        "resolved": [
+          {
+            "claimed_name": "OPENDBPROD001",
+            "resolved_vm": "OPENDBPROD001",
+            "ip": "10.77.7.11",
+            "resolved_by": "name",
+            "match": true
+          }
+        ]
+      },
+      "admin_user": "soportesmart",
+      "matrix_detail": {
+        "sid_actual": "CDBHEIN01",
+        "version_db": "",
+        "edicion_db": "",
+        "tamano": "",
+        "charset": "",
+        "servidor_db_destino": "",
+        "ip_db_destino": "",
+        "sid_nuevo": "",
+        "version_condor": "",
+        "productos": {
+          "Work": "",
+          "Enterprise": "",
+          "AFIP": "",
+          "Condor Link": "",
+          "Self Service": "",
+          "Jasper": "",
+          "Discoverer": "",
+          "MicroStrategy": ""
+        },
+        "observaciones": "Figura en inventario técnico, no en la tabla funcional de servicios por cliente.",
+        "validacion_pendiente": "Completar servicios, versión DB, tamaño, charset y funcionalidades."
+      },
+      "source": [
+        "Relevamiento (sin claves) - VM Linux.csv",
+        "Matriz_servicios_por_cliente_Hosting_V2.xlsx"
+      ]
+    },
+    {
+      "name": "Maipú",
+      "code": "MAIPU",
+      "status": "Solo infraestructura",
+      "weblogic": {
+        "claimed_name": "DMWL01",
+        "guest_os_relevamiento": "Oracle Linux 8",
+        "wl_version": "12.2",
+        "esxi_host_relevamiento": "192.1.1.223",
+        "resolved": [
+          {
+            "claimed_name": "DMWL01",
+            "resolved_vm": "DMWL01",
+            "ip": "10.77.10.101",
+            "resolved_by": "name",
+            "match": true
+          }
+        ]
+      },
+      "database": {
+        "claimed_name": "DASADBPROD01",
+        "guest_os_relevamiento": "Oracle Linux 7",
+        "resolved": [
+          {
+            "claimed_name": "DASADBPROD01",
+            "resolved_vm": "DASADBPROD01",
+            "ip": "10.77.10.201",
+            "resolved_by": "name",
+            "match": true
+          }
+        ]
+      },
+      "admin_user": "soportesmart",
+      "matrix_detail": {
+        "sid_actual": "cdbdasapr01",
+        "version_db": "",
+        "edicion_db": "",
+        "tamano": "",
+        "charset": "",
+        "servidor_db_destino": "",
+        "ip_db_destino": "",
+        "sid_nuevo": "",
+        "version_condor": "",
+        "productos": {
+          "Work": "",
+          "Enterprise": "",
+          "AFIP": "",
+          "Condor Link": "",
+          "Self Service": "",
+          "Jasper": "",
+          "Discoverer": "",
+          "MicroStrategy": ""
+        },
+        "observaciones": "Figura en inventario técnico, no en la tabla funcional de servicios por cliente.",
+        "validacion_pendiente": "Completar servicios, versión DB, tamaño, charset y funcionalidades."
+      },
+      "source": [
+        "Relevamiento (sin claves) - VM Linux.csv",
+        "Matriz_servicios_por_cliente_Hosting_V2.xlsx"
+      ]
+    },
+    {
+      "name": "Rex Argentina",
+      "code": "279",
+      "status": "Hosting reciente / no migrado",
+      "weblogic": {
+        "claimed_name": "",
+        "guest_os_relevamiento": "",
+        "wl_version": "2025",
+        "esxi_host_relevamiento": "",
+        "resolved": []
+      },
+      "database": {
+        "claimed_name": "REX Produccion",
+        "guest_os_relevamiento": "",
+        "resolved": []
+      },
+      "admin_user": "",
+      "source": [
+        "Matriz_servicios_por_cliente_Hosting_V2.xlsx"
+      ],
+      "matrix_detail": {
+        "observaciones": "Cliente incorporado recientemente al hosting. Ambiente PROD. Hosting: Sí. Migrado: No. Patch: 1. Licencias/volumen informado: 15 usuarios y 4.600 legajos. ",
+        "productos": {
+          "Work": "Sí",
+          "Enterprise": "No"
+        }
+      },
+      "notes": "Not present in Relevamiento CSV or ExportList.csv by name. DB server 'REX Produccion' not resolved to a specific VM yet — needs TeamViewer lookup."
+    },
+    {
+      "name": "Argocean",
+      "code": "",
+      "status": "Inventario técnico incompleto (per Discrepancias sheet: DB 172.18.5.60 / SID MBA, no figura en tabla funcional)",
+      "weblogic": {
+        "claimed_name": "",
+        "guest_os_relevamiento": "",
+        "wl_version": "",
+        "esxi_host_relevamiento": "",
+        "resolved": []
+      },
+      "database": {
+        "claimed_name": "DB-ARGOCEAN",
+        "guest_os_relevamiento": "Oracle Linux 4/5 or later (64-bit)",
+        "resolved": [
+          {
+            "claimed_name": "DB-ARGOCEAN",
+            "resolved_vm": "DB-ARGOCEAN",
+            "ip": null,
+            "resolved_by": "name",
+            "match": true
+          }
+        ]
+      },
+      "admin_user": "",
+      "source": [
+        "Matriz_servicios_por_cliente_Hosting_V2.xlsx (Discrepancias sheet)",
+        "ExportList.csv"
+      ],
+      "notes": "Discovered via the Discrepancias sheet, not the main client table. VM is currently powered off ('Apagado') in ExportList.csv. No WebLogic server identified yet."
+    }
+  ],
+  "infra_notes_rows": [
+    {
+      "Cliente": "opendocker03",
+      "Código": "",
+      "Estado / migración": "Docker",
+      "Servidor WL actual": "192.1.1.113",
+      "IP WL actual": "192.1.1.113",
+      "SO WL": "",
+      "Versión WL infra": "",
+      "Host físico WL": "",
+      "Servidor DB actual": "",
+      "IP DB actual": "",
+      "SO DB": "",
+      "Usuario Admin": "soportesmart"
+    },
+    {
+      "Cliente": "opendocker02",
+      "Código": "",
+      "Estado / migración": "Docker",
+      "Servidor WL actual": "192.1.1.112",
+      "IP WL actual": "192.1.1.112",
+      "SO WL": "",
+      "Versión WL infra": "",
+      "Host físico WL": "",
+      "Servidor DB actual": "",
+      "IP DB actual": "",
+      "SO DB": "",
+      "Usuario Admin": "soportesmart"
+    },
+    {
+      "Cliente": "opendocker01",
+      "Código": "",
+      "Estado / migración": "Docker",
+      "Servidor WL actual": "192.1.1.110",
+      "IP WL actual": "192.1.1.110",
+      "SO WL": "",
+      "Versión WL infra": "",
+      "Host físico WL": "",
+      "Servidor DB actual": "",
+      "IP DB actual": "",
+      "SO DB": "",
+      "Usuario Admin": "soportesmart"
+    },
+    {
+      "Cliente": "opendocker04",
+      "Código": "",
+      "Estado / migración": "Docker",
+      "Servidor WL actual": "10.77.7.5",
+      "IP WL actual": "10.77.7.5",
+      "SO WL": "",
+      "Versión WL infra": "",
+      "Host físico WL": "",
+      "Servidor DB actual": "",
+      "IP DB actual": "",
+      "SO DB": "",
+      "Usuario Admin": "soportesmart"
+    },
+    {
+      "Cliente": "portalDM",
+      "Código": "",
+      "Estado / migración": "",
+      "Servidor WL actual": "10.77.10.5",
+      "IP WL actual": "",
+      "SO WL": "",
+      "Versión WL infra": "",
+      "Host físico WL": "",
+      "Servidor DB actual": "",
+      "IP DB actual": "",
+      "SO DB": "",
+      "Usuario Admin": "soportesmart"
+    }
+  ],
+  "azure": {
+    "note": "Separate infra plane, not part of the on-prem vSphere/ExportList.csv inventory above. Sourced from Analisis Azure.docx (internal, treat with the same 'grain of salt' caveat as other Relevamiento-derived material) and Arquitectura_Configuraciones_Instalacion.docx. Condor Work/Enterprise/ProvIA application tiers run here, not on the vSphere VMs.",
+    "subscriptions": [
+      {
+        "name": "Open Prod Subscription",
+        "purpose": "Production workloads"
+      },
+      {
+        "name": "Open Operations Subscription",
+        "purpose": "Dev/test/internal tooling (AKS dev/test, DevOps)"
+      },
+      {
+        "name": "Azure Subscription 1",
+        "purpose": "Currently unused"
+      }
+    ],
+    "resource_groups": [
+      "rg-open-prod",
+      "rg-open-devtest"
+    ],
+    "environments": {
+      "production": {
+        "aks_cluster": "aks-open-prod",
+        "vnet": {
+          "name": "vnet-open-prod",
+          "address_space": "10.201.0.0/16",
+          "subnets": [
+            {
+              "name": "GatewaySubnet",
+              "cidr": "10.201.1.0/27",
+              "purpose": "VPN gateway"
+            },
+            {
+              "name": "subnet-aks-prod",
+              "cidr": "10.201.0.0/24",
+              "purpose": "all AKS cluster services"
+            }
+          ]
+        },
+        "vpn_gateway": "open-vpn-gateway",
+        "nat_gateway": {
+          "name": "natgw-aks-prod",
+          "public_ip": "172.190.147.110"
+        },
+        "container_registry": "openprodregistry",
+        "postgresql": "psql-core-prod-eus",
+        "public_ips": [
+          {
+            "name": "kubernetes-...",
+            "ip": "20.253.49.89",
+            "purpose": "AKS app exposure"
+          },
+          {
+            "name": "open-vpn-ip",
+            "ip": "172.191.115.119",
+            "purpose": "S2S VPN"
+          }
+        ],
+        "s2s_vpn_to_onprem": {
+          "peer_name": "open-pfsense-connection",
+          "peer_gateway_ip": "200.55.243.92",
+          "peer_identity": "pfSense on-prem (matches OPENVPNFW01 in inventory)",
+          "status": "Conectado",
+          "traffic": "very low, mostly OnPrem->Azure (Oracle DB access, point integrations)"
+        }
+      },
+      "devtest": {
+        "aks_cluster": "aks-open-devtest",
+        "vnet": {
+          "name": "vnet-open-devtest",
+          "address_space": "10.200.0.0/16",
+          "subnets": [
+            {
+              "name": "GatewaySubnet",
+              "cidr": "10.200.1.0/27",
+              "purpose": "VPN gateway"
+            },
+            {
+              "name": "subnet-aks-devtest",
+              "cidr": "10.200.0.0/24",
+              "purpose": "all AKS cluster services"
+            }
+          ]
+        },
+        "vpn_gateway": "open-vpn-gateway-devtest",
+        "nat_gateway": {
+          "name": "natgw-aks-devtest",
+          "public_ip": "13.92.235.102"
+        },
+        "postgresql": "psql-core-nonprod-eus",
+        "s2s_vpn_to_onprem": {
+          "peer_name": "open-pfsense-connection-devtest",
+          "peer_gateway_ip": "200.55.243.92",
+          "peer_identity": "pfSense on-prem (matches OPENVPNFW01)",
+          "status": "Conectado",
+          "route": "10.77.0.0/16 routed to on-prem datacenter via VPN gateway"
+        }
+      }
+    },
+    "security_findings": [
+      "No Network Security Groups (NSG) in either prod or devtest VNet.",
+      "No Azure Firewall, no Private Endpoints identified.",
+      "Both prod and devtest use a single flat subnet shared by app traffic, VPN, and internet-facing services — no internal segmentation. A compromise inside the AKS cluster could move laterally without restriction."
+    ]
+  }
+}

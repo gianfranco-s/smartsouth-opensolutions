@@ -1,0 +1,400 @@
+Delivered-To: gianfranco.s@gmail.com
+Received: by 2002:a2e:a383:0:b0:39c:9086:9070 with SMTP id r3csp577600lje;
+        Thu, 13 Aug 2026 06:44:54 -0700 (PDT)
+X-Received: by 2002:a17:907:e00e:20b0:c21:1546:97e6 with SMTP id a640c23a62f3a-c2115469938mr97998966b.9.1786628693741;
+        Thu, 13 Aug 2026 06:44:53 -0700 (PDT)
+ARC-Seal: i=2; a=rsa-sha256; t=1786628693; cv=pass;
+        d=google.com; s=arc-20260327;
+        b=hRx1y73hlJbcfcefGc+ieXwV1MGcYInCl5ytaE4bPYA0+vq1G7UAf5UpoBRXGnIW5U
+         e+406iTkAIPIeSVZcIScAtx3KFuIMCW7mIt7b/SrkvQKnaZknl8iDdksK9Sk3xMmFKjX
+         1qCsGeKy0hPJFOEnHi/rd8YqH3bsXXoVfbDkvuSoj3cKVcLHGVTuTggR2x+N8HnMkhHh
+         SPttBEav1gS9pom93pSIIvC27MpQ+BVvcQE+rWvdqlhQrLL5bPgTnyhK+Fbekb8VcdPL
+         C13fCyunvW+4M2CguxJuCyW1AAkwLWDOxzEn/1mYt9+NBU8dZVhZSaW3W8HvTPkD4Wgq
+         pW4w==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :dkim-signature;
+        bh=Bh+KhF8NURXav/WwxSeNJM/1DUxiypExx1dflwya7xc=;
+        fh=uvTIBadl1TpIFEnAq9TmzcfDCuspXfMI+T8VPmSfkxY=;
+        b=UkEi+u8s2uQicPdCu7MnN0kErxiCiSvPZ8wwS56OD9gJIMvWmUdlQG5ApY2r7V+rKU
+         70l7aNd3nHchXa0vKtZKj0EKdLD4o5m7V7CA3gD9ZRUTVi+9hbc6fir9yJtSyv7LLzQs
+         aKTAnwpsZlP6ycwn5kNLWzWpKdrH54MLlGWt4l/8uZwD/SWM3GozVDHvrpoUjO5RZ5iW
+         mih/JEwOYUvETecdFUkOdfdL3UPhdr9r33T1Tq2DjZGKjqnCShmiHlL8QbaNoOKBc0sg
+         2g5PZ7q/VAilsw67RTjm+duNCC/cjbxPtEufxjslUgraE2DbmnIuQcEAY7zgy6w68wEx
+         rz8g==;
+        dara=google.com
+ARC-Authentication-Results: i=2; mx.google.com;
+       dkim=pass header.i=@smartsouth.net header.s=google header.b=wQMTCq4y;
+       arc=pass (i=1);
+       spf=pass (google.com: domain of carlos@smartsouth.net designates 209.85.220.41 as permitted sender) smtp.mailfrom=carlos@smartsouth.net;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=smartsouth.net;
+       dara=pass header.i=@gmail.com
+Return-Path: <carlos@smartsouth.net>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id a640c23a62f3a-c21086005basor60876766b.5.2026.08.13.06.44.53
+        for <gianfranco.s@gmail.com>
+        (Google Transport Security);
+        Thu, 13 Aug 2026 06:44:53 -0700 (PDT)
+Received-SPF: pass (google.com: domain of carlos@smartsouth.net designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@smartsouth.net header.s=google header.b=wQMTCq4y;
+       arc=pass (i=1);
+       spf=pass (google.com: domain of carlos@smartsouth.net designates 209.85.220.41 as permitted sender) smtp.mailfrom=carlos@smartsouth.net;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=smartsouth.net;
+       dara=pass header.i=@gmail.com
+ARC-Seal: i=1; a=rsa-sha256; t=1786628693; cv=none;
+        d=google.com; s=arc-20260327;
+        b=Pk8JXt23I59vSpZNIm9CWZnoXKuxfsh1xyOo0r1YzTc3wCs7RLdYAz1VgbspBoT8p+
+         v5hNsTbtTZOOIAaGXJimhHcopuQ6SuZUQ5OTV3v7xj7VimFgqUClrGrshocwi8R3sIZV
+         HlbiUUgLtsR6QnW4oenTkFs+lV5j2kNeF7yCHJ7I9Xe4ZG2Nh+QmTdKdeTYO8WfRb8RM
+         E0/rerQBxhDCOLf6DM4LMaPVmvvXcbf6yJjV4tetAYlHTy0B+e5YUGu0h9m96USVX9Ra
+         MsbBkPN92cMAmfRiTNu0QumRKezZ4ApXa3MEH5ASN63ZNEhP4lrzLW1GK1Jb2NgGJgyL
+         s56g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :dkim-signature;
+        bh=Bh+KhF8NURXav/WwxSeNJM/1DUxiypExx1dflwya7xc=;
+        fh=uvTIBadl1TpIFEnAq9TmzcfDCuspXfMI+T8VPmSfkxY=;
+        b=TzmJMQfqh/naWqac7PEmEA5bkRYn33IKa/xcRuiy9QCEPeP7rBDRlTVxPgUd8R3jKl
+         rJFeAl5JVwjNK6+QfxPE6h61tuYHQOP/OECZi1Rmt90fFLdnOGD8ZFlggoq0kVA8lg5a
+         sED2q+O0HT58VSyK4lscFbyhybVEs8uwVWo9aZdvBp4wfKaVe7s8eiQhw9qS4AYyJ6va
+         XUZyu8k/LUdGyGu41hiJbNnEXhlTWuQb3Z7dwpbvPJQDrIw1giGKL+UXEaTZiheaZYoy
+         +TS+Ek/NXxM0LOJwAzRFQcTiq0CaqfTYSDb/1KjKpZuS5/djNvHcWyQWXY+FSEJuMdyF
+         fJVw==;
+        dara=google.com
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=smartsouth.net; s=google; t=1786628693; x=1787233493; dara=google.com;
+        h=content-type:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=Bh+KhF8NURXav/WwxSeNJM/1DUxiypExx1dflwya7xc=;
+        b=wQMTCq4yeVjgEGJOx/d0pUlTxl3F3aU12uZ/SKaXbUMC4io4qwNe5I6meIWolDo6Pm
+         ONnO/z0c9gK+Xva+UKvgAU1agIuPvbQ/nzHdoHTX3Wkve/2SzJvxzfgmAUfR8nvsmKFU
+         iRky+VXIkEGmJl4H6+U5DtnZd19bee1NP7LGtmu4pf6HBYXrwJdTGxeuzJmX+piyAP2I
+         r1X3Rkxxz7kLoLGf4uuBhK1sE/55v12De3vSD4zwjJOS8xLPJumPGios3WwEX6nCR5Tv
+         8azdhgotwfe4ZOmQgZsBDBO2m/c58neuWK+jL2Fnfwi/xl4TL+m4dlK7qRAZNyQ+A+ep
+         W5SQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1786628693; x=1787233493;
+        h=content-type:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=Bh+KhF8NURXav/WwxSeNJM/1DUxiypExx1dflwya7xc=;
+        b=bDxotEhewPUi+tYT76t/+K4hYZ0EOsRp2YZEOVEFM6Vx5G7SU8fGFFr120u84zDSsH
+         RwFZUWb9v9dEP9fNybAZzPrDm81AXUemeiZ5GlJFW62kq3tTBhgGbCqeu9ha41x3Pxz0
+         EMr2zxQrjv6QXZTchjb0tDtG5sjUClwy+36JhjJPtgg8zDKjhuKU6b9osNmROWsfvKzB
+         yVZ3zlMUZxN8g/IZS9HuYzbQxRQ1RZOQietMJnI/0qNcdxtZXq9XVbo10fgHgft+AyNo
+         +jUe5aA8RueDUD3h5L2uf0zZ9XOkuBtFeLK5WhffQwNusdV53JUBOp21mPg8PRWR9DdP
+         JOSQ==
+X-Gm-Message-State: AOJu0YxInCQTQxy31i9N/I626Huiqir05IPT2iRS+TMTkMgh2gxC9Q3/
+	JGD/46Xakfcl3rATIdbIVswHJYzY8dYR5cElGiJo6gNwk4t4Iuj7Djf753UeLnk7IgRXas1jTqW
+	Vup0G0fnrAMt258JBKL0nzurAI7rmB/1rX65wnaZmoPNIWWzU2Jx7
+X-Gm-Gg: AR+sD10pB+kZVvLoDxxteJkiRZ4Cqb2Cf+TdwVzaEhN1+1m4sgHKKXH/OyCw4LFAgxe
+	NWEapg4cVl7aCxIwfJf+wdZyyaDqotxvtmn9EyG3M4BZqQMFikRrbqsH6Qt+NCzLmMGca1HtX5e
+	8TnZtk/MdHs6qmi6pHr9pk7bpnHMKvP30gcudLgCAMY4mpCGtwpEUjVbDxW+8PjXNDQalyjIwh+
+	IfsRG90+wfssWnJa8qNkEJjQMgItxiLaAWBOpgE8yIjpkAf65lVgdL+X87D9hFC78dZzaRVvkpX
+	JBhdAaOjNvGIZa+eYkrwuTZ4ebu/3xvWok7TedgPqqcO/7RSF5sKFXIaYInYDM9oIHCWdZGHP3H
+	GUzUKb2FpzOOit2Cl4Z4PDDL3SzlI
+X-Received: by 2002:a17:907:a45:b0:c15:f26a:3438 with SMTP id
+ a640c23a62f3a-c2108fb3703mr285113466b.24.1786628692947; Thu, 13 Aug 2026
+ 06:44:52 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAM0oJ8uKxdvU0H0246Gb0NMJWv8Pj6uowLeRaJHWVMXQLX6wOQ@mail.gmail.com>
+ <CP5P284MB3151FA89E603D11842DBC7FCFEC12@CP5P284MB3151.BRAP284.PROD.OUTLOOK.COM>
+ <CA+oW-Ozis-=5Fcjr+XcADj17zPxJhvkobHE8VvnA59C3sL9Qrw@mail.gmail.com>
+In-Reply-To: <CA+oW-Ozis-=5Fcjr+XcADj17zPxJhvkobHE8VvnA59C3sL9Qrw@mail.gmail.com>
+From: Carlos Smart <carlos@smartsouth.net>
+Date: Thu, 13 Aug 2026 10:44:41 -0300
+X-Gm-Features: AUfX_myaqz9vdqPUX59XXuHG539DgIqkQHAA6Xf3UUZSnlSyOnlH9WsF0wV_KMs
+Message-ID: <CAM0oJ8vprFk0em_JR9LLE_UVbxxtd=g5gF22aKP5pvnQrAPNdg@mail.gmail.com>
+Subject: Fwd: Relevamiento inicial de servicios publicados mediante Nginx
+ Proxy Manager - Open Solutions
+To: gianfranco.s@gmail.com
+Content-Type: multipart/alternative; boundary="00000000000096d1110658ede8ae"
+
+--00000000000096d1110658ede8ae
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+FYI
+
+
+
+---------- Forwarded message ---------
+De: Alexis Lombardi <alexis@smartsouth.net>
+Date: mi=C3=A9, 22 jul 2026 a la(s) 3:51=E2=80=AFp.m.
+Subject: Re: Relevamiento inicial de servicios publicados mediante Nginx
+Proxy Manager - Open Solutions
+To: Fernando Dogliotti <fernando@smartsouth.net>
+Cc: Carlos Smart <carlos@smartsouth.net>, Alejandro Marquez <
+alemarquez@smartsouth.net>, Federico Pe=C3=B1a <federico@smartsouth.net>
+
+
+buenisimo esto armemos del otro tb asi tenemos una ruta para ir completando
+y entendiendo, gracias. lo mismo de los PF y firewall que tienen
+
+El mi=C3=A9, 22 jul 2026 a la(s) 3:00=E2=80=AFp.m., Fernando Dogliotti (
+fernando@smartsouth.net) escribi=C3=B3:
+
+> Muchas gracias Carlos!!!
+>
+> Fernando Dogliotti.
+> Ciberseguridad.
+> Smart South.
+> ------------------------------
+> *De:* Carlos Smart <carlos@smartsouth.net>
+> *Enviado:* Wednesday, 22 July 2026 13:56:38
+> *Para:* Fernando Dogliotti <fernando@smartsouth.net>; Alexis Lombardi <
+> alexis@smartsouth.net>; Alejandro Marquez <alemarquez@smartsouth.net>;
+> Federico Pe=C3=B1a <federico@smartsouth.net>
+> *Asunto:* Relevamiento inicial de servicios publicados mediante Nginx
+> Proxy Manager - Open Solutions
+>
+>
+> Buenas tardes, les comparto algo de info chicos.
+> Durante el relevamiento preliminar de la infraestructura de Open Solution=
+s
+> se identific=C3=B3 un servidor *Nginx Proxy Manager* utilizado como punto
+> central de publicaci=C3=B3n de servicios hacia Internet. A trav=C3=A9s de=
+ este
+> componente fue posible obtener una primera visi=C3=B3n de las aplicacione=
+s y
+> plataformas actualmente expuestas.
+> Hallazgos principales
+>
+>    -
+>
+>    Se identificaron m=C3=BAltiples dominios y subdominios asociados a
+>    distintas plataformas y servicios, entre ellos:
+>    - open.com.ar
+>       - opensolutions.com.ar
+>       - condorwork.com.ar
+>       - condorenterprise.com.ar
+>       - condorsolutions.com.py
+>       - condorlink.net
+>    -
+>
+>    La infraestructura presenta una arquitectura centralizada donde Nginx
+>    Proxy Manager redirige las solicitudes externas hacia servidores inter=
+nos
+>    espec=C3=ADficos.
+>    -
+>
+>    Se detectaron varios servidores que concentran la mayor cantidad de
+>    servicios publicados:
+>    - *192.1.2.54*: m=C3=BAltiples aplicaciones y servicios publicados en
+>       distintos puertos (7002, 7005, 7007, 7009, 7010, 7703 y 9001). Se c=
+onsidera
+>       un servidor de alta criticidad dentro del entorno.
+>       - *192.1.1.110*: hospeda diversas aplicaciones web en los puertos
+>       8081, 8082, 8090, 8095 y 8098.
+>       - *192.1.1.112*: concentra varias aplicaciones publicadas en los
+>       puertos 8080, 8190, 8195, 8205 y 9001.
+>       - *192.1.1.6*: servidor asociado a aplicaciones de gesti=C3=B3n,
+>       incluyendo una instancia que utiliza el puerto 8069, compatible con=
+ Odoo
+>       ERP.
+>    -
+>
+>    Se observaron servicios alojados tanto en infraestructura local como
+>    en infraestructura cloud, incluyendo instancias con direcciones IP p=
+=C3=BAblicas
+>    pertenecientes a AWS.
+>
+> Observaciones
+>
+>    - La infraestructura evidencia crecimiento y mantenimiento continuo,
+>    con nuevas publicaciones registradas entre 2021 y 2026.
+>    - Existen servicios activos y algunos servicios deshabilitados que
+>    deber=C3=ADan ser revisados para determinar si a=C3=BAn son necesarios=
+.
+>    - Se detectaron posibles entornos productivos, portales corporativos,
+>    aplicaciones de clientes, sistemas ERP y plataformas colaborativas.
+>
+> Pr=C3=B3ximos pasos recomendados
+>
+>    1.
+>
+>    Inventariar cada Proxy Host asociando:
+>    - Dominio publicado.
+>       - Servidor destino.
+>       - Puerto utilizado.
+>       - Responsable funcional.
+>       - Criticidad del servicio.
+>    2.
+>
+>    Identificar la funci=C3=B3n espec=C3=ADfica de los servidores principa=
+les
+>    (192.1.2.54, 192.1.1.110, 192.1.1.112 y 192.1.1.6).
+>    3.
+>
+>    Validar vigencia y necesidad de los hosts actualmente deshabilitados.
+>    4.
+>
+>    Generar un mapa de dependencias entre dominios, aplicaciones y
+>    servidores para completar la documentaci=C3=B3n de la arquitectura.
+>
+> Aclaro algo, me falta revisar los dem=C3=A1s Nginx para ver si hay m=C3=
+=A1s
+> servicios, esto es solo info incial.
+>
+>
+> Saludos.
+>
+
+--00000000000096d1110658ede8ae
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div>FYI</div><div><div dir=3D"ltr" class=3D"gmail_signatu=
+re" data-smartmail=3D"gmail_signature"><div dir=3D"ltr"><img src=3D"https:/=
+/ci3.googleusercontent.com/mail-sig/AIorK4wZYzqsnEgNpJ6M8FPFSOySImBfVhGfN6X=
+LOvPThkx20moaZAccTnamLerTSUxSojYkaBlizrkcW6w4" width=3D"420" height=3D"153"=
+><br></div></div></div><br><br><div class=3D"gmail_quote gmail_quote_contai=
+ner"><div dir=3D"ltr" class=3D"gmail_attr">---------- Forwarded message ---=
+------<br>De: <strong class=3D"gmail_sendername" dir=3D"auto">Alexis Lombar=
+di</strong> <span dir=3D"auto">&lt;<a href=3D"mailto:alexis@smartsouth.net"=
+>alexis@smartsouth.net</a>&gt;</span><br>Date: mi=C3=A9, 22 jul 2026 a la(s=
+) 3:51=E2=80=AFp.m.<br>Subject: Re: Relevamiento inicial de servicios publi=
+cados mediante Nginx Proxy Manager - Open Solutions<br>To: Fernando Dogliot=
+ti &lt;<a href=3D"mailto:fernando@smartsouth.net">fernando@smartsouth.net</=
+a>&gt;<br>Cc: Carlos Smart &lt;<a href=3D"mailto:carlos@smartsouth.net">car=
+los@smartsouth.net</a>&gt;, Alejandro Marquez &lt;<a href=3D"mailto:alemarq=
+uez@smartsouth.net">alemarquez@smartsouth.net</a>&gt;, Federico Pe=C3=B1a &=
+lt;<a href=3D"mailto:federico@smartsouth.net">federico@smartsouth.net</a>&g=
+t;<br></div><br><br><div dir=3D"ltr">buenisimo esto armemos del otro tb asi=
+ tenemos una ruta para ir completando y entendiendo, gracias. lo mismo de l=
+os PF y firewall que tienen</div><br><div class=3D"gmail_quote"><div dir=3D=
+"ltr" class=3D"gmail_attr">El mi=C3=A9, 22 jul 2026 a la(s) 3:00=E2=80=AFp.=
+m., Fernando Dogliotti (<a href=3D"mailto:fernando@smartsouth.net" target=
+=3D"_blank">fernando@smartsouth.net</a>) escribi=C3=B3:<br></div><blockquot=
+e class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px s=
+olid rgb(204,204,204);padding-left:1ex">
+
+
+
+<div>
+<div style=3D"font-family:Aptos,Aptos_MSFontService,-apple-system,Roboto,Ar=
+ial,Helvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)" dir=3D"ltr">
+Muchas gracias Carlos!!!</div>
+<div id=3D"m_4135331896901239246m_7441589080411367519ms-outlook-mobile-body=
+-separator-line" dir=3D"auto" style=3D"font-family:Aptos,Aptos_MSFontServic=
+e,-apple-system,Roboto,Arial,Helvetica,sans-serif;font-size:12pt">
+<div style=3D"font-family:Aptos,Aptos_MSFontService,-apple-system,Roboto,Ar=
+ial,Helvetica,sans-serif;font-size:12pt">
+<br>
+</div>
+</div>
+<div style=3D"font-family:Aptos,Aptos_MSFontService,-apple-system,Roboto,Ar=
+ial,Helvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)" id=3D"m_413533189=
+6901239246m_7441589080411367519ms-outlook-mobile-signature" dir=3D"auto">
+<div dir=3D"ltr" style=3D"font-family:Aptos,Aptos_MSFontService,-apple-syst=
+em,Roboto,Arial,Helvetica,sans-serif;font-size:12pt;color:rgb(0,0,0)">
+<div dir=3D"ltr">Fernando Dogliotti.</div>
+<div dir=3D"ltr">Ciberseguridad.</div>
+<div dir=3D"ltr">Smart South.</div>
+</div>
+</div>
+<hr style=3D"display:inline-block;width:98%">
+<div id=3D"m_4135331896901239246m_7441589080411367519divRplyFwdMsg" dir=3D"=
+ltr"><font face=3D"Calibri, sans-serif" style=3D"font-size:11pt" color=3D"#=
+000000"><b>De:</b> Carlos Smart &lt;<a href=3D"mailto:carlos@smartsouth.net=
+" target=3D"_blank">carlos@smartsouth.net</a>&gt;<br>
+<b>Enviado:</b> Wednesday, 22 July 2026 13:56:38<br>
+<b>Para:</b> Fernando Dogliotti &lt;<a href=3D"mailto:fernando@smartsouth.n=
+et" target=3D"_blank">fernando@smartsouth.net</a>&gt;; Alexis Lombardi &lt;=
+<a href=3D"mailto:alexis@smartsouth.net" target=3D"_blank">alexis@smartsout=
+h.net</a>&gt;; Alejandro Marquez &lt;<a href=3D"mailto:alemarquez@smartsout=
+h.net" target=3D"_blank">alemarquez@smartsouth.net</a>&gt;; Federico Pe=C3=
+=B1a &lt;<a href=3D"mailto:federico@smartsouth.net" target=3D"_blank">feder=
+ico@smartsouth.net</a>&gt;<br>
+<b>Asunto:</b> Relevamiento inicial de servicios publicados mediante Nginx =
+Proxy Manager - Open Solutions</font>
+<div>=C2=A0</div>
+</div>
+<div>
+<div dir=3D"ltr">
+<div style=3D"font-family:&quot;Segoe UI&quot;;font-size:14px;line-height:2=
+0px">
+<p>Buenas tardes, les comparto algo de info chicos.<br>
+Durante el relevamiento preliminar de la infraestructura de Open Solutions =
+se identific=C3=B3 un servidor
+<strong>Nginx Proxy Manager</strong> utilizado como punto central de public=
+aci=C3=B3n de servicios hacia Internet. A trav=C3=A9s de este componente fu=
+e posible obtener una primera visi=C3=B3n de las aplicaciones y plataformas=
+ actualmente expuestas.</p>
+<h3>Hallazgos principales</h3>
+<ul>
+<li>
+<p>Se identificaron m=C3=BAltiples dominios y subdominios asociados a disti=
+ntas plataformas y servicios, entre ellos:</p>
+<ul>
+<li><a href=3D"http://open.com.ar" target=3D"_blank">open.com.ar</a></li><l=
+i><a href=3D"http://opensolutions.com.ar" target=3D"_blank">opensolutions.c=
+om.ar</a></li><li><a href=3D"http://condorwork.com.ar" target=3D"_blank">co=
+ndorwork.com.ar</a></li><li><a href=3D"http://condorenterprise.com.ar" targ=
+et=3D"_blank">condorenterprise.com.ar</a></li><li><a href=3D"http://condors=
+olutions.com.py" target=3D"_blank">condorsolutions.com.py</a></li><li><a hr=
+ef=3D"http://condorlink.net" target=3D"_blank">condorlink.net</a></li></ul>
+</li><li>
+<p>La infraestructura presenta una arquitectura centralizada donde Nginx Pr=
+oxy Manager redirige las solicitudes externas hacia servidores internos esp=
+ec=C3=ADficos.</p>
+</li><li>
+<p>Se detectaron varios servidores que concentran la mayor cantidad de serv=
+icios publicados:</p>
+<ul>
+<li><strong>192.1.2.54</strong>: m=C3=BAltiples aplicaciones y servicios pu=
+blicados en distintos puertos (7002, 7005, 7007, 7009, 7010, 7703 y 9001). =
+Se considera un servidor de alta criticidad dentro del entorno.</li><li><st=
+rong>192.1.1.110</strong>: hospeda diversas aplicaciones web en los puertos=
+ 8081, 8082, 8090, 8095 y 8098.</li><li><strong>192.1.1.112</strong>: conce=
+ntra varias aplicaciones publicadas en los puertos 8080, 8190, 8195, 8205 y=
+ 9001.</li><li><strong>192.1.1.6</strong>: servidor asociado a aplicaciones=
+ de gesti=C3=B3n, incluyendo una instancia que utiliza el puerto 8069, comp=
+atible con Odoo ERP.</li></ul>
+</li><li>
+<p>Se observaron servicios alojados tanto en infraestructura local como en =
+infraestructura cloud, incluyendo instancias con direcciones IP p=C3=BAblic=
+as pertenecientes a AWS.</p>
+</li></ul>
+<h3>Observaciones</h3>
+<ul>
+<li>La infraestructura evidencia crecimiento y mantenimiento continuo, con =
+nuevas publicaciones registradas entre 2021 y 2026.</li><li>Existen servici=
+os activos y algunos servicios deshabilitados que deber=C3=ADan ser revisad=
+os para determinar si a=C3=BAn son necesarios.</li><li>Se detectaron posibl=
+es entornos productivos, portales corporativos, aplicaciones de clientes, s=
+istemas ERP y plataformas colaborativas.</li></ul>
+<h3>Pr=C3=B3ximos pasos recomendados</h3>
+<ol>
+<li>
+<p>Inventariar cada Proxy Host asociando:</p>
+<ul>
+<li>Dominio publicado.</li><li>Servidor destino.</li><li>Puerto utilizado.<=
+/li><li>Responsable funcional.</li><li>Criticidad del servicio.</li></ul>
+</li><li>
+<p>Identificar la funci=C3=B3n espec=C3=ADfica de los servidores principale=
+s (192.1.2.54, 192.1.1.110, 192.1.1.112 y 192.1.1.6).</p>
+</li><li>
+<p>Validar vigencia y necesidad de los hosts actualmente deshabilitados.</p=
+>
+</li><li>
+<p>Generar un mapa de dependencias entre dominios, aplicaciones y servidore=
+s para completar la documentaci=C3=B3n de la arquitectura.</p>
+</li></ol>
+<p>Aclaro algo, me falta revisar los dem=C3=A1s=C2=A0Nginx para ver si hay =
+m=C3=A1s servicios, esto es solo info incial.</p>
+<p><br>
+</p>
+<p>Saludos.</p>
+</div>
+</div>
+</div>
+</div>
+
+</blockquote></div>
+</div></div>
+
+--00000000000096d1110658ede8ae--

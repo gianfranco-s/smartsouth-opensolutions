@@ -1,0 +1,83 @@
+Servicios en la Nube (Hosting)
+
+Los estándares de Open Solutions para el alojamiento en la nube de Condor ProvIA, prevén la disponibilidad de dos ambientes o entornos, Producción y Testing, para lo cual estarán replicados las versiones de los sistemas en el servidor de aplicaciones y las bases de datos.
+
+La solución de Hosting propuesta cumple con las siguientes condiciones.
+
+Este ambiente dispondrá de un entorno de Testing y un entorno Productivo.
+Los entornos estarán albergados por un servidor virtual destinado al application server y un servidor virtual destinado a las bases de datos.
+Están comprendidas en la presente propuesta las tareas de armado, configuración y puesta en funcionamiento de los distintos entornos.
+El acceso a esta aplicación será a través de una URL, en el caso que se requiera se podrá implementar el acceso mediante una VPN.
+Vinculo a Internet de alto rendimiento mediante fibra óptica. 
+Para la utilización de este servicio el cliente debe tener legalmente licenciado el software propio o de terceros a utilizar.
+99% anual de disponibilidad de los Sistemas CONDOR
+3 horas de restauración en caso de contingencias menores (HW)
+8 horas de restauración en caso de contingencias mayores (disaster recovering)
+Sistemas redundantes de refrigeración. El datacenter cuenta con dos sistemas de refrigeración y se encargan de mantener el ambiente a una temperatura fija de 20º Celsius las 24 horas. 
+Tolerancia a Fallos en Servidor. Organización RAID de discos y fuentes redundantes.
+Servidor de respaldo. Servidor independiente de backups con organización RAID de discos.
+
+
+Servicio de Soporte
+
+A continuación, se describe el alcance del servicio de soporte en la Nube propuesto. Tales servicios serán provistos por profesionales de Open Solutions, especializados en cada una de las áreas de servicios requeridos, están incluidos en el alcance de la presente por hasta xx horas y son los siguientes:
+
+Servicios de atención y mantenimiento de la infraestructura. Monitoreo.
+Servicios de Instalación de nuevas versiones o parches de Cóndor Work.
+Realización de Backups rotativos. Respaldos.
+Mantenimiento de Servidores.
+Mantenimiento de Bases de Datos.
+
+
+Monitorización
+Monitoreo continuo de los servidores. Se realizarán forma permanente las rutinas de verificación del estado de disponibilidad de los servidores y de los sistemas en operación. Para ello se establecen las alarmas y avisos necesarios. 
+
+
+Respaldos
+Para una correcta protección de la integridad de los datos, se desarrolla una estrategia efectiva de respaldos (backups) y recuperación de datos, para mantener la estabilidad de toda la información almacenada en los sistemas. Las frecuencias de estos respaldos deberán decidirse dependiendo de la cantidad de procesos que alteran los datos a través del tiempo.
+
+Resguardo de datos: Backups.
+Diarios.  Se mantienen por 7 días.
+Backup incremental de la base de datos local dentro de la LAN.
+Backup Incremental de la base de datos externo, encriptado en storage en locación     externa al datacenter.
+Semanal.  Se mantienen por 4 semanas.
+Backup integral semanal de la base de datos local dentro de la LAN. 
+Backup integral semanal de la base de datos externo, encriptado en storage en locación externa al datacenter.
+Mensual.  Se mantienen por 12 meses.
+Backup integral semanal de la base de datos local dentro de la LAN.
+Backup integral semanal de la base de datos externo, encriptado en storage en locación externa al datacenter
+Generación y control de ejecución de tareas de backup diario, semanal y mensual.
+Verificación de los backups realizados mediante control de integridad. 
+Verificación de los backups realizados mediante restauración de datos.  Control de Contingencias.
+Las tareas de generación y control de backups estarán a cargo de personal de Open.
+Los elementos y soportes para la realización de los backups están a cargo de Open.
+Desarrollo y soporte de tareas de backups adicionales implicaran un cargo adicional.
+
+
+Mantenimiento de Servidores 
+Protección de los datos y aseguramiento de la confiabilidad de estos.
+Control de espacio en disco.
+Verificación y control de ejecución del Antivirus
+Revisión de los visores de evento del sistema operativo
+Monitoreo de servicios y control de alarmas mediante herramienta remota.
+Revisión de la performance del servidor.
+Ejecución de Actualizaciones de CONDOR
+
+
+
+Mantenimiento de Bases de Datos.
+Aplicación de Actualizaciones de versiones y releases de Base de datos Oracle, cuando correspondiera.
+Control de Areas de almacenamiento en disco (databasefiles)
+Control de Areas de Rollback de las bases.
+Control de Areas Temporarias de las bases.
+Control de Tablespaces de las bases.
+Control de Tablas, extensiones y particionamiento.
+Control de Indices, extensiones y particionamiento.
+Control de Usuarios, Roles y permisos de acceso a las bases de datos.
+Ejecución de Estadísticas de las bases de datos.
+Tunning general de las bases de datos y las tablas y elementos del sistema.
+
+
+Servicios adicionales.
+En el caso de que el cliente solicite horas adicionales a las indicadas en la presente propuesta, las mismas tendrán un costo adicional. 
+Las tareas que deban realizarse fuera del horario indicado tendrán un cargo adicional.

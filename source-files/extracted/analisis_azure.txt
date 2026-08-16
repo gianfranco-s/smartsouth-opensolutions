@@ -1,0 +1,374 @@
+1. Estructura de Suscripciones Azure
+La organización en Azure se compone de tres suscripciones principales:
+Open Prod SubscriptionDestinada a entornos productivos, donde deberían residir los sistemas críticos con acceso restringido. 
+Open Operations SubscriptionUtilizada para entornos de desarrollo, testing y herramientas internas (AKS dev/test, DevOps, etc.). 
+Azure Subscription 1Actualmente sin uso activo. 
+Esta segmentación es adecuada desde el punto de vista organizativo, aunque requiere validación a nivel de red y seguridad para garantizar aislamiento efectivo entre entornos.
+
+
+2. Organización por Resource Groups
+Los recursos en Azure se encuentran organizados en dos grupos principales:
+rg-open-prodContiene los recursos productivos dentro de la suscripción Open Prod. 
+rg-open-devtestContiene los recursos de desarrollo y testing dentro de la suscripción Open Operations. 
+Esta estructura permite una separación lógica adecuada entre entornos, facilitando la administración y control de accesos.
+
+
+3. Infraestructura Productiva
+El entorno productivo en Azure está compuesto por los siguientes recursos principales:
+Clúster Kubernetes: aks-open-prod 
+Red virtual: vnet-open-prod 
+Gateway VPN: open-vpn-gateway 
+NAT Gateway: natgw-aks-prod 
+Container Registry: openprodregistry 
+Base de datos PostgreSQL: psql-core-prod-eus 
+Se identifican además direcciones IP públicas asociadas a servicios y conectividad.
+
+
+
+4. Red Virtual (Producción)
+Nombre: vnet-open-prod 
+Espacio de direcciones: 10.201.0.0/16 
+Cantidad de subredes: 2
+
+5. Subredes (Producción)
+La red productiva presenta únicamente dos subredes:
+GatewaySubnet: destinada al gateway VPN.    10.201.1.0/27
+subnet-aks-prod: todos los servicios del cluster AKS.   10.201.0.0/24
+Observaciones críticas:
+No existe segmentación de red interna. 
+No se utilizan Network Security Groups (NSG). 
+Todo el tráfico de aplicaciones, VPN e internet comparte la misma subnet. 
+Esto implica una arquitectura de red plana sin aislamiento, donde cualquier compromiso dentro del cluster podría permitir movimiento lateral sin restricciones.
+6. Controles de Red (Producción)
+No se identificaron los siguientes componentes asociados a la red virtual:
+Network Security Groups (NSG) 
+Azure Firewall 
+Private Endpoints
+
+7. Exposición a Internet
+Se identificaron las siguientes direcciones IP públicas:
+IP pública asociada a AKS (servicios expuestos a internet). 
+IPs asociadas a VPN Gateway (conectividad Site-to-Site). 
+IPs asociadas a NAT Gateway utilizadas para salida a internet. 
+
+Nombre
+IP
+Asociado a
+Función
+kubernetes-...
+20.253.49.89
+AKS
+Exposición de apps
+open-vpn-ip
+172.191.115.119
+VPN Gateway
+S2S Prod
+pip-nat-aks-prod
+172.190.147.110
+NAT Gateway
+Salida a internet (prod)
+
+8. Conectividad VPN Azure ↔ Datacenter (Produccion)
+Se relevó la configuración de conectividad Site-to-Site (S2S) entre Azure y el datacenter on-premise de Open (pfSense).
+
+Nombre
+Tipo
+Estado
+Red Azure
+Gateway Azure
+Gateway On-Premise
+open-pfsense-connection
+Site-to-Site (IPsec)
+Conectado
+vnet-open-prod
+open-vpn-gateway
+200.55.243.92
+Tráfico registrado
+Datos de entrada (OnPrem → Azure) 487.31 MiB 
+Datos de salida (Azure → OnPrem) 11.5 MiB
+Observaciones
+La VPN se encuentra operativa y estable, con estado "Conectado". 
+El volumen de tráfico registrado es muy bajo en relación al total de la arquitectura. 
+El tráfico es predominantemente desde on-premise hacia Azure, con muy poca comunicación en sentido inverso. 
+Esto indica que la VPN se utiliza únicamente para casos específicos, principalmente: 
+Acceso a bases de datos Oracle desde Azure. 
+Integraciones puntuales entre servicios.
+
+9. Salida a Internet mediante NAT Gateway
+Se relevó la configuración de salida a internet de los servicios desplegados en Azure, identificando el uso de NAT Gateway como mecanismo principal para el tráfico saliente.
+Nombre
+Tipo
+IP pública
+Asociado a
+natgw-aks-prod
+NAT Gateway
+172.190.147.110
+AKS Producción
+natgw-aks-devtest
+NAT Gateway
+13.92.235.102
+AKS Dev/Test
+
+10. Acceso a Servicios (Producción)
+Se identifican los siguientes mecanismos de acceso:
+a. Acceso vía Internet
+Consumo de endpoints públicos (ej: ORDS) 
+Salida mediante NAT Gateway 
+b. Acceso vía VPN
+Conexión a bases de datos on-premise
+
+11. Infraestructura Dev/Test
+El entorno de desarrollo y testing en Azure está compuesto por los siguientes recursos principales:
+Clúster Kubernetes: aks-open-devtest
+Red virtual: vnet-open-devtest
+Gateway VPN: open-vpn-gateway-devtest
+NAT Gateway: natgw-aks-devtest
+Base de datos PostgreSQL: psql-core-nonprod-eus
+Se identifican además direcciones IP públicas asociadas a servicios y conectividad.
+
+12. Red Virtual (Dev/Test)
+Nombre: vnet-open-devtest
+Espacio de direcciones: 10.200.0.0/16
+Cantidad de subredes: 2
+
+13. Subredes (Dev/Test)
+La red de desarrollo y testing presenta únicamente dos subredes:
+GatewaySubnet: destinada al gateway VPN. → 10.200.1.0/27
+Subnet-aks-devtest: todos los servicios del cluster AKS. → 10.200.0.0/24
+
+Observaciones:
+No existe segmentación de red interna.
+No se utilizan Network Security Groups (NSG).
+Todo el tráfico de aplicaciones, VPN e internet comparte la misma subnet.
+Esto implica una arquitectura de red plana sin aislamiento, donde cualquier compromiso dentro del cluster podría permitir movimiento lateral sin restricciones.
+
+14. Ruteo (Dev/Test)
+Se relevó la tabla de rutas asociada a la subnet del cluster AKS.
+Nombre
+Prefijo de dirección
+Tipo de próximo salto
+Destino
+To-OnPrem-pfSense
+10.77.0.0/16
+Puerta de enlace de red virtual
+Datacenter On-Premise
+Asociación
+Subnet asociada: subnet-aks-devtest (10.200.0.0/24)
+Red virtual: vnet-open-devtest
+Observaciones
+El tráfico destinado a la red 10.77.0.0/16 es enrutado hacia el datacenter on-premise a través del gateway VPN.No existe segmentación de rutas por tipo de servicio o entorno.
+Esto implica que todo el tráfico hacia redes internas del datacenter sigue un único camino a través del túnel VPN, sin diferenciación de políticas de ruteo.
+
+15. Exposición a Internet (Dev/Test)
+Se identificaron las siguientes direcciones IP públicas:
+Nombre
+IP
+Asociado a
+Función
+open-vpn-ip-devtest
+20.228.185.188
+VPN Gateway
+S2S Dev/Test
+pip-nat-aks-devtest
+13.92.235.102
+NAT Gateway
+Salida a internet
+pip-aks-open-devtest
+172.191.116.4
+AKS
+Servicios / salida
+
+16. Conectividad VPN Azure ↔ Datacenter (Dev/Test)
+Se relevó la configuración de conectividad Site-to-Site (S2S) entre Azure y el datacenter on-premise.
+Nombre
+Tipo
+Estado
+Red Azure
+Gateway Azure
+Gateway On-Premise
+open-pfsense-connection-devtest
+Site-to-Site (IPsec)
+Conectado
+vnet-open-devtest
+open-vpn-gateway-devtest
+200.55.243.92
+Tráfico registrado
+Datos de entrada (OnPrem → Azure)  36.54 MiB
+Datos de salida (Azure → OnPrem)  2.31 MiB
+17. Salida a Internet mediante NAT Gateway
+Se identificó el uso de NAT Gateway como mecanismo de salida a internet:
+Nombre
+Tipo
+IP pública
+Asociado a
+natgw-aks-devtest
+NAT Gateway
+13.92.235.102
+AKS Dev/Test
+
+18. Acceso a Servicios (Dev/Test)
+Se identifican los siguientes mecanismos de acceso:
+Acceso vía Internet
+Consumo de endpoints públicos (ORDS publicados)
+Salida mediante NAT Gateway
+Acceso vía VPN 
+Conexión a bases de datos on-premise
+sudo docker pause rundeck-app
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+A1. Tráfico VPN Azure ↔ Datacenter (Producción)
+Se realizó el análisis de tráfico de la conexión Site-to-Site (S2S) entre Azure y el datacenter on-premise utilizando métricas de rendimiento disponibles en Azure Monitor.
+Métricas analizadas:
+BitsInPerSecond (Avg): tráfico entrante a Azure desde el datacenter 
+BitsOutPerSecond (Avg): tráfico saliente desde Azure hacia el datacenter 
+Período analizado:
+Últimos 30 días 
+
+Resultados observados:
+Tráfico promedio entrante (On-Prem → Azure): 
+~75 bits por segundo 
+Tráfico promedio saliente (Azure → On-Prem): 
+~13 bits por segundo 
+Se observan picos aislados de tráfico, con valores máximos aproximados: 
+Hasta ~6 Kb/s en tráfico entrante 
+Hasta ~1 Kb/s en tráfico saliente 
+Durante la mayor parte del período: 
+El tráfico se mantiene prácticamente en 0 bps 
+No se evidencia uso sostenido del túnel VPN 
+
+
+Observaciones técnicas:
+El tráfico registrado es extremadamente bajo en relación a una operación continua de aplicaciones. 
+La comunicación a través del túnel VPN es: 
+Intermitente 
+De baja intensidad 
+No se identifican patrones de uso constante ni cargas sostenidas de datos. 
+El tráfico parece corresponder a: 
+consultas puntuales 
+validaciones esporádicas 
+integraciones no continuas
+
+A2.  Tráfico de salida a Internet (Producción)
+Se realizó el análisis del tráfico asociado al NAT Gateway de producción (natgw-aks-prod), correspondiente a la salida a internet de los workloads desplegados en AKS.
+Configuración analizada
+Recurso: natgw-aks-prod 
+Métrica: Bytes 
+Agregación: Sum 
+Segmentación: Direction (Inbound / Outbound) 
+Período: Últimos 30 días 
+
+Resultados observados
+Dirección
+Volumen total
+Outbound (salida)
+63 GB
+Inbound (entrada)
+31.4 GB
+
+Comportamiento del tráfico
+Se observan picos puntuales de tráfico, destacándose: 
+Un pico cercano a ~2 GB a mediados de mes 
+Un pico superior a ~5 GB hacia fines de mes 
+El tráfico outbound (salida) es consistentemente superior al inbound. 
+Existe actividad constante durante todo el período analizado, aunque con variaciones de intensidad. 
+
+Alcance del tráfico
+Este tráfico corresponde a:
+Consumo de APIs externas 
+Acceso a endpoints públicos (ORDS u otros servicios expuestos) 
+Integraciones externas desde aplicaciones en AKS 
+Tráfico saliente general hacia Internet 
+
+A3.  Tráfico de salida a Internet (Dev/Test)
+Se realizó el análisis del tráfico asociado al NAT Gateway de desarrollo/testing (natgw-aks-devtest), correspondiente a la salida a internet de los workloads desplegados en AKS.
+
+Configuración analizada
+Recurso: natgw-aks-devtest 
+Métrica: Bytes 
+Agregación: Sum 
+Segmentación: Direction (Inbound / Outbound) 
+Período: Últimos 30 días 
+
+Resultados observados
+Dirección
+Volumen total
+Outbound (salida)
+150 GB
+Inbound (entrada)
+40 GB
+
+Comportamiento del tráfico
+Se observa un volumen de tráfico significativamente mayor que en producción. 
+Se identifican múltiples picos de consumo: 
+Pico cercano a ~1.5 GB a comienzos de mes 
+Varios picos intermedios entre ~0.8 GB y ~1.2 GB 
+El tráfico outbound (salida) es considerablemente superior al inbound. 
+Existe actividad constante durante todo el período analizado.
+
+Alcance del tráfico
+Este tráfico corresponde a:
+Pruebas de integración y testing 
+Consumo de APIs externas 
+Acceso a endpoints públicos (ORDS u otros servicios) 
+Tráfico generado por pipelines o procesos automatizados 
+Comunicación de aplicaciones en AKS hacia Internet
+
+A4. Tráfico VPN Azure ↔ Datacenter (Dev/Test)
+Se realizó el análisis del tráfico de la conexión Site-to-Site (S2S) entre Azure y el datacenter on-premise correspondiente al entorno de desarrollo y testing, utilizando métricas de Azure Monitor.
+Configuración analizada
+Recurso: open-pfsense-connection-devtest 
+Métricas: 
+BitsInPerSecond (Avg): tráfico entrante a Azure 
+BitsOutPerSecond (Avg): tráfico saliente desde Azure 
+Período: Últimos 30 días 
+
+Resultados observados
+Tráfico promedio entrante (On-Prem → Azure): → ~65.2 bits por segundo 
+Tráfico promedio saliente (Azure → On-Prem): → ~4 bits por segundo 
+Picos de tráfico observados: 
+Hasta ~4–5 Kb/s en tráfico entrante 
+Tráfico saliente prácticamente nulo en comparación 
+
+Comportamiento del tráfico
+El tráfico es extremadamente bajo durante la mayor parte del período. 
+Se observan picos aislados sin continuidad en el tiempo. 
+No existe tráfico sostenido ni patrones de uso constantes. 
+El tráfico entrante es significativamente mayor que el saliente. 
+
+Observaciones técnicas
+La VPN se encuentra operativa (estado: Conectado). 
+El uso del túnel es: 
+Intermitente 
+De muy baja intensidad 
+El flujo principal es: 
+On-Premise → Azure 
+Esto indica que la VPN en Dev/Test se utiliza principalmente para: 
+Pruebas puntuales 
+Validaciones de conectividad 
+Integraciones esporádicas

@@ -1,0 +1,604 @@
+DOCUMENTACIÓN INTERNA
+
+Contenido
+Instalaciones2
+Arquitectura3
+Particularidades Condor Work / Condor Enterprise4
+Particularidades ProvIA7
+Arquitectura en común (ProvIA + Work + Enterprise)14
+Procesos Core – Base Raíz16
+core-v117
+pck_core_procesos18
+pck_core_provia18
+Implementación – Configuración – Circuito19
+Configuración Core19
+Configuración Cliente20
+Validación Servicios Ords20
+Permisos a Formularios21
+Creación de Formularios21
+Configuración de Permisos por Rol21
+Endpoints23
+Listar23
+Insertar y Modificar23
+Eliminar24
+
+Instalaciones
+Al implementar los Módulos de Work en un cliente se debe tener por lo menos el release 2025.01 y luego instalar los tickets 49268 y 50329. El release 2025.01 incuye los tickets 47362, 47926, 49013.
+Al implementar el Portal de Proveedores en un cliente se debe tener por lo menos el release 2025.01 y luego instalar los tickets 50293 y 51485.
+Se debe tener instalada aunque sea la declaración de la package condor.pckcondorlink_ords para que compile la package estándar del portal.
+Se deben instalar los módulos /work-v1/ , /erp-v1/ y /provia/
+
+
+Arquitectura
+
+
+
+Particularidades Condor Work / Condor Enterprise
+La arquitectura de Condor Work y Enterprise está diseñada sobre contenedores desplegados en Kubernetes(AKS), separando Frontend, API Gatewayy Backend API. El backend centraliza la integración con Oracle vía ORDS, resolviendo dinámicamente la URL ORDS por organización mediante un CORE(endpoint de resolución de urlords_org) y operando como proxy hacia ORDS
+Resumen funcional del circuito
+Los Usuarios que ingresan a estos portales son Usuarios de Base de Datos 
+Las Url del Front End están publicadas, y cualquiera con la Url puede ingresar tanto a dev/test/prod
+Para el login se requiere ingresar Organización + Usuario + Contraseña
+el frontend encarga al backend la ejecución de todos los servicios contra el Ords correspondiente
+el proceso de login consta de informar la “Organización” (cliente) al que se desea conectar, usuario y contraseña
+el backend envía una petición a Core para obtener los datos del Ords según la “Organización” ingresada
+una vez obtenido el Ords, se realiza el proceso de autenticación contra el Usuario de base de datos
+los usuarios con acceso a estos portales serán aquellos Usuarios de base de datos que se hayan dado de alta previamente desde el FUSERS
+no hacen falta procesos adicionales como el check de Usuario Portal, generación de pass random ni ningún otro paso adicional; la mera creación del usuario y su estado activo le da acceso a Condor en sus diferentes versiones (Forms o Angular) 
+todos los endpoints corren el mismo circuito : el frontend le pide al backend la ejecución de un endpoint contra el Ords de la organización ingresada
+a cada instancia de frontend (dev/test/prod) le corresponde un backend (dev/test/prod) asociado a una base Core (dev/test/prod)
+
+Usuarios y Canales de Acceso
+Web App: aplicación Angular servida por Nginx.
+Canal de acceso: acceso HTTPS por dominio (según entorno) hacia el Ingress Controller.
+Enrutamiento y Seguridad
+Nginx Ingress Controller + cert-manager:
+TLS/HTTPS (certificados gestionados por cert-manager.io/cluster-issuer: letsencrypt-prod).
+Redirección SSL forzada.
+API Gateway:
+Centraliza el enrutamiento de requests del frontend hacia el backend.
+Aplica validación de tokens (JWT Bearer) en las rutas protegidas.
+Back-End y Microservicios
+API Gateway (condorwork-gateway) - (condorenterprise-gateway)
+Ocelot (.NET 9), enruta a condorwork-backend / condorenterprise-backend respectivamente.
+Rutas explícitas (auth/usuarios/modules) + catch-all por organización.
+Health endpoint: /health.
+Backend API (condorwork-backend) - (condorenterprise-backend)
+ASP.NET Core (.NET 9).
+Controlador principal: OrdsController (/api/ords).
+Proxy catch-all: /api/ords/org/organizacion/*path. 
+Health endpoint: /health
+Integración y Almacenamiento
+Oracle vía ORDS : Base Core
+Configurado por entorno en Core:BaseUrl.
+Resolución de ORDS por organización en Core:OrdsByOrganizationPath.
+El backend se conecta a la Base Core para obtener la Url del Ords de la “Organización”: Cliente
+Oracle vía ORDS : Base Cliente
+El backend usa la base ords devuelta por CORE y el prefijo v_work / v_erp.
+Headers requeridos: api-key y producto (Core:ApiKey/Core:Producto).
+Existe una autorización previa hacia ORDS (ords/authparpcdr) antes de validar credenciales.
+Se validan credencial de usuario/contraseña ejecutando un ping de conexión como Usuario de Base de Datos
+Operación, DevOps y Observabilidad
+CI/CD
+Azure Pipelines:
+Construcción de imágenes Docker y push a ACR (opendevregistry.azurecr.io).
+Deploy a AKS aplicando manifests y seteando imagen con tag de build.
+Health checks
+Gateway y Backend exponen un endpoint de health check y en Kubernetes se configuran livenessProbe y readinessProbe.
+Relaciones y Flujos Principales
+El usuario accede a CondorWork / Condor Enterprise por el dominio del entorno.
+El Ingress enruta / hacia el Frontend y /api/* hacia el API Gateway
+El Frontend opera con contexto de organización/tenant; el baseUrl de consumo se configura por ambiente mediante environment.ts (DEV/TEST/PROD), como en CondorWork/CondorEnterprise.
+El API Gateway enruta la llamada al Backend.
+El Backend resuelve ORDS vía CORE, agrega headers requeridos y ejecuta la operación contra ORDS (incluye proxy catch-all).
+La respuesta vuelve Backend -> Gateway -> Frontend.
+Consideraciones de Seguridad y Escalabilidad
+HTTPS obligatorio en el borde (Ingress + TLS).
+JWT Bearer en el Gateway para proteger rutas.
+Escalabilidad: deployments con replicas configurables (actualmente 1 por entorno en manifests), escalable por políticas de Kubernetes.
+Autenticación y Autorización
+Autenticación de usuario (aplicativa):
+El frontend realiza login contra la API (vía gateway) y recibe un token JWT.
+El token se guarda en sesión y se envía como Authorization: Bearer <token> en requests subsiguientes. 
+Autorización (Gateway):
+Ocelot protege rutas.
+Stack Tecnológico
+Frontend
+Angular: 18.2.x
+TypeScript: 5.5.x
+UI: Angular Material 18.2.x
+API Gateway
+.NET: 9.0
+Ocelot: 24.0.0
+Auth: JWT Bearer
+Backend API
+.NET: 9.0
+Integración:
+ORDS Core (resolución de URL por organización)
+Microsoft Graph (según configuración)
+Orquestación
+Contenedores: Docker
+Orquestación: Kubernetes (AKS)
+Ingress: Nginx Ingress Controller + cert-manager (Let's Encrypt)
+Estrategia Entornos DEV-TEST-PRODLa solución está diseñada para funcionar en 3 entornos independientes:
+DEV (Desarrollo)
+Propósito: Desarrollo activo y pruebas iniciales
+Namespace: dev-work / dev-enterprise
+Dominio: devwork.condor.solutions / deventerprise.condor.solutions
+Base de datos: Datos de prueba/mock
+Configuración: Variables de desarrollo
+Deployment: Automático desde branch 'develop'
+TEST (Testing/QA)
+Propósito: Pruebas de calidad y validación funcional
+Namespace: test-work / test-enterprise
+Dominio: teswork.condor.solutions / testenterprise.condor.solutions
+Base de datos: Datos similares a producción (anonimizados)
+Configuración: Configuración de pre-producción
+Deployment: Manual desde branch 'main' después de validación
+PROD (Producción)
+Propósito: Ambiente productivo para usuarios finales
+Namespace: work-prod / enterprise-prod
+Dominio: work.condor.solutions / enterprise.condor.solutions
+Base de datos: Datos reales de producción
+Configuración: Configuración productiva con secretos seguros
+Deployment: Manual con aprobaciones después de testing
+Flujo de Promoción Entre Entornos
+Desarrollo → DEV
+Desarrolladores commitean código a branch 'develop'
+Pipeline automático despliega a DEV
+Pruebas unitarias y de integración
+DEV → TEST
+Merge de 'develop' a 'main' después de code review
+Deployment manual a TEST
+Pruebas funcionales y de regresión
+Validación por equipo de QA
+TEST → PROD
+Después de aprobación de QA
+Deployment manual con aprobaciones
+Monitoreo post-deployment
+Rollback disponible si es necesario
+Datos y Conectividad
+DEV: Datos sintéticos, servicios mock
+TEST: Datos anonimizados, servicios de pre-producción
+PROD: Datos reales, servicios productivos
+Monitoreo y Logging
+DEV: Logging detallado para debugging
+TEST: Logging similar a producción
+PROD: Logging optimizado, métricas completas
+
+Particularidades ProvIA
+Resumen funcional del circuito
+Los usuarios de ProvIA son únicamente dados de alta al B2C desde el Front End del Portal de Gestión de Condor Enterprise cuando un Usuario de Condor ejecuta un proceso de Alta desde los formularios de Alta Individual / Alta Masiva / Usuarios Internos
+Desde los formularios de Gestión de Usuarios, el Usuario de Condor dá de alta a un Usuario para relacionarlo a un Proveedor con su dirección de mail
+El backend ejecuta un post al B2C correspondiente al entorno (dev/test/prod)
+genera el nuevo Usuario
+obtiene el subid del mismo
+realiza el Envío de la notificación por Mail al Usuario para informarle sobre el alta y los datos de ingreso
+se lo registra en las tablas de la Base Core correspondiente al entorno (dev/test/prod) para registrarlo como Usuario, para asociarlo al Producto Provia y para asociarlo al Proveedor; de esta forma, tras realizar el login, el Usuario solo podrá acceder a la Base que lo dio de Alta y a los datos del Proveedor al que se lo asoció, exclusivamente desde el entorno en el que lo dieron de Alta (dev/test/prod)
+El Usuario ingresa a ProVIA a través de la Url del mismo según el entorno en el que va a operar (devprovia, testprovia, provia)
+Cualquier persona puede acceder a ProvIA teniendo la Url
+Se autentica contra el B2C correspondiente al entorno (dev/test/prod)
+Una vez que el Usuario se autentica contra el B2C, se valida si el Usuario tiene relación con el producto “ProvIA” en una tabla de Relación de la Base Core (puede existir en el B2C pero no tener acceso a ProvIA)
+Si tiene acceso, se cargará su lista de Clientes y Proveedores asociados
+cada “Cliente” es una Empresa que lo dio de alta para operar
+en la Base Core, cada Cliente tiene un Ords
+cuando el Usuario selecciona a qué Cliente va a ingresar, el backend recupera el Ords del mismo contra la Base Core
+A cada instancia de frontend (dev/test/prod) le corresponde un backend (dev/test/prod) que se loguea contra un B2C (dev/test/prod) que está asociado a una Base Core (dev/test/prod)
+Desde cada frontend, el Usuario puede ingresar a N Ords según cuántos clientes lo hayan dado de alta
+Resumen de Entornos
+Los 3 Front End (devprovia, testprovia, provia) están publicados y son de público acceso
+Los 3 Back End cuentan con una validación de Token de Azure
+Para ejecutar endpoints contra el backend se necesita el token
+Los 3 Ords de la base Core están publicados y el método de seguridad para ejecutar un endpoint es a través de apikey en el header de los mismos
+Los Ords de los Clientes están publicados y el método de seguridad para ejecutar un endpoint es a través de apikey en el header de los mismos
+Para ejecutar endpoints contra los Ords (Core o Clientes) se necesita la apikey
+
+Arquitectura ProvIA
+La arquitectura de ProvIA está diseñada sobre servicios en la nube de Azure, implementando una solución escalable, segura y alineada a prácticas modernas de DevOps, CI/CD y observabilidad. 
+Los principales componentes y sus relaciones son los siguientes:
+Usuarios y Canales de Acceso
+Web App & Mobile App: Los usuarios acceden a la solución mediante aplicaciones web y móviles, que consumen servicios a través del frontend expuesto por un Load Balancer.
+El Front End es de público acceso a través de una Url desde cualquier dispositivo
+Autenticación: La autenticación de usuarios se realiza mediante Azure Entra ID B2C, utilizando el protocolo OAuth.
+Relaciones, Flujos Principales y Seguridad
+Autenticación de Usuarios
+El usuario se autentica mediante Entra ID B2C y accede a la Web/Mobile App
+Se utiliza como proveedor de identidad para los usuarios externos, soportando OAuth 2.0, OpenID Connect y flujos estándar de autenticación (incluyendo MFA si es necesario).
+Los servicios backend interactúan con bases de datos (Oracle vía ORDS, Redis, Storage) según la lógica requerida.
+La lógica de relación entre el Usuario de b2c y los distintos Ords a los que tiene acceso se encuentran en una “Base Core” que corre en una Virtual Machine de Azure
+Tras realizarse el login satisfactoriamente, se obtienen mediante servicios rest ords, que el backend ejecuta contra la Base Core, los permisos que este Usuario posee para acceder a uno o más productos y clientes
+Cuando el Usuario selecciona a qué Cliente quiere ingresar, el backend ejecuta todos los endpoints contra el ORDS del Cliente seleccionado
+Stack Tecnológico
+Frontend
+Framework: Angular 18.2.0
+Language: TypeScript 5.5.0
+Authentication: @azure/msal-angular 3.0.0
+UI Components: Angular Material 18.2.0
+HTTP Client: Angular HttpClient
+Build Tool: Angular CLI
+Runtime: Node.js (container)
+Web Server: Nginx (container)
+API Gateway
+Framework: .NET 9.0
+Gateway: Ocelot 24.0.0
+Authentication: Microsoft.Identity.Web 3.9.3
+Backend API
+Framework: .NET 9.0 (ASP.NET Core) + ORDS
+Language: C# 12.0
+Azure Integration: Azure.AI.FormRecognizer 4.1.0
+HTTP Client: System.Net.Http
+Logging: Microsoft.Extensions.Logging
+Orquestación:
+Container Platform: Docker
+Orchestration: Kubernetes
+Deployment: Azure DevOps Pipelines
+Image Registry: Azure Container Registry
+Estrategia Entornos DEV-TEST-PROD: La solución está diseñada para funcionar en 3 entornos independientes:
+DEV (Desarrollo):
+Propósito: Desarrollo activo y pruebas iniciales
+Namespace: provia-dev
+Dominio: devprovia.condor.solutions
+Base de datos: Datos de prueba/mock
+Configuración: Variables de desarrollo
+Deployment: Automático desde branch 'develop'
+TEST (Testing/QA):
+Propósito: Pruebas de calidad y validación funcional
+Namespace: provia-test
+Dominio: testprovia.condor.solutions
+Base de datos: Datos similares a producción (anonimizados)
+Configuración: Configuración de pre-producción
+Deployment: Automático desde branch test'
+PROD (Producción):
+Propósito: Ambiente productivo para usuarios finales
+Namespace: provia-prod
+Dominio: provia.condor.solutions
+Base de datos: Datos reales de producción
+Configuración: Configuración productiva con secretos seguros
+Deployment: Manual con aprobaciones después de testing
+Flujo de Promoción Entre Entornos:
+Desarrollo → DEV
+Desarrolladores commitean código a branch 'develop'
+Pipeline automático despliega a DEV
+Pruebas unitarias y de integración
+DEV → TEST
+Merge de 'develop' a 'main' después de code review
+Deployment manual a TEST
+Pruebas funcionales y de regresión
+Validación por equipo de QA
+TEST → PROD
+Después de aprobación de QA
+Deployment manual con aprobaciones
+Monitoreo post-deployment
+Rollback disponible si es necesario
+Datos y Conectividad:
+DEV: Datos sintéticos, servicios mock
+TEST: Datos anonimizados, servicios de pre-producción
+PROD: Datos reales, servicios productivos
+Monitoreo y Logging:
+DEV: Logging detallado para debugging
+TEST: Logging similar a producción
+PROD: Logging optimizado, métricas completas
+
+Flujo de Autenticación
+
+
+Protección Anti-Brute Force
+Manejada por Azure AD B2C
+Rate limiting automático
+Detección de patrones anómalos
+Seguridad de Red
+Arquitectura Zero-Trust
+Frontend: Público (HTTPS obligatorio)
+API Gateway: Público con autenticación
+Backend: Privado (solo accesible desde Gateway)
+ORDS: Privado (solo accesible con API Key)
+CORS (Cross-Origin Resource Sharing)
+Orígenes permitidos específicos
+Credentials habilitadas para tokens
+Headers controlados
+HTTPS/TLS:
+Certificados SSL en todos los puntos públicos
+Force SSL redirect habilitado
+TLS 1.2+ obligatorio
+Protección de Datos
+Zero Information Disclosure
+Errores estandarizados sin detalles técnicos
+Stack traces nunca expuestos al cliente
+Logging seguro sin datos sensibles
+Manejo Seguro de Secretos
+API Keys en configuración (no en código)
+Variables de entorno para datos sensibles
+Principio de menor privilegio
+Validación de Entrada
+Validación de tipos de archivo
+Límites de tamaño (50MB máximo)
+Sanitización de nombres de archivo
+Validación de datos JSON
+Headers de Seguridad HTTP
+Security Headers Implementados
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+X-XSS-Protection: 1; mode=block
+Referrer-Policy: strict-origin-when-cross-origin
+Content-Security-Policy: [configurado según necesidades]
+Logging y Monitoreo
+Logging Estructurado
+Requests HTTP con trace IDs
+Errores de servicios externos
+Validaciones fallidas
+Sin datos sensibles en logs
+Health Checks
+Endpoints para monitoreo de salud
+Kubernetes liveness/readiness probes
+Información mínima expuesta
+Configuración Segura:
+Validación de Configuración
+Verificación de configuraciones críticas al inicio
+Fallo rápido si configuración inválida
+Logging de problemas de configuración
+Global Error Handling
+Middleware centralizado de manejo de errores
+Respuestas estandarizadas
+Trace IDs para seguimiento
+
+Configuración ProvIA
+Se debe realizar la Configuración previa en un cliente para utilizar los portales
+Instalación de ORDS con apex 
+Configuración de pre hook
+Creación de un ORDS para acceder a la base
+Instalación de los tickets estándar para generación de tablas, validación de apikey para ejecución de servicios, package estandar de ejecución de sentencias, las sentencias
+
+
+Arquitectura en común (ProvIA + Work + Enterprise)
+Enrutamiento y Seguridad
+Load Balancer: Provee balanceo de carga y gestión de tráfico, dirigiendo las solicitudes hacia el API Gateway.
+API Gateway: Gestiona la entrada de todas las peticiones, exponiendo la API GraphQL y canalizando las mismas a los distintos microservicios backend.
+Back-End y Microservicios
+Azure Kubernetes Service (AKS): Orquesta los contenedores desplegados como microservicios dentro de un clúster, habilitando la escalabilidad y alta disponibilidad.
+Microservicios principales:
+Admin Services
+ProvIA Service: Estos servicios ejecutan la lógica de negocio central de la plataforma.
+Integración y Almacenamiento
+External Data Stores:
+Oracle Database (vía ORDS): Persistencia principal de datos empresariales, accesible desde los servicios backend mediante el API ORDS.
+Redis Cache: Soporte para caching y sesiones (solo ProvIA).
+Azure Storage Accounts: Almacenamiento de archivos, logs y otros datos no relacionales.
+Operación, DevOps y Observabilidad
+CI/CD Pipeline:
+Azure Pipelines: Automatiza el despliegue mediante procesos de integración y entrega continua.
+Azure Container Registry: Repositorio de imágenes Docker que alimentan el clúster de AKS. El flujo DevOps comprende push/pull de imágenes y upgrades automáticos vía Helm.
+Role-based Access Control:
+Seguridad y segregación de acceso para operaciones dentro del clúster, basado en identidades gestionadas por Azure B2C
+Key Management:
+Azure Key Vault: Manejo seguro de secretos y credenciales.
+Monitoring y Observabilidad:
+Azure Monitor y OpenTelemetry: Recopilan métricas, logs y trazas distribuidas para monitoreo y análisis de la salud de la solución.
+Relaciones, Flujos Principales y Seguridad
+La infraestructura es desplegada y gestionada por DevOps mediante Azure Pipelines y Container Registry.
+La observabilidad, seguridad y gestión de secretos se realizan vía los servicios de Azure Monitor, Key Vault y OpenTelemetry.
+Todos los accesos están protegidos por OAuth y RBAC
+La infraestructura utiliza recursos nativos de Azure, alineados a buenas prácticas de resiliencia y continuidad operativa
+Protección de endpoints
+Solo los usuarios autenticados pueden acceder a los endpoints expuestos por el API Gateway.
+Autorización
+API Gateway: Valida tokens OAuth en cada solicitud, asegurando que el usuario tenga un token válido y los claims necesarios para acceder a los recursos.
+Role-based Access Control (RBAC):
+Aplicado tanto en el plano de la aplicación (autorización por roles para los distintos servicios/microservicios) como en la gestión de infraestructura (acceso a recursos de Azure, administración de clústeres, etc.).
+Azure Directory centraliza y administra los roles y permisos.
+Seguridad en la Infraestructura
+Azure Virtual Network: El clúster de AKS y los servicios asociados se encuentran dentro de una red virtual privada, separando el tráfico interno del tráfico externo.
+Seguridad de Contenedores y Clúster
+Gestión de imágenes:
+Las imágenes de contenedores se almacenan en Azure Container Registry con escaneo de vulnerabilidades habilitado.
+Solo imágenes firmadas y aprobadas pueden ser desplegadas (políticas de ACR).
+Seguridad de clúster Kubernetes:
+Uso de namespaces y service accounts para segmentar el acceso entre microservicios.
+Implementación de RBAC en Kubernetes para restringir operaciones administrativas solo al personal autorizado.
+Control de acceso basado en identidades gestionadas por Azure (Managed Identities).
+Seguridad de Datos
+Todo el tráfico entre usuarios y servicios está cifrado utilizando HTTPS/TLS 1.2 o superior.
+El tráfico interno en la red virtual puede ser cifrado según políticas de la organización.
+Auditoría, Monitoreo y Respuesta
+Azure Monitor y OpenTelemetry: Recopilan logs de acceso, actividad y eventos de seguridad a nivel de aplicación, infraestructura y red.
+Las solicitudes entran por Nginx y son derivadas al API Gateway
+El API Gateway dirige las solicitudes a los servicios backend (Admin Services, ProvIA, etc.) corriendo en AKS.
+
+
+Procesos Core – Base Raíz
+
+CORETEST --> http://10.66.66.33:8090/ords/
+COREPROD --> http://10.66.66.33:8040/ords/
+COREDEV --> http://10.66.66.33:8080/ords/
+
+El sistema implementa una arquitectura de base de datos centralizada (core) para gestionar clientes, empresas, usuarios y su relacion con productos y proveedores.
+Estructura de la base de datos core:
+Tablas:
+CORE_BASES: Clientes, con su identificador NUMCLI, nombre, cadena de conexión ORDS y estado.
+CORE_EMPCLI: Empresas asociadas a cada cliente.
+CORE_USUARIOS: Usuarios del sistema, identificados por USERID, con su SUBID (de B2C) y EMAIL.
+CORE_CCTEUSER: Cuentas corrientes de proveedores habilitadas por usuario
+CORE_PRODUSER : Productos habilitados por Usuario
+CORE_PROVIA_ESTADOSCOMP : Estados de Comprobantes
+CORE_COMPROBANTES_LEIDOS : Comprobantes leidos desde provia
+Vistas:
+CORE_VCCTEUSER: Vista que une usuarios, clientes, empresas y cuentas corrientes, mostrando el estado de cada relación.
+
+
+
+
+core-v1
+Define un módulo ORDS para exponer servicios REST sobre la base core:
+clientes/urlords/:numcli: Devuelve el ORDS del Cliente al que se intenta conectar por Numero de Cliente.
+clientes/urlords_org/:organizacion: Devuelve el ORDS de una Organización al que se intenta conectar por Nombre de la Organización (WORK/ERP).
+usuario/producto/tieneacceso: Determina si el Usuario tiene Acceso a un Producto
+usuario/getuserid/:email: Devuelve el userid de un usuario a partir de su email
+
+Provia
+provia/usuarios/clientes/:subid: Devuelve los clientes activos asociados a un usuario (por subid); esto llena el primer campo “Selección de Cliente”.
+provia/usuarios/proveedoresxuser/:userid/:numcli/:emp: Devuelve las cuentas corrientes activas asociadas a un usuario, cliente y empresa; esto llena el segundo campo “Selección de Proveedor”.
+provia/usuarios/proveedores/:numcli: Devuelve usuarios y cuentas por cliente, entidad y empresa; esto lo solicita el Cliente para obtener el listado de Usuarios asociados a sus cuentas corrientes para ingresar a Provia.
+provia/usuarios/alta/:numcli: Da de alta un usuario en core.
+provia/usuarios/activar/:id: Activa la relación usuario-proveedor.
+provia/usuarios/inactivar/:id: Inactiva la relación usuario-proveedor.
+provia/comprobante/registrarlectura: Registra en Core la Lectura de un comprobante.
+provia/comprobante/registrarenvio: Registra en Core el Envio de un comprobante previamente leido.
+
+Endpoints de Uso Interno
+POST usointerno/usuario/auth/validate: Valida Usuario y contraseña de Base de datos
+POST usointerno/usuario/auth/olvido: Olvido de contraseña Usuario Core
+POST usointerno/usuario/auth/cambiopass: Cambio de pass Usuario Core
+POST usointerno/usuario/datosusuario: Obtiene datos Usuario Core
+
+
+
+pck_core_procesos
+Package de procesos genéricos para la base core:
+BASE_CLIENTE: Devuelve nombre y estado de un cliente (NUMCLI).
+ORDS_NUMCLI: Devuelve Url del Ords de un cliente (NUMCLI).
+ORDS_ORG: Devuelve Url del Ords de una Organización.
+EMPRESAS_CLIENTE: Devuelve las empresas asociadas a un cliente.
+ID_POREMAIL: Devuelve el USERID de un usuario a partir de su email.
+GETUSERID: Devuelve el USERID de un usuario a partir de su email.
+EXISTE_USUARIO: Valida si existe un Usuario en la base Core
+INSERT_CORE_USUARIOS: Registra el Usuario en Core asociandolo a un producto.
+PASSWORD_RANDOM: Genera una contraseña random para registrar al Usuario. –sin uso
+PASSWORD_VALIDA: Valida si la contraseña cumple los requisitos mínimos. –sin uso
+ENVIA_MAIL_USUARIO: Envía el mail al nuevo Usuario creado con su password de primer ingreso.
+EXISTE_USER_PRODUCTO: Valida si existe la relacion entre un Usuario y un Producto.
+ALTA_USER_PRODUCTO: Genera la relacion entre un Usuario y un Producto, si no existe.
+
+pck_core_provia
+Package de procesos relacionados al modelo de negocios del portal de proveedores (provia):
+CLIENTES_USUARIO: Clientes por Usuario. Devuelve los clientes activos asociados a un usuario (SUBID).
+CCTES_USUARIO: Cuentas por Usuario. Devuelve las cuentas corrientes activas asociadas a un usuario, cliente y empresa.
+USUARIOS_CLIENTE: Devuelve los usuarios con cuenta corriente asociada a un cliente.
+CCTES_CLIENTE: Devuelve usuarios y cuentas por cliente, entidad y empresa. Es fundamentalmente ejecutado por .net cuando un Usuario de Condor Enterprise realiza una petición de consulta de Usuarios, encargándose .net de ir a Core a buscar los Usuarios de ese Cliente
+ALTA_USUARIOS: Proceso de lectura del pedido de Alta que realiza un Usuario desde Condor Enterprise; es ejecutado por .net cuando desde algún formulario de Gestión se solicita un alta asociada un cliente y proveedor/es; es .net el que se encarga de ir a Core a enviar los datos para el alta. Este proceso recorre todas las cuentas corrientes que forman parte de la solicitud para validar su existencia y estado.
+ALTA: Se encarga de ejecutar la otra package para insertar en Core los nuevos Usuarios
+EXISTE_RELACION: Valida la existencia de la relación entre un Usuario y un Proveedor y su estado.
+ALTA_RELACION: Da de alta la relación usuario-proveedor en core.
+ACTIVAR_USUARIO / INACTIVAR_USUARIO: Activa o inactiva la relación usuario-proveedor.
+REGISTRARLECTURA: Registra en la tabla un nuevo evento cuando se lee un comprobante.
+REGISTRARENVIO: Actualiza un registro de un comprobante leido para marcarlo como enviado (registrado).
+
+Lo mencionado (provia-v1, pck_core_procesos, pck_core_provia) solo queda instalado en la base CORE, y no en ningún cliente. 
+
+Implementación – Configuración – Circuito
+
+Configuración Core
+Cada Cliente que utilice los portales en Angular debe tener instalado ORDS con apex y proporcionar un dns del ORDS.
+Cada Cliente que utilice los portales en Angular se debe agregar a la tabla CONDOR.CORE_BASES de la base CORE para informar el ORDS del mismo
+Informar un NUMCLI para representar el número de Cliente, por convención: 
+para los ords correspondientes a producción se utiliza el mismo número que el Cliente tenga en la base de SIGO para el ords de Producción (42 SMQ, 108 Cefas..)
+para los ords correspondientes a Testing se utiliza un número cualquiera superior al 10.000
+Informar el nombre de la organización con la que se conectarán a Work/ERP; el nombre representará el Ords en el front, por convención:
+la nomenclatura es el nombre del cliente + “test” o “qa” para identificar si es Testing o QA + “.” + el número de Cliente que se utiliza en SIGO. Ejemplo:
+310 – Boca Juniors – boca.310 
+10007 – Boca Juniors QA – bocaqa.310
+10008 – Boca Juniors Testing – bocatest.310
+Informar la url del ords hasta ppcdr/ inclusive. Ejemplo: https://ordserp19.boca.com.ar/erp19/ppcdr/
+Informar estado 0 como Activo
+Informar la versión de servicios de los módulos (erp-v1/ work-v1/)
+En la base Core de Desarrollo se deben parametrizar los ords de las bases de Desarrollo; con el mismo criterio, en la base Core de Testing se deberán parametrizar los ords de las bases de Testing y lo mismo con Producción. Este punto es para evitar que desde un fronend de producción ingresen a la base de testing y viceversa.
+Se agregó el campo Estado para poder tener todos los Ords e inactivar los que no correspondan; de esta manera, en la base de Desarrollo se podrán tener todos los Ords y dejar con estado 1 los que no sean de Desarrollo (y lo propio en Test/Desarrollo).
+
+
+Configuración Cliente
+Se debe configurar en paralelo la CONDOR.TPARPCDR de la base del Cliente para reflejar lo parametrizado en la base Core. La tabla se creó en el tkt 44369, al ser del portal de Autorizaciones se incorpora el create table en el script estándar (tkt 50293 : tkt_50293.ddl)
+No se puede pisar la CONDOR.TPARPCDR al hacer copia de las bases, o las bases de test tendrán los datos de conexión del ambiente de producción
+El campo “apikey” ya es informado en el instalador (tkt 50293 : tkt_50293.sql)
+“ords_url” : informar la url del Ords tal como se informó en Core. Ejemplo: https://ords-jobst.open.com.ar/jobst/ppcdr/ o https://ords-balanztest.open.com.ar/ords/ppcdr/
+“puerto” : informar puerto de la base para poder realizar el intento de conexión en el login de Usuarios de Base de datos
+“core_numcli” : informar el mismo valor que se cargó en Core (siguiendo el ejemplo anterior, en una potencial base de QA de Boca dira 10007, en la base de test dirá 10008 y en la base de producción dirá 310)
+“core_organización” : informar el mismo valor que se cargó en Core (siguiendo el ejemplo anterior, en una potencial base de QA de Boca dira bocaqa.310, en la base de test dirá bocatest.310 y en la base de producción dirá boca.310)
+“core_url” : informar la url del Ords de la base Core que le corresponde a la base del Cliente (ejemplo, a la base de Producción la corresponde el ords de la base Core productiva)
+“version_core” : informar la versión de de servicios del módulo (core_v1/)
+Se debe configurar el pre hook para la ejecución de la validación de servicios ords. Agregar al archivo de configuración del ORDS (defaults.xml)<entry key="procedure.rest.preHook">condor.valida_servicios_ords</entry>
+
+
+Validación Servicios Ords
+(tkt 50293 : FUNCTION condor.valida_servicios_ords)
+Se creó la función valida_servicios_ords configurada en el pre hook del Ords del Cliente
+La misma obtiene la url del servicio que se está ejecutando. Si el servicio es de core, provia, erp, psol, se valida la api-key y producto enviado en el encabezado del servicio.
+En caso de agregar nuevos módulos que necesiten validación de api-key, deberán agregarse en esta función
+
+if instr(v_script, 'ppcdr/core') > 0 or instr(v_script, 'ppcdr/provia') > 0  or instr(v_script, 'ppcdr/erp') > 0 or instr(v_script, 'ppcdr/psol') > 0 then
+
+if v_producto is not null and lower(v_producto) in ('core','provia','erp','psol')
+
+Si se intenta ejecutar un endpoint de alguno de los módulos listados y no se envía la apikey, o el producto, o la apikey es incorrecta, devolverá Unauthorized
+La apikey C0nd0r91 se almacena encriptada en la tparpcdr
+
+Permisos a Formularios
+
+Creación de Formularios
+Si es un Módulo nuevo, debe insertarse el mismo en la CONDOR.TCODVALO. 
+El CODVAL indicado para la creación de Módulos es el 44
+El nuevo formulario deberá tener como nomenclatura MODULO_NOMBRE-DEL-FORMULARIO
+Ejemplo: 
+lh_envio-liquidacion
+per_legajo-digital
+
+Se debe realizar el insert a la CONDOR.TMENUWEB indicando módulo y nombre de la pantalla.
+Para ser accedida desde el menú, se deberá realizar el insert a la CONDOR.TROLWEB para el Rol 1 con Nivel ADM. Si se requiere, puede realizarse el insert a todos los roles que tenían previo acceso al formulario original de Condor en forms. Ejemplo, podría realizarse el insert de vac_solicitud a todos aquellos roles que tenían acceso al FVAC.
+Se debe informar al desarrollador encargado del ruteo en Angular el nombre de la pantalla y el módulo.
+
+Configuración de Permisos por Rol
+FROLWEB : Se creó el nuevo formulario para asignarle permisos a los diferentes Roles del Sistema por Módulo. 
+Dentro de cada Módulo se lista la totalidad de formularios o pantallas que forman parte del mismo. 
+La creación de cada nueva pantalla dentro del Portal implica el insert a esta tabla dentro del correspondiente módulo. Existen 3 Niveles de Operación posibles:
+El Nivel ADM/Administrador tiene acceso total a todas las operaciones de la pantalla: agregar, eliminar, editar, aplicar cambios, procesar, etc. (siempre teniendo en cuenta los permisos y roles existentes de cada Usuario sobre Empresas por Usuario, Países por Usuario, Legajos por Usuario según Centro de Resultados, etc.) así como también descargar los datos a csv y reportes.
+El Nivel CR/Consultas y Reportes tiene acceso a la pantalla, puede navegar a través de la misma y sus subpantallas con el mismo criterio y descargar reportes; no puede realizar ninguna operación de alta, baja, modificación ni ningún proceso, pero puede descargar reportes.
+El Nivel CO/Consulta solo puede navegar en modo consulta; no puede operar ni descargar reportes.
+
+Al ingresar por Rol y Módulo, se carga preseleccionada la opción según lo que exista en la base de Datos: 
+Si el rol ve la pantalla en modo Administrador, se selecciona la columna ADM
+Si el rol ve la pantalla en modo Consulta y Reporte, se selecciona la columna CR
+Si el rol ve la pantalla en modo Consulta, se selecciona la columna CO
+Si no tiene acceso a la pantalla,  se selecciona la columna NO.
+Al instalar nuevos formularios en el menú, se envían por defecto los formularios con Permisos de Operación de nivel Administrador al Rol 1.
+Al cambiarle el Nivel, se actualiza dicho campo en la tabla. 
+Si se selecciona NO, se elimina el acceso a la pantalla a ese rol, por lo que directamente no lo verá en el menú ni podrá ingresar por otra vía.
+El menú lateral se cargará dinámicamente según lo que se haya parametrizado en este formulario por Rol y Módulo, por ende cada Usuario según el/los rol/es que tenga verá N cantidad de formularios y a su vez, si tiene acceso, el nivel de Operación que tenga en este formulairo dependerá de lo que se configuró (ADM/CR/CO).
+
+Cabe destacar que si un Usuario tiene más de un Rol asociado, prevalece el mayor de los permisos asignados a cada pantalla; es decir, si el Usuario tiene un Rol que no tiene acceso a una pantalla y con otro Rol sí tiene acceso; tendrá acceso. Además, si el Usuario tiene un Rol que tiene acceso a una pantalla y con otro Rol tiene también acceso pero con un nivel de Operación superior, prevalecerá el nivel de Operación más alto.
+
+
+Endpoints
+
+Los servicios, desde los más simples a los más complejos, e desarrollaron en su totalidad con servicios template estándar.
+
+Listar
+Para obtener un dato o un set de datos se utilizan los template de entidades/listar. El circuito implica que el Front envíe los parámetros necesarios y el Back devuelva uno o más registros en una lista, en base a los parámetros recibidos. Se distinguen 3 diferentes formas de realizar este procedimiento:
+GET entidades/listar + objeto + parámetros (Front) / variable de entrada + dato de salida + error (Back)
+El Front debe hacer el get llamando al objeto y pasándole por url los parámetros que el Back necesita. Todos los parámetros se mandan en la url, ejemplo sucursales_banco/:pais/:banco
+El Back devuelve los datos a través de un servicio en la tabla de sentencias, ya sea 
+a través de esquema+tabla+condición que utliza los parámetros (pais = &2 and codbco = &3)
+a través de una sentencia tipo select utilizando los parámetros (select … from … where pais = &2 and codbco = &3)
+a través del llamado a una procedure en la base que tiene como variables (p_id in, p_datos out, p_error out). La única de entrada es p_id donde recibirá toda la url de parámetros concatenados (ej: /objeto/pais/codbco) y se deberán ir leyendo en el orden que lo envió el Front a través de la función “leer_parametro” de la package estándar, inicializando en el parámetro 2, ejemplo: l_pais := condor.pck_portal_std.leer_parametro(p_id, 2); 
+Tras leer los parámetros y hacer las querys necesarias devolverá los datos a través de open p_lista for select … 
+PUT entidades/listarpck + objeto + body (Front) / body de entrada + dato de salida + error (Back)
+Para procesos más complejos en los que se necesitan múltiples valores de entrada para poder devolver una lista, se armó un nuevo proceso en el que el Front debe hacer el get a través del método Put, llamando al objeto y pasándole como parámetro un body con los valores que el Back necesita como parámetro para devolver un resultado
+El Back únicamente ejecutará el servicio si hay un “proceso” en el campo proceso de la tabla de sentencias al cual llamar (es decir, no funciona con esquema/tabla ni con sentencias). Siguen siendo 3 variables con una única variabla de entrada pero en lugar de recibir parámetros, recibe un json. Ejecutará la procedure en la base que tiene como variables (p_body in, p_datos out, p_error out).
+Tras leer el body y hacer las querys necesarias devolverá los datos a través de open p_lista for select …
+
+Insertar y Modificar
+Para insertar/modificar un dato se utilizan los template entidades/insertar y entidades/modificar. El circuito implica que el Front envíe los parámetros necesarios (tanto parámetros como un json) y el Back realiza una operación, ya sea de insert, update, o una consulta que realiza una validación sin alteración de datos. A diferencia de los métodos listar, de las 3 variables del proceso, 2 son de entrada y una es de salida.
+El Front debe hacer el llamado al objeto, pasándole según necesidad del back, parámetros por url y/o un body. El único valor de salida es un posible error.
+El Back tanto para insertar como para modificar tiene 2 variables de entrada y una de salida. En las dos de entrada espera p_id (es decir, uno o más parámetros concatenados) y p_ body (es decir, un json). Se realiza la lectura y procede al tratamiento de los datos:
+a través de esquema+tabla+condición (pais = &2 and codbco = &3) realiza INSERT o UPDATE según el template
+a través del llamado a una procedure en la base que tiene como variables (p_id in, p_body in, p_error out). En p_id recibirá, si los hay, parámetros concatenados (ej: /objeto/pais/codbco) y se irán leyendo en el orden que lo envió el front, a través de la función “leer_parametro” de la package estándar, inicializando en el parámetro 2, ejemplo: l_pais := condor.pck_portal_std.leer_parametro(p_id, 2); En p_body recibirá, si lo hay, un json con los paráemtros necesarios. 
+Tras leer los parámetros y el json, se procede a hacer el insert o update de los datos deseados. Se suelen utilizar llamados a procedure en lugar de insertar por tabla de sentencias dado que en la mayor parte de los casos se realizan validaciones previas a insertar/modificar, ya sea para corroborar la validez de los datos cargados por el usuario, la nulidad u obligatoriedad de los mismos, comparación de datos, levantar “max+1”, y demás operaciones.
+Como se mencionó anteriormente, no solo se utilizan estos template para hacer insert o update, sino que es común también utilizar estos template para realizar validaciones, dado que se pueden recibir parámetros o json, realizar la lectura, validar y devolver un error en caso de haberlo.
+
+Eliminar
+Para eliminar un dato o un set de datos se utilizan los template de entidades/eliminar. El circuito implica que el Front envíe los parámetros necesarios y el Back realice el borrado en base a los parámetros recibidos. En este caso, el método utiliza una variable de entrada y una de salida (error). Se distinguen 2 diferentes formas de realizar este procedimiento:
+DELETE entidades/eliminar + objeto + parámetros (Front) / variable de entrada + error (Back)
+El Front debe hacer el delete llamando al objeto y pasándole por url los parámetros que el Back necesita. Todos los parámetros se mandan en la url, ejemplo sucursales_banco/:pais/:banco
+El Back lee esos parámetros y realiza el borrado, ya sea:
+a través de esquema+tabla+condición (pais = &2 and codbco = &3)
+a través del llamado a una procedure en la base que tiene como variables (p_id in, p_error out). En p_id recibirá toda la url de parámetros concatenados (ej: /objeto/pais/codbco) y se irán leyendo en el orden que lo envió el front, a través de la función “leer_parametro” de la package estándar, inicializando en el parámetro 2, ejemplo: l_pais := condor.pck_portal_std.leer_parametro(p_id, 2); Luego se procede a hacer potenciales validaciones previas al borrado y el delete propiamente dicho, utilizando los parámetros recibidos.
+DELETE entidades/eliminarpck + objeto + body (Front) / body de entrada + error (Back)
+Para procesos complejos en los que se necesita leer un json en lugar de parámetros, se creó un método para eliminar donde se realiza la lectura de un body en lugar de la url. El Front debe hacer el delete llamando al objeto y pasándole el body con los datos que el Back necesita. 
+El Back únicamente ejecutará el servicio si hay un “proceso” en el campo proceso de la tabla de sentencias al cual llamar (es decir, no funciona con esquema/tabla ni con sentencias). Siguen siendo 2 variables pero en lugar de recibir parámetros, recibe un json. Ejecutará la procedure en la base que tiene como variables (p_body in, p_error out). R en primer lugar el body que envió el front. Tras leer el body y hacer las querys necesarias, realizará el borrado de los datos.
+

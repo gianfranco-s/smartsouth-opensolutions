@@ -22,6 +22,8 @@ Buscamos todas las IPs mencionadas en el material fuente y las cruzamos contra `
 
 **`DB-ARGOCEAN` — resuelto.** Es la base de datos de un cliente llamado **Argocean**, según la hoja Discrepancias de la matriz ("DB 172.18.5.60 / SID MBA — No figura [en tabla funcional]"). Argocean no está en la lista original de 13 clientes en absoluto — apareció solo en las notas de discrepancias. La VM está actualmente apagada en ExportList.csv, y todavía no se identificó ningún servidor WebLogic para ella.
 
+**GIAR — versión de WebLogic resuelta (16 ago 2026).** Verificado por TeamViewer entrando a `http://10.77.7.201:7001/console/login/LoginForm.jsp` (`OPENWLPROD01`): la página de login muestra "Versión de WebLogic Server: **12.2.1.4.0**". Confirma el valor del inventario técnico (`12.2`); el valor funcional ("WL 11") era el desactualizado. No se pudo entrar a la consola en sí — la cuenta compartida (`soportesmart`) fue rechazada, así que solo se confirmó la versión desde la pantalla de login, no el resto del dominio. **Gotcha a tener en cuenta:** `10.77.7.201` (GIAR) y `10.77.10.101` (Maipú) se confunden fácil al leerlas rápido — casi se registra este dato contra el cliente equivocado.
+
 ## Nuevo: los "13 clientes" son más bien 15, con bajas
 
 La matriz (`Matriz_servicios_por_cliente_Hosting_V2.xlsx`) agrega dos clientes que no estaban en el CSV de Relevamiento:
@@ -37,7 +39,6 @@ La hoja "Discrepancias" de la matriz es el propio equipo de Open detectando conf
 
 | Cliente | Tema | Dice la fuente funcional | Dice el inventario técnico |
 |---|---|---|---|
-| GIAR | Versión de WebLogic | WL 11 | 12.2 |
 | ROMAN (CSM) | Versión de WebLogic | WL 11 | 10 |
 | JOBS | Versión de WebLogic | WL 12 | 11 |
 | ABB | DB actual | `192.1.1.31` / SID ABB | `192.1.1.31` y `192.1.1.190` (dos IPs) |

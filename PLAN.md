@@ -42,7 +42,7 @@
 
 El chequeo más rápido y confiable para casi todos estos es leer la URL de conexión del datasource JDBC en la consola de WebLogic — ahí figura literalmente a qué IP/SID/servicio se está conectando la aplicación en producción, sin ambigüedad. La versión de WebLogic y el charset de Oracle requieren conectarse directo a cada servidor.
 
-**GIAR — versión real de WebLogic (¿11 o 12.2?).** Conectarse a `OPENWLPROD01` (`10.77.7.201`). Opción rápida: entrar a la consola de administración de WebLogic (puerto 7001 salvo que esté cambiado) — la versión figura en el pie de la página principal. Opción por consola: correr `java weblogic.version` desde `$WL_HOME/server/lib` (o `unzip -p weblogic.jar META-INF/MANIFEST.MF | grep -i Implementation-Version`).
+**GIAR — versión real de WebLogic: ✅ resuelto, `12.2.1.4.0` (ver `infra/findings.md`).** Confirmado desde la pantalla de login en `http://10.77.7.201:7001/console/login/LoginForm.jsp`, sin necesidad de entrar a la consola. Pendiente: la cuenta compartida (`soportesmart`) fue rechazada al intentar loguearse — probar usuario `weblogic` con la misma contraseña antes de dar por perdido el acceso a la consola en sí (haría falta para confirmar deployments, no solo versión).
 
 **ROMAN — versión real de WebLogic (¿11 o 10?).** Conectarse a `WL-CLIENTES` (`172.18.5.40`, ojo que está en el host ESXi `192.1.3.252` — el candidato a segundo sitio). Mismo método que GIAR (consola o `weblogic.version`).
 

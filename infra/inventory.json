@@ -2758,7 +2758,13 @@
           "MicroStrategy": ""
         },
         "observaciones": "Ya se está usando como producción.",
-        "validacion_pendiente": "La versión WL difiere: tabla funcional indica WL 11 e infraestructura 12.2. Confirmar versión real."
+        "validacion_pendiente": "La versión WL difiere: tabla funcional indica WL 11 e infraestructura 12.2. Confirmar versión real.",
+        "weblogic_version_verified": {
+          "value": "12.2.1.4.0",
+          "verified_on": "2026-08-16",
+          "method": "Login page banner at http://10.77.7.201:7001/console/login/LoginForm.jsp (console itself not accessible, shared credentials rejected)",
+          "note": "Confirms the 'técnico' value (12.2) from the Discrepancias sheet was correct; 'funcional' value (WL 11) was outdated."
+        }
       },
       "source": [
         "Relevamiento (sin claves) - VM Linux.csv",

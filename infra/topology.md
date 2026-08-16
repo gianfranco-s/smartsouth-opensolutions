@@ -2,6 +2,8 @@
 
 Generado a partir de [`inventory.json`](inventory.json). No editar los diagramas de abajo a mano — regenerarlos desde el JSON (ver CLAUDE.md) cada vez que el JSON cambie, para que nunca queden desincronizados.
 
+**Alcance: solo on-premise (vSphere).** La infraestructura en proveedores cloud (Azure/AWS) se estacionó fuera del alcance de este relevamiento — ver [../cloud-infra/README.md](../cloud-infra/README.md) para lo que ya se había encontrado ahí antes de acotar el foco.
+
 ## 1. Mapeo Cliente → WebLogic → Base de datos (vSphere on-premise)
 
 Construido resolviendo los servidores WebLogic/DB declarados de cada cliente (del CSV de Relevamiento y, donde hay más detalle, de la matriz de clientes `Matriz_servicios_por_cliente_Hosting_V2.xlsx`) contra el inventario real de VMs en ExportList.csv — matcheado por nombre, y si el nombre no coincide, por IP (ver `resolved_by` en el JSON). 15 clientes en total: los 13 del CSV original de Relevamiento, más **Rex Argentina** y **Argocean**, ambos encontrados solo en la matriz más completa (ver findings.md). **ABB y Arris/GIAR están marcados en la matriz como ya dados de baja** — se mantienen en el diagrama porque sus VMs todavía existen y corren, pero no tratarlos como producción activa sin confirmar el estado actual.
@@ -77,38 +79,9 @@ flowchart LR
 
 **Leer este diagrama con cuidado — un nodo es engañoso:** `WL12C-Desarrollo.2.54 → DBClientes.190` y `WebLogic.191 → DBClientes.190` aparecen ambos porque ABB y DCVIAJES se resolvieron cada uno por separado; no significa que ABB y DCVIAJES compartan una instancia de WebLogic. Verificar contra `clients[].database.resolved` en el JSON antes de asumir que una flecha implica un WL compartido.
 
-## 2. Azure/AKS — un segundo plano de infraestructura, separado
+> La topología Azure/AKS que estaba acá se movió a [`../cloud-infra/topology-cloud.md`](../cloud-infra/topology-cloud.md) — infraestructura cloud fuera de alcance por ahora, ver [`../cloud-infra/README.md`](../cloud-infra/README.md).
 
-Basado en `source-files/extracted/analisis_azure.txt`. Esto **no** es parte del inventario de vSphere de arriba — es un plano de gestión completamente distinto (portal/CLI de Azure, no TeamViewer/vCenter). Las capas de aplicación de Condor Work, Enterprise, y ProvIA corren acá como contenedores, no como VMs de vSphere.
-
-```mermaid
-flowchart TB
-  subgraph OnPrem["Datacenter on-premise"]
-    pfsense["OPENVPNFW01 (pfSense)<br/>200.55.243.92"]
-  end
-  subgraph AzureProd["Azure — Open Prod Subscription / rg-open-prod"]
-    aksprod["AKS: aks-open-prod<br/>vnet-open-prod 10.201.0.0/16<br/>(plana, sin NSGs)"]
-    natprod["NAT GW: natgw-aks-prod<br/>172.190.147.110"]
-    pgprod["psql-core-prod-eus"]
-  end
-  subgraph AzureDev["Azure — Open Operations Subscription / rg-open-devtest"]
-    aksdev["AKS: aks-open-devtest<br/>vnet-open-devtest 10.200.0.0/16<br/>(plana, sin NSGs)"]
-    natdev["NAT GW: natgw-aks-devtest<br/>13.92.235.102"]
-    pgdev["psql-core-nonprod-eus"]
-  end
-  pfsense <-->|"VPN S2S IPsec<br/>open-pfsense-connection"| aksprod
-  pfsense <-->|"VPN S2S IPsec<br/>open-pfsense-connection-devtest<br/>rutea 10.77.0.0/16"| aksdev
-  aksprod --> pgprod
-  aksdev --> pgdev
-  aksprod --> natprod
-  aksdev --> natdev
-  natprod -.->|"salida a internet"| Internet1(("Internet"))
-  natdev -.->|"salida a internet"| Internet2(("Internet"))
-```
-
-Los dos túneles VPN terminan en el mismo firewall pfSense, `OPENVPNFW01` — confirmado por coincidencia de IP (`200.55.243.92`), no solo una conjetura por el SO invitado FreeBSD. El tráfico de la VPN en sí es bajo (mayormente acceso a Oracle DB e integraciones puntuales desde Azure hacia on-premise); la mayor parte de la salida de AKS va directo a internet vía NAT Gateway (llamadas a ORDS/APIs), no por el túnel. El detalle completo — suscripciones, resource groups, IPs públicas, volúmenes de tráfico — está en `inventory.json` → `azure` y en el documento fuente.
-
-## 3. Inventario de VMs por categoría (las 129 VMs, de ExportList.csv)
+## 2. Inventario de VMs por categoría (las 129 VMs, de ExportList.csv)
 
 Solo los totales — ver `inventory.json` → `vms[].category` para la lista de miembros de cada grupo. Las categorías se asignaron por coincidencia de nombre/SO salvo que se indique lo contrario por confirmación vía el material de los emails/RAR (ver findings.md para qué está confirmado y qué sigue siendo conjetura).
 
@@ -127,13 +100,15 @@ Solo los totales — ver `inventory.json` → `vms[].category` para la lista de 
 | source_repo | 2 | Inferida (SVN en el nombre) |
 | domain_controller, file_server, monitoring, mail, storage_nas, virtualization_mgmt | 1 cada una | Inferida por nombre/SO |
 
-## 4. Hosts / clusters ESXi
+## 3. Hosts / clusters ESXi
 
 Aparecen 12 IPs de host ESXi distintas en la columna `Host` de ExportList.csv:
 
 - **192.1.1.214 – 192.1.1.224** (11 hosts) — cluster principal, aloja la mayoría de las VMs WL/DB de cara al cliente.
 - **192.1.3.252** (1 host) — aloja un conjunto distinto de VMs en otros rangos de IP (`172.18.5.x`, `10.10.1.x`, `192.1.3.x`) incluyendo `WL-ROMAN`, `DB-ROMAN`, `DB-GIAR`, `WL-GIAR`, `FW`, `WL12-Clientes`. **Probablemente un sitio físico separado o una máquina standalone fuera del cluster principal** — vale la pena confirmarlo, ya que no comparte el patrón de gestión 192.1.1.x de los demás.
 
+**"Piedras" — mencionado, sin confirmar, y probablemente no es esto.** Se nos mencionó (de forma verbal, sin más contexto) que existiría un sitio adicional llamado "Piedras". El único rastro técnico que tenemos es el nombre de una VM, `VEEAM-PIEDRAS` (servidor de backup), que corre en `192.1.1.221` — **dentro del cluster principal**, no en `192.1.3.252`. Así que si "Piedras" es un sitio físico real, no coincide con el único candidato a segundo sitio que ya teníamos identificado; podría ser un tercer lugar (por ejemplo, un destino de replicación de backups) del que no tenemos ningún otro dato. Ver `infra/findings.md` y `QUESTIONS.md`.
+
 ## Cómo regenerar estos diagramas
 
-El diagrama de mapeo de clientes en la sección 1 es generado, no dibujado a mano. Si `inventory.json` cambia, regenerarlo con el mismo enfoque: recorrer `clients[]`, emitir un nodo por cliente y uno por cada `resolved_vm` distinta bajo `weblogic`/`database`, deduplicar nodos, y conectar cliente→WL→DB. Mantenerlo acotado al subconjunto de clientes — un diagrama con las 129 VMs no se puede leer y no vale la pena construirlo; el JSON es la fuente de verdad para el resto. El diagrama de Azure de la sección 2 se mantiene a mano porque describe un conjunto chico y estable de recursos cloud con nombre, en vez de un cruce de datos generado — actualizarlo directamente si `inventory.json` → `azure` cambia.
+El diagrama de mapeo de clientes en la sección 1 es generado, no dibujado a mano. Si `inventory.json` cambia, regenerarlo con el mismo enfoque: recorrer `clients[]`, emitir un nodo por cliente y uno por cada `resolved_vm` distinta bajo `weblogic`/`database`, deduplicar nodos, y conectar cliente→WL→DB. Mantenerlo acotado al subconjunto de clientes — un diagrama con las 129 VMs no se puede leer y no vale la pena construirlo; el JSON es la fuente de verdad para el resto.

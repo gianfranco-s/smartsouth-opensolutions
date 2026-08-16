@@ -3564,109 +3564,12 @@
       "Usuario Admin": "soportesmart"
     }
   ],
-  "azure": {
-    "note": "Separate infra plane, not part of the on-prem vSphere/ExportList.csv inventory above. Sourced from Analisis Azure.docx (internal, treat with the same 'grain of salt' caveat as other Relevamiento-derived material) and Arquitectura_Configuraciones_Instalacion.docx. Condor Work/Enterprise/ProvIA application tiers run here, not on the vSphere VMs.",
-    "subscriptions": [
-      {
-        "name": "Open Prod Subscription",
-        "purpose": "Production workloads"
-      },
-      {
-        "name": "Open Operations Subscription",
-        "purpose": "Dev/test/internal tooling (AKS dev/test, DevOps)"
-      },
-      {
-        "name": "Azure Subscription 1",
-        "purpose": "Currently unused"
-      }
-    ],
-    "resource_groups": [
-      "rg-open-prod",
-      "rg-open-devtest"
-    ],
-    "environments": {
-      "production": {
-        "aks_cluster": "aks-open-prod",
-        "vnet": {
-          "name": "vnet-open-prod",
-          "address_space": "10.201.0.0/16",
-          "subnets": [
-            {
-              "name": "GatewaySubnet",
-              "cidr": "10.201.1.0/27",
-              "purpose": "VPN gateway"
-            },
-            {
-              "name": "subnet-aks-prod",
-              "cidr": "10.201.0.0/24",
-              "purpose": "all AKS cluster services"
-            }
-          ]
-        },
-        "vpn_gateway": "open-vpn-gateway",
-        "nat_gateway": {
-          "name": "natgw-aks-prod",
-          "public_ip": "172.190.147.110"
-        },
-        "container_registry": "openprodregistry",
-        "postgresql": "psql-core-prod-eus",
-        "public_ips": [
-          {
-            "name": "kubernetes-...",
-            "ip": "20.253.49.89",
-            "purpose": "AKS app exposure"
-          },
-          {
-            "name": "open-vpn-ip",
-            "ip": "172.191.115.119",
-            "purpose": "S2S VPN"
-          }
-        ],
-        "s2s_vpn_to_onprem": {
-          "peer_name": "open-pfsense-connection",
-          "peer_gateway_ip": "200.55.243.92",
-          "peer_identity": "pfSense on-prem (matches OPENVPNFW01 in inventory)",
-          "status": "Conectado",
-          "traffic": "very low, mostly OnPrem->Azure (Oracle DB access, point integrations)"
-        }
-      },
-      "devtest": {
-        "aks_cluster": "aks-open-devtest",
-        "vnet": {
-          "name": "vnet-open-devtest",
-          "address_space": "10.200.0.0/16",
-          "subnets": [
-            {
-              "name": "GatewaySubnet",
-              "cidr": "10.200.1.0/27",
-              "purpose": "VPN gateway"
-            },
-            {
-              "name": "subnet-aks-devtest",
-              "cidr": "10.200.0.0/24",
-              "purpose": "all AKS cluster services"
-            }
-          ]
-        },
-        "vpn_gateway": "open-vpn-gateway-devtest",
-        "nat_gateway": {
-          "name": "natgw-aks-devtest",
-          "public_ip": "13.92.235.102"
-        },
-        "postgresql": "psql-core-nonprod-eus",
-        "s2s_vpn_to_onprem": {
-          "peer_name": "open-pfsense-connection-devtest",
-          "peer_gateway_ip": "200.55.243.92",
-          "peer_identity": "pfSense on-prem (matches OPENVPNFW01)",
-          "status": "Conectado",
-          "route": "10.77.0.0/16 routed to on-prem datacenter via VPN gateway"
-        }
-      }
-    },
-    "security_findings": [
-      "No Network Security Groups (NSG) in either prod or devtest VNet.",
-      "No Azure Firewall, no Private Endpoints identified.",
-      "Both prod and devtest use a single flat subnet shared by app traffic, VPN, and internet-facing services — no internal segmentation. A compromise inside the AKS cluster could move laterally without restriction."
-    ]
-  }
+  "blind_spots": [
+    {
+      "topic": "NFS server(s)",
+      "evidence": "relevamiento_docker.txt: OPENDOCKER.57 ('Utiliza almacenamiento local y recursos NFS. Se detectó un montaje NFS con error y otro con alta ocupación.') and VM-DOCKER-Clientes ('un recurso NFS externo') both mount NFS from an unnamed server.",
+      "known_detail": "None — target host/IP never named. Self-resolvable: run `mount`/check `/etc/fstab` on those two hosts over TeamViewer."
+    }
+  ],
+  "cloud_infra_note": "Azure/AWS data moved to cloud-infra/inventory-cloud.json — out of scope for this discovery, see cloud-infra/README.md."
 }

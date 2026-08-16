@@ -1,0 +1,137 @@
+{
+  "note": "Cloud-provider infra (Azure, AWS) is out of scope for the current discovery effort — see cloud-infra/README.md. This is a snapshot of what was found before scope narrowed, kept for reference.",
+  "azure": {
+    "note": "Separate infra plane, not part of the on-prem vSphere/ExportList.csv inventory above. Sourced from Analisis Azure.docx (internal, treat with the same 'grain of salt' caveat as other Relevamiento-derived material) and Arquitectura_Configuraciones_Instalacion.docx. Condor Work/Enterprise/ProvIA application tiers run here, not on the vSphere VMs.",
+    "subscriptions": [
+      {
+        "name": "Open Prod Subscription",
+        "purpose": "Production workloads"
+      },
+      {
+        "name": "Open Operations Subscription",
+        "purpose": "Dev/test/internal tooling (AKS dev/test, DevOps)"
+      },
+      {
+        "name": "Azure Subscription 1",
+        "purpose": "Currently unused"
+      }
+    ],
+    "resource_groups": [
+      "rg-open-prod",
+      "rg-open-devtest"
+    ],
+    "environments": {
+      "production": {
+        "aks_cluster": "aks-open-prod",
+        "vnet": {
+          "name": "vnet-open-prod",
+          "address_space": "10.201.0.0/16",
+          "subnets": [
+            {
+              "name": "GatewaySubnet",
+              "cidr": "10.201.1.0/27",
+              "purpose": "VPN gateway"
+            },
+            {
+              "name": "subnet-aks-prod",
+              "cidr": "10.201.0.0/24",
+              "purpose": "all AKS cluster services"
+            }
+          ]
+        },
+        "vpn_gateway": "open-vpn-gateway",
+        "nat_gateway": {
+          "name": "natgw-aks-prod",
+          "public_ip": "172.190.147.110"
+        },
+        "container_registry": "openprodregistry",
+        "postgresql": "psql-core-prod-eus",
+        "public_ips": [
+          {
+            "name": "kubernetes-...",
+            "ip": "20.253.49.89",
+            "purpose": "AKS app exposure"
+          },
+          {
+            "name": "open-vpn-ip",
+            "ip": "172.191.115.119",
+            "purpose": "S2S VPN"
+          }
+        ],
+        "s2s_vpn_to_onprem": {
+          "peer_name": "open-pfsense-connection",
+          "peer_gateway_ip": "200.55.243.92",
+          "peer_identity": "pfSense on-prem (matches OPENVPNFW01 in inventory)",
+          "status": "Conectado",
+          "traffic": "very low, mostly OnPrem->Azure (Oracle DB access, point integrations)"
+        }
+      },
+      "devtest": {
+        "aks_cluster": "aks-open-devtest",
+        "vnet": {
+          "name": "vnet-open-devtest",
+          "address_space": "10.200.0.0/16",
+          "subnets": [
+            {
+              "name": "GatewaySubnet",
+              "cidr": "10.200.1.0/27",
+              "purpose": "VPN gateway"
+            },
+            {
+              "name": "subnet-aks-devtest",
+              "cidr": "10.200.0.0/24",
+              "purpose": "all AKS cluster services"
+            }
+          ]
+        },
+        "vpn_gateway": "open-vpn-gateway-devtest",
+        "nat_gateway": {
+          "name": "natgw-aks-devtest",
+          "public_ip": "13.92.235.102"
+        },
+        "postgresql": "psql-core-nonprod-eus",
+        "s2s_vpn_to_onprem": {
+          "peer_name": "open-pfsense-connection-devtest",
+          "peer_gateway_ip": "200.55.243.92",
+          "peer_identity": "pfSense on-prem (matches OPENVPNFW01)",
+          "status": "Conectado",
+          "route": "10.77.0.0/16 routed to on-prem datacenter via VPN gateway"
+        },
+        "public_ips": [
+          {
+            "name": "open-vpn-ip-devtest",
+            "ip": "20.228.185.188",
+            "purpose": "S2S VPN"
+          },
+          {
+            "name": "pip-aks-open-devtest",
+            "ip": "172.191.116.4",
+            "purpose": "AKS services / egress"
+          }
+        ]
+      }
+    },
+    "security_findings": [
+      "No Network Security Groups (NSG) in either prod or devtest VNet.",
+      "No Azure Firewall, no Private Endpoints identified.",
+      "Both prod and devtest use a single flat subnet shared by app traffic, VPN, and internet-facing services — no internal segmentation. A compromise inside the AKS cluster could move laterally without restriction."
+    ],
+    "core_vm": {
+      "note": "Standalone Azure VM (explicitly 'una Virtual Machine de Azure' per arquitectura_configuraciones_instalacion.txt, NOT a container in AKS). Not present in ExportList.csv (not a vSphere VM) and not previously captured in this azure section. Resolves the B2C user -> org -> ORDS endpoint mapping; central to login for Work/Enterprise/ProvIA.",
+      "ip": "10.66.66.33",
+      "endpoints": {
+        "CORETEST": "http://10.66.66.33:8090/ords/",
+        "COREPROD": "http://10.66.66.33:8040/ords/",
+        "COREDEV": "http://10.66.66.33:8080/ords/"
+      },
+      "azure_resource_name": null,
+      "status": "discovered_not_inventoried",
+      "priority": "high — likely a single point of failure for login across multiple products/clients"
+    }
+  },
+  "aws_blind_spot": {
+    "topic": "AWS",
+    "evidence": "Relevamiento inicial de servicios publicados mediante Nginx Proxy Manager - Open Solutions.eml: 'Se observaron servicios alojados tanto en infraestructura local como en infraestructura cloud, incluyendo instancias con direcciones IP públicas pertenecientes a AWS.'",
+    "known_detail": "None — no IPs, resource names, account, or region given anywhere in the source material."
+  }
+}

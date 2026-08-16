@@ -16,7 +16,9 @@ Buscamos todas las IPs mencionadas en el material fuente y las cruzamos contra `
 
 **nginx — resuelto.** `Relevamiento_general_infraestructura_Docker_actualizado.docx` confirma que Nginx Proxy Manager corre como contenedor en 4 de los 9 hosts docker: `DOCKER-DEB`, `OPENDOCKER04`, `VM-DOCKER-Clientes`, y `VM-DOCKER-Clientes (1)`. No es una categoría de host dedicado — es un servicio containerizado. La conjetura anterior `web_frontend_nginx_candidate` (`OPENPORTAL01`, `OPENPORTALCLI02`, `WEBSERVER`) estaba equivocada; el rol real de esas VMs sigue sin confirmar.
 
-**pfsense — confirmado para al menos un host.** `Analisis Azure.docx` (ver `cloud-infra/source/`) documenta la VPN Site-to-Site de Azure hacia el datacenter on-premise, nombrando explícitamente al peer como "pfSense" en `200.55.243.92`. Esa IP pertenece a `OPENVPNFW01` en ExportList.csv — confirmación directa, no solo una conjetura por el SO invitado FreeBSD. La fuente es un documento de Azure, pero lo que confirma es la identidad de una VM on-premise, así que el hallazgo se queda acá. Las otras 8 VMs `firewall_candidate_pfsense` siguen siendo conjeturas sin confirmar.
+**pfsense — confirmado para 7 de 9 hosts.** `Analisis Azure.docx` (ver `cloud-infra/source/`) ya había confirmado `OPENVPNFW01` (VPN Site-to-Site de Azure, peer "pfSense" en `200.55.243.92`). `source-files/Relevamiento (sin claves) - Pfsense.csv` — un relevamiento manual con acceso real al dashboard de cada firewall — confirma 6 más: `CliProFw01`, `DMFW01`, `FW`, `FWOPEN`, `OPENFWCLI001`, `OPENFWCLI10`. Cada uno tiene su IP de dashboard, credencial de acceso (usuario `smartsouth`, sin contraseña en el archivo) y una etiqueta de destino — por ejemplo `DMFW01` aparece etiquetado "Open - Maipu", consistente con ser el firewall dedicado de ese cliente. Solo quedan sin confirmar `OPENFWCLI02` y `VM_FW`. Detalle completo en `inventory.json` → `vms[].confirmation`.
+
+**Hallazgo positivo: exposición a Internet mínima.** El mismo relevamiento de firewalls anota: "No hay puertos TCP expuestos (SSH 22, HTTP 80, HTTPS 443, o la administración de pfSense). El único servicio escuchando conexiones desde Internet es OpenVPN en el puerto 2190 (UDP)." A diferencia del hallazgo de Azure (red plana, sin NSGs — ver `cloud-infra/`), esto es una superficie de exposición chica del lado on-premise: el acceso externo pasa por un único punto.
 
 **`DB-ARGOCEAN` — resuelto.** Es la base de datos de un cliente llamado **Argocean**, según la hoja Discrepancias de la matriz ("DB 172.18.5.60 / SID MBA — No figura [en tabla funcional]"). Argocean no está en la lista original de 13 clientes en absoluto — apareció solo en las notas de discrepancias. La VM está actualmente apagada en ExportList.csv, y todavía no se identificó ningún servidor WebLogic para ella.
 
@@ -27,7 +29,7 @@ La matriz (`Matriz_servicios_por_cliente_Hosting_V2.xlsx`) agrega dos clientes q
 - **Rex Argentina** (código `279`) — "incorporado recientemente al hosting", entorno PROD, usa Condor Work, DB referenciada solo como "REX Producción" (todavía sin resolver a una VM específica — necesita una búsqueda por TeamViewer, ~15 usuarios / 4.600 legajos según las notas de la matriz).
 - **Argocean** — ver arriba, por ahora solo con DB, sin WebLogic identificado.
 
-Más importante todavía: **la matriz indica que ABB S.A. y Arris de Argentina S.A. (GIAR) ya son clientes dados de baja** ("de baja"), con sus bases de datos retenidas solo temporalmente. Eso cambia su prioridad para la transición — vale la pena confirmar que esto sigue vigente antes de tratar a cualquiera de los dos como cliente de producción activo. (Ambos siguen apareciendo en `used_by_clients` en inventory.json de todas formas, ya que sus VMs todavía existen y están encendidas.)
+Más importante todavía, aunque con una fuente más floja de lo que parece a primera vista: **una nota suelta en la matriz dice que ABB S.A. y Arris de Argentina S.A. (GIAR) ya son clientes dados de baja**, con sus bases de datos retenidas solo temporalmente. Esa nota está pegada debajo de la tabla principal del Excel (no es un campo formal), y dice textual "Estos dos clientes estan de baja pero por el momento se mantiene sus bases". El problema: el campo formal `Estado / migración` de esos mismos dos clientes, en la misma planilla, dice **"Mantenimiento solamente"** — no "de baja". No son necesariamente contradictorios (podría estar en mantenimiento mientras se lo da de baja), pero es una nota informal contradiciendo, o al menos matizando, un campo estructurado — no algo para dar por hecho. Confirmar con el equipo saliente antes de tratar a cualquiera de los dos como cliente de baja prioridad. (Ambos siguen apareciendo en `used_by_clients` en inventory.json de todas formas, ya que sus VMs todavía existen y están encendidas.)
 
 ## Nuevo: la matriz documenta sus propias discrepancias sin resolver
 
@@ -60,15 +62,20 @@ La IP que Relevamiento le atribuye a `opendocker03` (`192.1.1.113`) no aparece e
 
 Todavía sin confirmar si es una segunda ubicación física o una máquina standalone; aloja la infraestructura de GIAR y ROMAN que no está en el rango `192.1.1.x`.
 
-### 4. "Piedras" — mencionado como sitio adicional, sin ninguna confirmación
+### 4. "Piedras" — más evidencia de que es real, pero todavía sin confirmar
 
-Se nos mencionó verbalmente que existiría un sitio llamado "Piedras", sin más contexto. El único rastro técnico es el nombre de una VM, `VEEAM-PIEDRAS` (backup, Windows Server 2016), que corre en `192.1.1.221` — **dentro del cluster principal**, no en `192.1.3.252`. Si es un sitio físico real, no coincide con el único candidato a segundo sitio que ya teníamos; podría ser un tercer lugar (por ejemplo, destino de replicación de backups) del que no tenemos ningún otro dato. Ver `QUESTIONS.md` y el paso 7 de la próxima pasada, abajo.
+Se nos había mencionado verbalmente que existiría un sitio llamado "Piedras". Dos rastros técnicos independientes, y ninguno cierra la pregunta:
+
+- El nombre de una VM, `VEEAM-PIEDRAS` (backup, Windows Server 2016), que corre en `192.1.1.221` — **dentro del cluster principal**, no en `192.1.3.252`.
+- Una fila en `Relevamiento (sin claves) - Pfsense.csv` etiquetada explícitamente **"Open - Piedras"**, apuntando a un dashboard de firewall en `https://192.168.100.1/` — un rango de IP que no aparece en ningún otro documento ni en ExportList.csv, lo que sí apoya que sea un sitio físico separado. Pero la observación del relevamiento dice **"no responde"** — no se pudo entrar ni confirmar nada más.
+
+Sube la confianza en que "Piedras" es un sitio real (dos fuentes independientes lo nombran), pero seguimos sin poder confirmar qué es ni por qué no responde. Ver `QUESTIONS.md` y el paso 7 de la próxima pasada, abajo.
 
 ## Próxima pasada sugerida por TeamViewer (en orden de prioridad)
 
-1. Confirmar el estado de baja de ABB y GIAR antes de bajarles prioridad a sus entornos.
+1. Confirmar el estado real de ABB y GIAR (¿de baja, o solo "mantenimiento"? la fuente se contradice, ver arriba) antes de bajarles prioridad a sus entornos.
 2. Resolver la identidad de la VM de base de datos de Rex Argentina — es un cliente PROD actual sin VM mapeada todavía.
-3. Recorrer las 8 VMs `firewall_candidate_pfsense` restantes para confirmar o descartar pfsense, ahora que una (`OPENVPNFW01`) ya está confirmada — las demás pueden compartir configuración.
+3. Confirmar o descartar pfsense en las 2 VMs `firewall_candidate_pfsense` que quedan (`OPENFWCLI02`, `VM_FW`) — las otras 7 ya están confirmadas.
 4. Recorrer las 12 VMs `infra_generic_unclear` (`OPENINFRxx`) — sin ninguna señal en el nombre.
 5. Para las ~31 VMs con patrón WL/DB todavía sin mapear, clasificar cada una como producción-de-un-cliente-sin-documentar vs. dev/QA/test/histórico vs. componente de un cliente conocido.
 6. Confirmar el rol real de `OPENPORTAL01`, `OPENPORTALCLI02`, `WEBSERVER` ahora que se sabe que la conjetura de nginx para ellos era incorrecta.

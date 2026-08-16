@@ -101,8 +101,9 @@
         "fe80::250:56ff:fe99:188d",
         "fe80::250:56ff:fe99:e0bf"
       ],
-      "category": "firewall_candidate_pfsense",
-      "used_by_clients": []
+      "category": "firewall_confirmed_pfsense",
+      "used_by_clients": [],
+      "confirmation": "Confirmado pfSense vía relevamiento manual de firewalls (source-files/Relevamiento (sin claves) - Pfsense.csv): dashboard accesible en 192.1.3.5:4443, etiquetado 'CliProFw01.open.local - Dashboard'."
     },
     {
       "name": "COCO ORT",
@@ -529,8 +530,9 @@
         "fe80::250:56ff:fe99:7943",
         "fe80::250:56ff:fe99:ae85"
       ],
-      "category": "firewall_candidate_pfsense",
-      "used_by_clients": []
+      "category": "firewall_confirmed_pfsense",
+      "used_by_clients": [],
+      "confirmation": "Confirmado pfSense vía relevamiento manual de firewalls (source-files/Relevamiento (sin claves) - Pfsense.csv): dashboard accesible en 192.1.3.93:81, etiquetado 'Open - Maipu'. Parece ser el firewall dedicado del cliente Maipú (coincide con su host físico WL)."
     },
     {
       "name": "DMWL01",
@@ -617,8 +619,9 @@
         "fe80::20c:29ff:fe86:fb9e",
         "fe80::20c:29ff:fe86:fba8"
       ],
-      "category": "firewall_candidate_pfsense",
-      "used_by_clients": []
+      "category": "firewall_confirmed_pfsense",
+      "used_by_clients": [],
+      "confirmation": "Confirmado pfSense vía relevamiento manual de firewalls (source-files/Relevamiento (sin claves) - Pfsense.csv): dashboard accesible en 192.1.3.1, etiquetado 'fwClientes - dashboard'."
     },
     {
       "name": "FWOPEN",
@@ -645,8 +648,9 @@
         "fe80::250:56ff:fe99:facf",
         "fe80::250:56ff:fe99:facf"
       ],
-      "category": "firewall_candidate_pfsense",
-      "used_by_clients": []
+      "category": "firewall_confirmed_pfsense",
+      "used_by_clients": [],
+      "confirmation": "Confirmado pfSense vía relevamiento manual de firewalls (source-files/Relevamiento (sin claves) - Pfsense.csv): dashboard accesible en 192.1.1.11, etiquetado 'Open Dashboard'."
     },
     {
       "name": "Jasper-Server",
@@ -1510,8 +1514,9 @@
         "fe80::250:56ff:fe99:13b8",
         "fe80::250:56ff:fe99:ffb5"
       ],
-      "category": "firewall_candidate_pfsense",
-      "used_by_clients": []
+      "category": "firewall_confirmed_pfsense",
+      "used_by_clients": [],
+      "confirmation": "Confirmado pfSense vía relevamiento manual de firewalls (source-files/Relevamiento (sin claves) - Pfsense.csv): dashboard accesible en 192.1.3.250, etiquetado 'Clientes'. Observación en el relevamiento: 'usuario creado smartsouth, ver Enerflex01'"
     },
     {
       "name": "OPENFWCLI02",
@@ -1547,8 +1552,9 @@
         "fe80::250:56ff:fe99:2c63",
         "fe80::250:56ff:fe99:94e6"
       ],
-      "category": "firewall_candidate_pfsense",
-      "used_by_clients": []
+      "category": "firewall_confirmed_pfsense",
+      "used_by_clients": [],
+      "confirmation": "Confirmado pfSense vía relevamiento manual de firewalls (source-files/Relevamiento (sin claves) - Pfsense.csv): dashboard accesible en 192.1.3.6:4443, etiquetado 'OPENFWCLI10.open.local'."
     },
     {
       "name": "OPENHUMHUB",
@@ -2696,7 +2702,7 @@
         "Relevamiento (sin claves) - VM Linux.csv",
         "Matriz_servicios_por_cliente_Hosting_V2.xlsx"
       ],
-      "status_note": "Per Matriz_servicios_por_cliente_Hosting_V2.xlsx: client is decommissioned ('de baja'); database is being retained temporarily. Estos dos clientes estan de baja pero por el momento se mantiene sus bases"
+      "status_note": "Sin confirmar, tensión en la fuente: una nota suelta en Matriz_servicios_por_cliente_Hosting_V2.xlsx (agregada debajo de la tabla principal, no un campo formal) dice 'Estos dos clientes estan de baja pero por el momento se mantiene sus bases' refiriendose a ABB y Arris/GIAR juntos. Pero el campo formal 'Estado / migración' de este mismo cliente, en la misma planilla, dice 'Mantenimiento solamente' — no 'de baja'. No son necesariamente contradictorios (podría estar en mantenimiento mientras se lo da de baja), pero no es un dato limpio. Confirmar con el equipo saliente antes de despriorizar este entorno (ver QUESTIONS.md)."
     },
     {
       "name": "Arris de Argentina S.A.",
@@ -2758,7 +2764,7 @@
         "Relevamiento (sin claves) - VM Linux.csv",
         "Matriz_servicios_por_cliente_Hosting_V2.xlsx"
       ],
-      "status_note": "Per Matriz_servicios_por_cliente_Hosting_V2.xlsx: client is decommissioned ('de baja'); database is being retained temporarily. Estos dos clientes estan de baja pero por el momento se mantiene sus bases"
+      "status_note": "Sin confirmar, tensión en la fuente: una nota suelta en Matriz_servicios_por_cliente_Hosting_V2.xlsx (agregada debajo de la tabla principal, no un campo formal) dice 'Estos dos clientes estan de baja pero por el momento se mantiene sus bases' refiriendose a ABB y Arris/GIAR juntos. Pero el campo formal 'Estado / migración' de este mismo cliente, en la misma planilla, dice 'Mantenimiento solamente' — no 'de baja'. No son necesariamente contradictorios (podría estar en mantenimiento mientras se lo da de baja), pero no es un dato limpio. Confirmar con el equipo saliente antes de despriorizar este entorno (ver QUESTIONS.md)."
     },
     {
       "name": "Cefas S.A.",
@@ -3569,7 +3575,18 @@
       "topic": "NFS server(s)",
       "evidence": "relevamiento_docker.txt: OPENDOCKER.57 ('Utiliza almacenamiento local y recursos NFS. Se detectó un montaje NFS con error y otro con alta ocupación.') and VM-DOCKER-Clientes ('un recurso NFS externo') both mount NFS from an unnamed server.",
       "known_detail": "None — target host/IP never named. Self-resolvable: run `mount`/check `/etc/fstab` on those two hosts over TeamViewer."
+    },
+    {
+      "topic": "Sitio 'Piedras' — pfSense en 192.168.100.1, no responde",
+      "evidence": "source-files/Relevamiento (sin claves) - Pfsense.csv, fila 'Open - Piedras': host https://192.168.100.1/, usuario admin, Observaciones 'no responde'.",
+      "known_detail": "192.168.100.1 no aparece en ningún otro documento ni en ExportList.csv — es un rango de IP completamente distinto a todo lo demás relevado, lo que apoya que sea un sitio físico separado. Pero el dashboard no respondió durante el relevamiento, así que no se pudo confirmar nada más (ni que sea pfSense, ni qué hay detrás). Sube la confianza en que 'Piedras' es real, pero no lo confirma."
     }
   ],
-  "cloud_infra_note": "Azure/AWS data moved to cloud-infra/inventory-cloud.json — out of scope for this discovery, see cloud-infra/README.md."
+  "cloud_infra_note": "Azure/AWS data moved to cloud-infra/inventory-cloud.json — out of scope for this discovery, see cloud-infra/README.md.",
+  "network_security_note": {
+    "topic": "Exposición a Internet del firewall perimetral — hallazgo positivo",
+    "source": "source-files/Relevamiento (sin claves) - Pfsense.csv, notas finales.",
+    "finding": "No hay puertos TCP expuestos a Internet (ni SSH 22, ni HTTP 80, ni HTTPS 443, ni la administración de pfSense). El único servicio escuchando desde Internet es OpenVPN en el puerto 2190/UDP.",
+    "implication": "A diferencia del hallazgo de Azure (red plana, sin NSGs), esto es una superficie de exposición chica del lado on-premise — el acceso externo pasa por un único punto (VPN), no por paneles de administración expuestos directamente."
+  }
 }

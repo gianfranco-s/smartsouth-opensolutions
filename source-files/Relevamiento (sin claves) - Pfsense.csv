@@ -1,0 +1,14 @@
+,,,,,,,,,
+host,usuario,clave,usuarios admin,Observaciones,Destino,Ngissara,infologik - baja,admin,Columna1
+http://192.1.3.250/,smartsouth,,"smartsouth, Ngissara, admin","usuario creado smartsouth, ver Enerflex01",Clientes,,,,ok
+http://192.1.2.11/,smartsouth,,"smartsouth, Ngissara, admin",usuario creado smartsouth,openVPN,,,,ok
+https://192.1.1.11/,smartsouth,,"smartsouth, Ngissara, admin",usuario creado smartsouth,Open Dashboard,,,,ok
+https://192.168.100.1/,,,admin,no responde,Open - Piedras,,,,
+https://192.1.3.1/,smartsouth,,"smartsouth, Ngissara, admin",usuario creado smartsouth,fwClientes - dashboard,,,,ok
+https://192.1.3.6:4443/,smartsouth,,"smartsouth, Ngissara, admin",usuario creado smartsouth,OPENFWCLI10.open.local,,,,ok
+http://192.1.3.93:81/,smartsouth,,"smartsouth, Ngissara, admin",usuario creado smartsouth,Open - Maipu,,,,ok
+https://192.1.3.5:4443/,smartsouth,,"smartsouth, Ngissara, admin",usuario creado smartsouth,CliProFw01.open.local - Dashboard,,,,ok
+,,,,,,,,,
+"No hay puertos TCP expuestos (como SSH 22, HTTP 80, HTTPS 443 o la administración del pfSense).
+",,,,,,,,,
+El único servicio escuchando conexiones desde Internet es el servidor OpenVPN en el puerto 2190 (UDP).,,,,,,,,,

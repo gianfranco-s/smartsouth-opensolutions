@@ -17,6 +17,7 @@
 - Re-priorizada `QUESTIONS.md` asumiendo una sola reunión con el equipo saliente: todo lo verificable por TeamViewer se movió a los próximos pasos de acá abajo; QUESTIONS.md quedó acotada a lo que solo el equipo saliente puede responder.
 - **Acotado el alcance a on-premise.** Se decidió no seguir investigando activamente infraestructura en proveedores cloud (Azure/AWS) por ahora. Todo lo relacionado (sección `azure` de inventory.json, el diagrama Azure/AKS, los hallazgos y preguntas sobre la VM Core/AWS/segmentación de red) se movió a `cloud-infra/` — ver `cloud-infra/README.md` para cómo retomarlo si hace falta.
 - Agregado "Piedras" como pregunta abierta: se mencionó verbalmente como sitio adicional, pero el único rastro técnico (`VEEAM-PIEDRAS`) está dentro del cluster principal, no en un sitio aparte — no coincide con lo esperado, así que queda como algo a verificar, no a dar por cierto.
+- Incorporado un relevamiento manual de firewalls (`Relevamiento (sin claves) - Pfsense.csv`, agregado a `source-files/`) con acceso real a cada dashboard pfSense. **Confirmados 6 candidatos más** (`CliProFw01`, `DMFW01`, `FW`, `FWOPEN`, `OPENFWCLI001`, `OPENFWCLI10`) — quedan solo 2 sin confirmar (`OPENFWCLI02`, `VM_FW`) de los 9 originales. También confirma un hallazgo de seguridad positivo (sin puertos TCP expuestos a Internet, solo OpenVPN/UDP 2190) y aporta una segunda fuente independiente para "Piedras" (un dashboard etiquetado "Open - Piedras" en `192.168.100.1`, que no respondió durante el relevamiento).
 
 ## Próximos pasos
 
@@ -30,11 +31,12 @@
 4. **Identificar el/los servidor(es) NFS** que montan `OPENDOCKER.57` y `VM-DOCKER-Clientes` — correr `mount` o revisar `/etc/fstab` en esos dos hosts.
 5. **Clasificar las ~31 VMs con patrón WL/DB sin mapear** — para cada una, determinar: componente de un cliente conocido, copia de no-producción, o cliente genuinamente sin documentar (así se encontró Argocean, así que puede haber más).
 6. **Recorrer las 12 VMs `infra_generic_unclear` (`OPENINFRxx`)** — sin ninguna señal en el nombre, hay que entrar a mirar.
-7. **Verificar los 8 candidatos a firewall restantes** ahora que uno ya está confirmado como pfsense — pueden compartir configuración/patrones de acceso.
+7. **Confirmar pfsense en los últimos 2 candidatos (`OPENFWCLI02`, `VM_FW`)** — el relevamiento de firewalls que se sumó ya confirmó los otros 7 de 9.
 8. **Confirmar el rol real de `OPENPORTAL01`, `OPENPORTALCLI02`, `WEBSERVER`** — la conjetura anterior de que eran nginx resultó incorrecta; rol real todavía desconocido. De paso, confirmar si `portalDM` es un alias de `OPENPORTAL01` (mismo IP).
-9. **Construir el mapa dominio → host proxy → servidor/puerto interno** a partir de las 4 instancias confirmadas de Nginx Proxy Manager y las reglas NAT de `pfsense` — no hace falta esperar a que el equipo saliente lo termine, lo podemos armar entrando a cada instancia.
-10. **Investigar de forma pasiva si el segundo host ESXi (`192.1.3.252`) es un sitio separado** (ruteo, IPs públicas asociadas) antes de gastar tiempo de reunión en la pregunta.
+9. **Construir el mapa dominio → host proxy → servidor/puerto interno nosotros mismos**, a partir de las 4 instancias confirmadas de Nginx Proxy Manager y las reglas NAT de `pfsense` — decidido no preguntarle al equipo saliente si ya tienen uno armado, lo hacemos entrando a cada instancia.
+10. **Investigar nosotros mismos si el segundo host ESXi (`192.1.3.252`) es un sitio separado** (ruteo, IPs públicas asociadas) — decidido no preguntarlo en la reunión.
 11. **Revisar los jobs de backup de `VEEAM-PIEDRAS`** (repositorios, destinos de replicación) para ver si confirman un sitio adicional real detrás del nombre "Piedras", antes de preguntarlo en la reunión.
+12. **Reintentar el acceso a `192.168.100.1`** (el dashboard "Open - Piedras" que no respondió en el relevamiento de firewalls) desde dentro de la red, por si el problema fue de ruteo/alcance y no que el host esté caído.
 
 ### Requiere al equipo saliente
 

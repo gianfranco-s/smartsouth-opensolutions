@@ -1,33 +1,23 @@
-# Infra topology (generated views)
+# Topología de infraestructura (vistas generadas)
 
-Generated from [`inventory.json`](inventory.json). Do not hand-edit the diagrams below —
-regenerate them from the JSON (see CLAUDE.md) whenever the JSON changes, so they never drift out
-of sync.
+Generado a partir de [`inventory.json`](inventory.json). No editar los diagramas de abajo a mano — regenerarlos desde el JSON (ver CLAUDE.md) cada vez que el JSON cambie, para que nunca queden desincronizados.
 
-## 1. Client → WebLogic → Database mapping (on-premise vSphere)
+## 1. Mapeo Cliente → WebLogic → Base de datos (vSphere on-premise)
 
-Built by resolving each client's declared WebLogic/DB servers (from the Relevamiento CSV and,
-where richer, the `Matriz_servicios_por_cliente_Hosting_V2.xlsx` client matrix) against the
-actual VM inventory in ExportList.csv — matched by name, falling back to IP when the name didn't
-match (see `resolved_by` in the JSON). 15 clients total: the 13 from the original Relevamiento
-CSV, plus **Rex Argentina** and **Argocean**, both found only in the richer matrix (see
-findings.md). **ABB and Arris/GIAR are flagged in the matrix as already decommissioned** — kept
-in the diagram since their VMs still exist and run, but don't treat them as active production
-without confirming current status.
+Construido resolviendo los servidores WebLogic/DB declarados de cada cliente (del CSV de Relevamiento y, donde hay más detalle, de la matriz de clientes `Matriz_servicios_por_cliente_Hosting_V2.xlsx`) contra el inventario real de VMs en ExportList.csv — matcheado por nombre, y si el nombre no coincide, por IP (ver `resolved_by` en el JSON). 15 clientes en total: los 13 del CSV original de Relevamiento, más **Rex Argentina** y **Argocean**, ambos encontrados solo en la matriz más completa (ver findings.md). **ABB y Arris/GIAR están marcados en la matriz como ya dados de baja** — se mantienen en el diagrama porque sus VMs todavía existen y corren, pero no tratarlos como producción activa sin confirmar el estado actual.
 
-Notice the shared instances: several clients sit on the *same* WebLogic VM and/or the same
-database VM — that's a blast-radius fact worth knowing before touching any one of them.
+Prestar atención a las instancias compartidas: varios clientes están en la *misma* VM de WebLogic y/o la misma VM de base de datos — es un dato de radio de impacto que conviene saber antes de tocar cualquiera de ellas.
 
 ```mermaid
 flowchart LR
-  n_ABB["ABB S.A.<br/>(ABB)<br/><i>DECOMISSIONED</i>"]
+  n_ABB["ABB S.A.<br/>(ABB)<br/><i>DADA DE BAJA</i>"]
   n_WL12C_Desarrollo_2_54["WL: WL12C-Desarrollo.2.54"]
   n_ABB --> n_WL12C_Desarrollo_2_54
   n_DBClientes_12C_31[("DB: DBClientes-12C.31")]
   n_WL12C_Desarrollo_2_54 --> n_DBClientes_12C_31
   n_DBClientes_190[("DB: DBClientes.190")]
   n_WL12C_Desarrollo_2_54 --> n_DBClientes_190
-  n_GIAR["Arris de Argentina S.A.<br/>(GIAR)<br/><i>DECOMISSIONED</i>"]
+  n_GIAR["Arris de Argentina S.A.<br/>(GIAR)<br/><i>DADA DE BAJA</i>"]
   n_OPENWLPROD01["WL: OPENWLPROD01"]
   n_GIAR --> n_OPENWLPROD01
   n_DB_GIAR[("DB: DB-GIAR")]
@@ -79,93 +69,71 @@ flowchart LR
   n_DASADBPROD01[("DB: DASADBPROD01")]
   n_DMWL01 --> n_DASADBPROD01
   n_279["Rex Argentina<br/>(279)"]
-  n_279 -.->|"no server identified yet"| unknown_n_279((?))
+  n_279 -.->|"servidor todavía sin identificar"| unknown_n_279((?))
   n_Argocean["Argocean<br/>(Argocean)"]
   n_DB_ARGOCEAN[("DB: DB-ARGOCEAN")]
   n_Argocean --> n_DB_ARGOCEAN
 ```
 
-**Read this diagram carefully — one node is misleading:** `WL12C-Desarrollo.2.54 → DBClientes.190`
-and `WebLogic.191 → DBClientes.190` both appear because ABB and DCVIAJES were each resolved
-independently; it does not mean ABB and DCVIAJES share a WebLogic instance. Cross-check
-against `clients[].database.resolved` in the JSON before assuming an edge implies shared WL.
+**Leer este diagrama con cuidado — un nodo es engañoso:** `WL12C-Desarrollo.2.54 → DBClientes.190` y `WebLogic.191 → DBClientes.190` aparecen ambos porque ABB y DCVIAJES se resolvieron cada uno por separado; no significa que ABB y DCVIAJES compartan una instancia de WebLogic. Verificar contra `clients[].database.resolved` en el JSON antes de asumir que una flecha implica un WL compartido.
 
-## 2. Azure/AKS — a second, separate infra plane
+## 2. Azure/AKS — un segundo plano de infraestructura, separado
 
-Sourced from `source-files/extracted/analisis_azure.txt`. This is **not** part of the vSphere
-inventory above — different management plane entirely (Azure portal/CLI, not TeamViewer/vCenter).
-Condor Work, Enterprise, and ProvIA application tiers run here as containers, not as vSphere VMs.
+Basado en `source-files/extracted/analisis_azure.txt`. Esto **no** es parte del inventario de vSphere de arriba — es un plano de gestión completamente distinto (portal/CLI de Azure, no TeamViewer/vCenter). Las capas de aplicación de Condor Work, Enterprise, y ProvIA corren acá como contenedores, no como VMs de vSphere.
 
 ```mermaid
 flowchart TB
-  subgraph OnPrem["On-premise datacenter"]
+  subgraph OnPrem["Datacenter on-premise"]
     pfsense["OPENVPNFW01 (pfSense)<br/>200.55.243.92"]
   end
   subgraph AzureProd["Azure — Open Prod Subscription / rg-open-prod"]
-    aksprod["AKS: aks-open-prod<br/>vnet-open-prod 10.201.0.0/16<br/>(flat, no NSGs)"]
+    aksprod["AKS: aks-open-prod<br/>vnet-open-prod 10.201.0.0/16<br/>(plana, sin NSGs)"]
     natprod["NAT GW: natgw-aks-prod<br/>172.190.147.110"]
     pgprod["psql-core-prod-eus"]
   end
   subgraph AzureDev["Azure — Open Operations Subscription / rg-open-devtest"]
-    aksdev["AKS: aks-open-devtest<br/>vnet-open-devtest 10.200.0.0/16<br/>(flat, no NSGs)"]
+    aksdev["AKS: aks-open-devtest<br/>vnet-open-devtest 10.200.0.0/16<br/>(plana, sin NSGs)"]
     natdev["NAT GW: natgw-aks-devtest<br/>13.92.235.102"]
     pgdev["psql-core-nonprod-eus"]
   end
-  pfsense <-->|"S2S IPsec VPN<br/>open-pfsense-connection"| aksprod
-  pfsense <-->|"S2S IPsec VPN<br/>open-pfsense-connection-devtest<br/>routes 10.77.0.0/16"| aksdev
+  pfsense <-->|"VPN S2S IPsec<br/>open-pfsense-connection"| aksprod
+  pfsense <-->|"VPN S2S IPsec<br/>open-pfsense-connection-devtest<br/>rutea 10.77.0.0/16"| aksdev
   aksprod --> pgprod
   aksdev --> pgdev
   aksprod --> natprod
   aksdev --> natdev
-  natprod -.->|"internet egress"| Internet1(("Internet"))
-  natdev -.->|"internet egress"| Internet2(("Internet"))
+  natprod -.->|"salida a internet"| Internet1(("Internet"))
+  natdev -.->|"salida a internet"| Internet2(("Internet"))
 ```
 
-Both VPN tunnels terminate at the same pfSense box, `OPENVPNFW01` — confirmed by IP match
-(`200.55.243.92`), not just guessed from FreeBSD guest OS. VPN traffic itself is low-volume
-(mostly Oracle DB access and point integrations from Azure back to on-prem); the bulk of AKS
-egress goes straight to the internet via NAT Gateway (ORDS/API calls), not through the tunnel.
-Full detail — subscriptions, resource groups, public IPs, traffic volumes — is in
-`inventory.json` → `azure` and the source doc.
+Los dos túneles VPN terminan en el mismo firewall pfSense, `OPENVPNFW01` — confirmado por coincidencia de IP (`200.55.243.92`), no solo una conjetura por el SO invitado FreeBSD. El tráfico de la VPN en sí es bajo (mayormente acceso a Oracle DB e integraciones puntuales desde Azure hacia on-premise); la mayor parte de la salida de AKS va directo a internet vía NAT Gateway (llamadas a ORDS/APIs), no por el túnel. El detalle completo — suscripciones, resource groups, IPs públicas, volúmenes de tráfico — está en `inventory.json` → `azure` y en el documento fuente.
 
-## 3. VM inventory by category (all 129 VMs, from ExportList.csv)
+## 3. Inventario de VMs por categoría (las 129 VMs, de ExportList.csv)
 
-Counts only — see `inventory.json` → `vms[].category` for the member list of each bucket.
-Categories were assigned by name/OS pattern-matching unless otherwise confirmed by the email/RAR
-material (see findings.md for what's now confirmed vs. still a guess).
+Solo los totales — ver `inventory.json` → `vms[].category` para la lista de miembros de cada grupo. Las categorías se asignaron por coincidencia de nombre/SO salvo que se indique lo contrario por confirmación vía el material de los emails/RAR (ver findings.md para qué está confirmado y qué sigue siendo conjetura).
 
-| Category | Count | Confidence |
+| Categoría | Cantidad | Confianza |
 |---|---|---|
-| database | 30 | Mixed — several confirmed via client mapping, rest inferred from name only |
-| weblogic_app | 18 | Mixed — several confirmed via client mapping, rest inferred from name only |
-| workstation_or_jumphost | 20 | Inferred (Windows 7/10 guest OS + naming) |
-| infra_generic_unclear | 12 | Unknown — generic `OPENINFRxx` naming tells us nothing about role |
-| docker_host_confirmed / docker_host_confirmed_nginx_proxy_manager | 9 | **Confirmed** — container-level detail from the Docker survey doc, incl. which 4 run Nginx Proxy Manager |
-| firewall_confirmed_pfsense | 1 (`OPENVPNFW01`) | **Confirmed** via Azure VPN peer IP match |
-| firewall_candidate_pfsense | 8 | Inferred (FreeBSD guest OS + fw/vpn naming), still unconfirmed |
-| unclear | 17 | No naming signal, or a prior guess (nginx-candidate) that turned out wrong |
-| bi_reporting | 4 | Inferred (Jasper/MicroStrategy in name) |
-| backup | 2 | Inferred (Veeam in name) |
-| source_repo | 2 | Inferred (SVN in name) |
-| domain_controller, file_server, monitoring, mail, storage_nas, virtualization_mgmt | 1 each | Inferred from name/OS |
+| database | 30 | Mixta — varias confirmadas vía el mapeo de clientes, el resto inferidas solo por nombre |
+| weblogic_app | 18 | Mixta — varias confirmadas vía el mapeo de clientes, el resto inferidas solo por nombre |
+| workstation_or_jumphost | 20 | Inferida (SO invitado Windows 7/10 + nombre) |
+| infra_generic_unclear | 12 | Desconocida — el nombre genérico `OPENINFRxx` no dice nada sobre el rol |
+| docker_host_confirmed / docker_host_confirmed_nginx_proxy_manager | 9 | **Confirmada** — detalle a nivel contenedor del relevamiento de Docker, incl. cuáles 4 corren Nginx Proxy Manager |
+| firewall_confirmed_pfsense | 1 (`OPENVPNFW01`) | **Confirmada** vía coincidencia de IP con el peer de VPN de Azure |
+| firewall_candidate_pfsense | 8 | Inferida (SO invitado FreeBSD + nombre con fw/vpn), todavía sin confirmar |
+| unclear | 17 | Sin señal en el nombre, o una conjetura previa (candidato a nginx) que resultó incorrecta |
+| bi_reporting | 4 | Inferida (Jasper/MicroStrategy en el nombre) |
+| backup | 2 | Inferida (Veeam en el nombre) |
+| source_repo | 2 | Inferida (SVN en el nombre) |
+| domain_controller, file_server, monitoring, mail, storage_nas, virtualization_mgmt | 1 cada una | Inferida por nombre/SO |
 
-## 4. ESXi hosts / clusters
+## 4. Hosts / clusters ESXi
 
-12 distinct ESXi host IPs appear in the `Host` column of ExportList.csv:
+Aparecen 12 IPs de host ESXi distintas en la columna `Host` de ExportList.csv:
 
-- **192.1.1.214 – 192.1.1.224** (11 hosts) — main cluster, hosts most client-facing WL/DB VMs.
-- **192.1.3.252** (1 host) — hosts a distinct set of VMs on different IP ranges
-  (`172.18.5.x`, `10.10.1.x`, `192.1.3.x`) including `WL-ROMAN`, `DB-ROMAN`, `DB-GIAR`,
-  `WL-GIAR`, `FW`, `WL12-Clientes`. **Likely a separate physical site or a standalone host
-  outside the main cluster** — worth confirming, since it doesn't share the 192.1.1.x
-  management pattern of the others.
+- **192.1.1.214 – 192.1.1.224** (11 hosts) — cluster principal, aloja la mayoría de las VMs WL/DB de cara al cliente.
+- **192.1.3.252** (1 host) — aloja un conjunto distinto de VMs en otros rangos de IP (`172.18.5.x`, `10.10.1.x`, `192.1.3.x`) incluyendo `WL-ROMAN`, `DB-ROMAN`, `DB-GIAR`, `WL-GIAR`, `FW`, `WL12-Clientes`. **Probablemente un sitio físico separado o una máquina standalone fuera del cluster principal** — vale la pena confirmarlo, ya que no comparte el patrón de gestión 192.1.1.x de los demás.
 
-## Regenerating these diagrams
+## Cómo regenerar estos diagramas
 
-The client-mapping diagram in section 1 is generated, not hand-drawn. If `inventory.json`
-changes, regenerate it with the same approach: walk `clients[]`, emit one node per client and
-one node per distinct `resolved_vm` under `weblogic`/`database`, dedupe nodes, and wire
-client→WL→DB. Keep it to the client subset — a full 129-node diagram is unreadable and not
-worth building; the JSON is the source of truth for the long tail. The Azure diagram in section 2
-is hand-maintained since it describes a small, stable set of named cloud resources rather than a
-generated cross-reference — update it directly if `inventory.json` → `azure` changes.
+El diagrama de mapeo de clientes en la sección 1 es generado, no dibujado a mano. Si `inventory.json` cambia, regenerarlo con el mismo enfoque: recorrer `clients[]`, emitir un nodo por cliente y uno por cada `resolved_vm` distinta bajo `weblogic`/`database`, deduplicar nodos, y conectar cliente→WL→DB. Mantenerlo acotado al subconjunto de clientes — un diagrama con las 129 VMs no se puede leer y no vale la pena construirlo; el JSON es la fuente de verdad para el resto. El diagrama de Azure de la sección 2 se mantiene a mano porque describe un conjunto chico y estable de recursos cloud con nombre, en vez de un cruce de datos generado — actualizarlo directamente si `inventory.json` → `azure` cambia.

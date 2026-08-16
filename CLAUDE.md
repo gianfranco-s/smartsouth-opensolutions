@@ -1,114 +1,45 @@
-# opensolutions infra takeover
+# Transición de infraestructura de opensolutions
 
-This is not a software project. It's a working directory for mapping the infrastructure of a
-new client (Open Solutions / the CONDOR product ecosystem) we're taking over with very little
-prior knowledge. There is no programmatic access to the on-premise hosts — all hands-on
-investigation happens through TeamViewer. Azure is a separate, cloud-managed plane (see below).
-This repo exists to build and maintain a single accurate picture of what's actually out there,
-iteratively, over many sessions.
+Esto no es un proyecto de software. Es un directorio de trabajo para mapear la infraestructura de un cliente nuevo (Open Solutions / el ecosistema de productos CONDOR) que estamos tomando con muy poco conocimiento previo. No hay acceso programático a los hosts on-premise — toda la investigación se hace a mano por TeamViewer. Azure es un plano aparte, gestionado en la nube (ver más abajo). Este repo existe para construir y mantener una imagen precisa de lo que realmente hay, de forma iterativa, a lo largo de muchas sesiones.
 
-## Data sources — know which is which, and treat research material with a grain of salt
+## Fuentes de datos — saber cuál es cuál, y tomar el material de investigación con pinzas
 
-All source material lives in `source-files/`. Two tiers of trust:
+Todo el material fuente vive en `source-files/`. Dos niveles de confianza:
 
-- **`source-files/ExportList.csv`** — a raw export from vCenter (VMware vSphere). The closest
-  thing we have to ground truth for the on-premise side: every VM that exists, power state, ESXi
-  host, disk, guest OS as reported by VMware tools, and IP addresses. It only knows what the
-  hypervisor knows — nothing about what's actually running inside a VM.
-- **Everything else is internal working documentation, not verified ground truth** — a manually
-  compiled CSV, forwarded internal emails, and documents an internal team produced while doing
-  the same kind of discovery we're doing now. Cross-check every claim against ExportList.csv (or
-  TeamViewer) before acting on it:
-  - **`source-files/Relevamiento (sin claves) - VM Linux.csv`** — manually compiled, maps 13
-    known clients to WebLogic/DB servers only. Known incomplete (only tracks one WL+one DB per
-    client — see `infra/findings.md`) and known to contain at least one stale entry. The original
-    file had plaintext admin credentials in a trailing column; stripped before this file was
-    tracked in git.
-  - **`source-files/*.eml`** — two forwarded internal emails (real Smart South / Open Solutions
-    employee names and addresses in the headers). One reports early Nginx Proxy Manager findings;
-    the other delivers a RAR of internal documentation.
-  - **`source-files/extracted/`** — plain-text/JSON extractions from the RAR attachment (it's not
-    re-extractable without a RAR tool, so the useful content was pulled out once and saved here):
-    a richer **client-services matrix** (`matriz_servicios_por_cliente.json` — SIDs, DB
-    versions, which Condor products each client uses, and the source team's own **Discrepancias**
-    sheet where two of their internal data sources disagreed and neither was picked over the
-    other), a **Docker infrastructure survey** (`relevamiento_docker.txt` — per-host container
-    inventory, this is what resolved the nginx question, see findings.md), an **Azure
-    architecture analysis** (`analisis_azure.txt` — subscriptions, AKS, VNets, VPN), a hosting
-    service spec, and a product/business overview of the CONDOR ecosystem.
-  - The matrix itself documents client churn (two of the original 13 clients are already
-    decommissioned) — treat any status claim about a specific client as needing reconfirmation,
-    not as current fact.
-  - **Never re-add credentials to any tracked file.** If new source material includes them, strip
-    before committing, same as was done for the Relevamiento CSV.
+- **`source-files/ExportList.csv`** — un export crudo de vCenter (VMware vSphere). Lo más cercano a la verdad absoluta que tenemos del lado on-premise: cada VM que existe, estado de encendido, host ESXi, disco, SO invitado según lo reporta VMware tools, y direcciones IP. Solo sabe lo que el hipervisor sabe — nada sobre qué corre realmente adentro de una VM.
+- **Todo lo demás es documentación interna de trabajo, no verdad verificada** — un CSV armado a mano, emails internos reenviados, y documentos que un equipo interno produjo haciendo el mismo tipo de relevamiento que estamos haciendo ahora. Verificar cada dato contra ExportList.csv (o TeamViewer) antes de actuar en base a él:
+  - **`source-files/Relevamiento (sin claves) - VM Linux.csv`** — armado a mano, mapea 13 clientes conocidos solo a sus servidores WebLogic/DB. Sabido incompleto (solo registra un WL+una DB por cliente — ver `infra/findings.md`) y con al menos un dato desactualizado confirmado. El archivo original tenía credenciales de admin en texto plano en una columna; se quitaron antes de versionar este archivo en git.
+  - **`source-files/*.eml`** — dos emails internos reenviados (nombres y direcciones reales de empleados de Smart South / Open Solutions en los headers). Uno reporta hallazgos iniciales de Nginx Proxy Manager; el otro entrega un RAR con documentación interna.
+  - **`source-files/extracted/`** — extracciones en texto plano/JSON del adjunto RAR (no se puede re-extraer sin una herramienta RAR, así que el contenido útil se sacó una vez y se guardó acá): una **matriz de servicios por cliente** más completa (`matriz_servicios_por_cliente.json` — SIDs, versiones de DB, qué productos Condor usa cada cliente, y la propia hoja **Discrepancias** del equipo fuente, donde dos de sus fuentes de datos internas no coincidían y no se eligió ninguna sobre la otra), un **relevamiento de infraestructura Docker** (`relevamiento_docker.txt` — inventario de contenedores por host, es lo que resolvió la pregunta sobre nginx, ver findings.md), un **análisis de arquitectura Azure** (`analisis_azure.txt` — suscripciones, AKS, VNets, VPN), una especificación de servicio de hosting, y un resumen de producto/negocio del ecosistema CONDOR.
+  - La propia matriz documenta bajas de clientes (dos de los 13 clientes originales ya están dados de baja) — tratar cualquier afirmación sobre el estado de un cliente puntual como algo a reconfirmar, no como un hecho vigente.
+  - **Nunca volver a agregar credenciales a ningún archivo versionado.** Si material fuente nuevo las incluye, quitarlas antes de commitear, igual que se hizo con el CSV de Relevamiento.
 
-## What's in `infra/`
+## Qué hay en `infra/`
 
-- **`inventory.json`** — the single source of truth for the on-premise side, plus a separate
-  `azure` section for the cloud side (see below). All 129 VMs from ExportList.csv, each tagged
-  with a `category` (confidence varies — several are now **confirmed** via the RAR material,
-  most are still name-based guesses — see `infra/topology.md` §3 for the breakdown) and, for VMs
-  referenced by a client, resolved links back to `clients[]`. 15 client records (13 from the
-  original CSV + 2 found only in the richer matrix: Rex Argentina, Argocean), each with
-  `weblogic`/`database` blocks showing what was *claimed* vs. what actually `resolved` against
-  ExportList.csv (`resolved_by` shows name vs. IP match, `match: false` flags a stale name), plus
-  a `matrix_detail` block for clients covered by the richer matrix. Docker hosts carry a
-  `docker_detail` block with real per-container service inventory.
-- **`topology.md`** — generated views: a Mermaid diagram of the client → WebLogic → DB mapping
-  (on-premise), a second Mermaid diagram of the Azure/AKS topology (cloud), a category breakdown
-  table, and ESXi host/cluster notes.
-- **`findings.md`** — the payoff of cross-referencing everything: what's now confirmed (pfsense
-  identity, nginx's real location, the Argocean client), what's newly discovered (2 extra
-  clients, 2 decommissioned clients, the source team's own unresolved discrepancies), and what's
-  still open. Read this first if you're new to the project — it's the prioritized list of what to
-  verify next over TeamViewer or the Azure portal.
+- **`inventory.json`** — la fuente única de verdad para el lado on-premise, más una sección `azure` aparte para el lado cloud (ver abajo). Las 129 VMs de ExportList.csv, cada una etiquetada con una `category` (la confianza varía — varias ya están **confirmadas** vía el material del RAR, la mayoría siguen siendo conjeturas basadas en el nombre — ver `infra/topology.md` §3 para el detalle) y, para las VMs referenciadas por un cliente, enlaces resueltos de vuelta a `clients[]`. 15 registros de cliente (13 del CSV original + 2 encontrados solo en la matriz más completa: Rex Argentina, Argocean), cada uno con bloques `weblogic`/`database` que muestran lo que se *afirmaba* vs. lo que efectivamente `resolved` contra ExportList.csv (`resolved_by` indica si el match fue por nombre o por IP, `match: false` marca un nombre desactualizado), más un bloque `matrix_detail` para los clientes cubiertos por la matriz más completa. Los hosts Docker llevan un bloque `docker_detail` con el inventario real de servicios por contenedor.
+- **`topology.md`** — vistas generadas: un diagrama Mermaid del mapeo cliente → WebLogic → DB (on-premise), un segundo diagrama Mermaid de la topología Azure/AKS (cloud), una tabla de categorías, y notas sobre hosts/clusters ESXi.
+- **`findings.md`** — el resultado concreto de cruzar todo: qué está confirmado ahora (identidad de pfsense, ubicación real de nginx, el cliente Argocean), qué se descubrió de nuevo (2 clientes extra, 2 clientes dados de baja, las propias discrepancias sin resolver del equipo fuente), y qué sigue abierto. Leer esto primero si sos nuevo en el proyecto — es la lista priorizada de qué verificar a continuación por TeamViewer o el portal de Azure.
 
-## Two separate infra planes — don't conflate them
+## Dos planos de infraestructura separados — no confundirlos
 
-1. **On-premise vSphere** (ExportList.csv + most of `infra/`) — accessed via TeamViewer, no API.
-2. **Azure/AKS** (`inventory.json` → `azure`, `topology.md` §2) — where the Condor Work,
-   Enterprise, and ProvIA application tiers actually run, as containers on AKS. Managed via the
-   Azure portal/CLI, not TeamViewer. Connected to the on-premise side by a single Site-to-Site
-   VPN terminating at `OPENVPNFW01` (confirmed pfSense). A VM name like `WL12C-PROD` existing in
-   ExportList.csv does **not** mean that client's application logic runs there — check
-   `matrix_detail.productos` and the Azure doc before assuming on-prem-only.
+1. **vSphere on-premise** (ExportList.csv + la mayor parte de `infra/`) — se accede por TeamViewer, sin API.
+2. **Azure/AKS** (`inventory.json` → `azure`, `topology.md` §2) — donde realmente corren las capas de aplicación de Condor Work, Enterprise y ProvIA, como contenedores en AKS. Se gestiona desde el portal/CLI de Azure, no por TeamViewer. Conectado al lado on-premise por una única VPN Site-to-Site que termina en `OPENVPNFW01` (pfSense confirmado). Que exista una VM con un nombre como `WL12C-PROD` en ExportList.csv **no** significa que la lógica de aplicación de ese cliente corra ahí — revisar `matrix_detail.productos` y el documento de Azure antes de asumir que todo es on-prem.
 
-## How the categorization works (and its limits)
+## Cómo funciona la categorización (y sus límites)
 
-VM `category` in inventory.json started as regex over the VM *name* and vCenter's self-reported
-guest OS — a hypothesis, not a fact. Several categories have since been upgraded to confirmed via
-the RAR material (docker host container contents, one pfsense box confirmed by VPN peer IP). The
-rest are still guesses pending TeamViewer verification. Don't let a category label read as more
-certain than it is; when in doubt, open `findings.md`.
+La `category` de cada VM en inventory.json arrancó como una expresión regular sobre el *nombre* de la VM y el SO invitado autoreportado por vCenter — una hipótesis, no un hecho. Varias categorías ya se actualizaron a confirmadas gracias al material del RAR (contenido de los hosts Docker, un firewall pfsense confirmado por IP del peer de VPN). El resto sigue siendo conjetura pendiente de verificación por TeamViewer. No dejar que una etiqueta de categoría se lea con más certeza de la que tiene; ante la duda, abrir `findings.md`.
 
-## Keeping this updated
+## Cómo mantener esto actualizado
 
-This is a living map, not a one-time export. As TeamViewer/Azure-portal sessions confirm facts,
-or new source material arrives:
+Este es un mapa vivo, no un export de una sola vez. A medida que sesiones de TeamViewer/portal de Azure confirmen hechos, o llegue material fuente nuevo:
 
-1. Edit `infra/inventory.json` directly — flip a `category` from guess to confirmed, fill in
-   `used_by_clients`, add a `notes` field, etc.
-2. If the client-mapping diagram in `topology.md` §1 changes (a client's WL/DB reassigned, a new
-   client added), regenerate it from the updated JSON rather than hand-editing the Mermaid — walk
-   `clients[]`, one node per client and one per distinct resolved VM, dedupe, wire client→WL→DB.
-   Keep it scoped to the client subset; a full 129-node diagram isn't readable. The Azure diagram
-   (§2) is hand-maintained since it's a small, stable set of named resources — edit it directly.
-3. If a genuinely new export or document lands, re-run the cross-reference (name match, fall back
-   to IP match) rather than hand-merging — that's what caught the stale entries and the IP-only
-   matches so far. New RAR/zip attachments: extract with `unar` (installed via Homebrew), pull
-   plain text out of `.docx`/`.xlsx` (they're zipped XML — no extra dependencies needed, see the
-   extraction approach already used for `source-files/extracted/`), and save the extracted text/
-   JSON into `source-files/extracted/` rather than leaving it only in the archive.
-4. When a finding in `findings.md` gets resolved, move it to a "Resolved" section with a date
-   instead of leaving stale open questions next to live ones (see the current file for the
-   pattern).
+1. Editar `infra/inventory.json` directamente — pasar una `category` de conjetura a confirmada, completar `used_by_clients`, agregar un campo `notes`, etc.
+2. Si el diagrama de mapeo de clientes en `topology.md` §1 cambia (se reasigna el WL/DB de un cliente, se agrega un cliente nuevo), regenerarlo desde el JSON actualizado en vez de editar el Mermaid a mano — recorrer `clients[]`, un nodo por cliente y uno por cada VM resuelta distinta, deduplicar, conectar cliente→WL→DB. Mantenerlo acotado al subconjunto de clientes; un diagrama con las 129 VMs no se puede leer. El diagrama de Azure (§2) se mantiene a mano porque es un conjunto chico y estable de recursos con nombre — editarlo directamente.
+3. Si llega un export o documento genuinamente nuevo, volver a correr el cruce de datos (match por nombre, y si no por IP) en vez de mezclar a mano — así fue como se detectaron los datos desactualizados y los matches solo-por-IP hasta ahora. Adjuntos RAR/zip nuevos: extraer con `unar` (instalado vía Homebrew), sacar el texto plano de `.docx`/`.xlsx` (son XML comprimido — no hace falta ninguna dependencia extra, ver el enfoque de extracción ya usado para `source-files/extracted/`), y guardar el texto/JSON extraído en `source-files/extracted/` en vez de dejarlo solo dentro del archivo comprimido.
+4. Cuando un hallazgo en `findings.md` se resuelve, moverlo a una sección "Resueltos" con fecha en vez de dejar preguntas viejas mezcladas con las vigentes (ver el archivo actual para el patrón).
 
-## Security
+## Seguridad
 
-- Never commit credentials of any kind. If you're about to write a password into a tracked file,
-  stop and ask first.
-- This is a **private** GitHub repo (`git@github.com:gianfranco-s/smartsouth-opensolutions.git`).
-  Raw source material (CSVs, emails, extracted docs) is committed intentionally, on the basis
-  that the repo stays private — don't make it public, and don't copy this material elsewhere
-  without the same care.
-- Never push without being explicitly asked to, even though a remote is configured.
+- Nunca commitear credenciales de ningún tipo. Si estás por escribir una contraseña en un archivo versionado, parar y preguntar primero.
+- Este es un repo **privado** de GitHub (`git@github.com:gianfranco-s/smartsouth-opensolutions.git`). El material fuente crudo (CSVs, emails, documentos extraídos) se commiteó intencionalmente, bajo la premisa de que el repo se mantiene privado — no hacerlo público, y no copiar este material a otro lado sin el mismo cuidado.
+- Nunca hacer push sin que se pida explícitamente, aunque haya un remoto configurado.

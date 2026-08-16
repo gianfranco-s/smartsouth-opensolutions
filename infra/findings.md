@@ -1,110 +1,64 @@
-# Findings & open questions
+# Hallazgos y preguntas abiertas
 
-Sources: ExportList.csv (vCenter export, ground truth for "what VM exists"), Relevamiento CSV
-(manual, 13 clients, WL+DB only), and — added later — two internal emails plus their RAR
-attachment (`source-files/extracted/`), containing a richer client-services matrix, a Docker
-infrastructure survey, and an Azure architecture analysis. **All Relevamiento-derived and email
-material is internal working documentation, not verified ground truth — treat every finding
-below with the same grain-of-salt the source documents themselves apply** (the matrix's own
-"Discrepancias" sheet exists because Open's own team found their two data sources disagreeing).
+Fuentes: ExportList.csv (export de vCenter, verdad de base para "qué VM existe"), CSV de Relevamiento (manual, 13 clientes, solo WL+DB), y — agregado después — dos emails internos más su adjunto RAR (`source-files/extracted/`), que contiene una matriz de servicios por cliente más completa, un relevamiento de infraestructura Docker, y un análisis de arquitectura Azure. **Todo el material derivado de Relevamiento y de los emails es documentación interna de trabajo, no verdad verificada — tratar cada hallazgo de abajo con las mismas pinzas que aplican los propios documentos fuente** (la hoja "Discrepancias" de la matriz existe justamente porque el propio equipo de Open encontró que sus dos fuentes de datos no coincidían).
 
-## Resolved / confirmed
+## Resueltos / confirmados
 
-**nginx — resolved.** `Relevamiento_general_infraestructura_Docker_actualizado.docx` confirms
-Nginx Proxy Manager runs as a container on 4 of the 9 docker hosts: `DOCKER-DEB`, `OPENDOCKER04`,
-`VM-DOCKER-Clientes`, and `VM-DOCKER-Clientes (1)`. It's not a dedicated host category — it's a
-containerized service. The earlier `web_frontend_nginx_candidate` guess (`OPENPORTAL01`,
-`OPENPORTALCLI02`, `WEBSERVER`) was wrong; those VMs' actual role is still unconfirmed.
+**nginx — resuelto.** `Relevamiento_general_infraestructura_Docker_actualizado.docx` confirma que Nginx Proxy Manager corre como contenedor en 4 de los 9 hosts docker: `DOCKER-DEB`, `OPENDOCKER04`, `VM-DOCKER-Clientes`, y `VM-DOCKER-Clientes (1)`. No es una categoría de host dedicado — es un servicio containerizado. La conjetura anterior `web_frontend_nginx_candidate` (`OPENPORTAL01`, `OPENPORTALCLI02`, `WEBSERVER`) estaba equivocada; el rol real de esas VMs sigue sin confirmar.
 
-**pfsense — confirmed for at least one host.** `Analisis Azure.docx` documents Azure's
-Site-to-Site VPN to the on-premise datacenter, explicitly naming the peer as "pfSense" at
-`200.55.243.92`. That IP belongs to `OPENVPNFW01` in ExportList.csv — direct confirmation, not
-just a FreeBSD-guest-OS guess. The other 8 `firewall_candidate_pfsense` VMs are still unconfirmed
-guesses.
+**pfsense — confirmado para al menos un host.** `Analisis Azure.docx` documenta la VPN Site-to-Site de Azure hacia el datacenter on-premise, nombrando explícitamente al peer como "pfSense" en `200.55.243.92`. Esa IP pertenece a `OPENVPNFW01` en ExportList.csv — confirmación directa, no solo una conjetura por el SO invitado FreeBSD. Las otras 8 VMs `firewall_candidate_pfsense` siguen siendo conjeturas sin confirmar.
 
-**`DB-ARGOCEAN` — resolved.** It's the database for a client called **Argocean**, per the
-matrix's Discrepancias sheet ("DB 172.18.5.60 / SID MBA — No figura [en tabla funcional]").
-Argocean isn't in the original 13-client list at all — it surfaced only in the discrepancy notes.
-The VM is currently powered off in ExportList.csv, and no WebLogic server has been identified
-for it yet.
+**`DB-ARGOCEAN` — resuelto.** Es la base de datos de un cliente llamado **Argocean**, según la hoja Discrepancias de la matriz ("DB 172.18.5.60 / SID MBA — No figura [en tabla funcional]"). Argocean no está en la lista original de 13 clientes en absoluto — apareció solo en las notas de discrepancias. La VM está actualmente apagada en ExportList.csv, y todavía no se identificó ningún servidor WebLogic para ella.
 
-## New: the "13 clients" is more like 15, with churn
+## Nuevo: los "13 clientes" son más bien 15, con bajas
 
-The matrix (`Matriz_servicios_por_cliente_Hosting_V2.xlsx`) adds two clients not in the
-Relevamiento CSV:
+La matriz (`Matriz_servicios_por_cliente_Hosting_V2.xlsx`) agrega dos clientes que no estaban en el CSV de Relevamiento:
 
-- **Rex Argentina** (code `279`) — "recently onboarded to hosting", PROD environment, uses
-  Condor Work, DB referred to only as "REX Produccion" (not yet resolved to a specific VM —
-  needs a TeamViewer lookup, ~15 users / 4,600 legajos per the matrix notes).
-- **Argocean** — see above, DB-only so far, no WebLogic identified.
+- **Rex Argentina** (código `279`) — "incorporado recientemente al hosting", entorno PROD, usa Condor Work, DB referenciada solo como "REX Producción" (todavía sin resolver a una VM específica — necesita una búsqueda por TeamViewer, ~15 usuarios / 4.600 legajos según las notas de la matriz).
+- **Argocean** — ver arriba, por ahora solo con DB, sin WebLogic identificado.
 
-More importantly: **the matrix states ABB S.A. and Arris de Argentina S.A. (GIAR) are already
-decommissioned clients** ("de baja"), with their databases retained temporarily only. That
-changes their priority for a takeover — worth confirming this is still current before treating
-either as a live production client. (Both are `used_by_clients` in inventory.json regardless,
-since their VMs still exist and are powered on.)
+Más importante todavía: **la matriz indica que ABB S.A. y Arris de Argentina S.A. (GIAR) ya son clientes dados de baja** ("de baja"), con sus bases de datos retenidas solo temporalmente. Eso cambia su prioridad para la transición — vale la pena confirmar que esto sigue vigente antes de tratar a cualquiera de los dos como cliente de producción activo. (Ambos siguen apareciendo en `used_by_clients` en inventory.json de todas formas, ya que sus VMs todavía existen y están encendidas.)
 
-## New: the matrix documents its own unresolved discrepancies
+## Nuevo: la matriz documenta sus propias discrepancias sin resolver
 
-The matrix's "Discrepancias" sheet is Open's own team catching conflicts between a "funcional"
-source (from a person named Fran) and the "técnico" inventory — worth carrying forward as-is
-rather than re-deriving:
+La hoja "Discrepancias" de la matriz es el propio equipo de Open detectando conflictos entre una fuente "funcional" (de una persona llamada Fran) y el inventario "técnico" — vale la pena llevarla adelante tal cual en vez de re-derivarla:
 
-| Client | Issue | Functional says | Technical inventory says |
+| Cliente | Tema | Dice la fuente funcional | Dice el inventario técnico |
 |---|---|---|---|
-| GIAR | WebLogic version | WL 11 | 12.2 |
-| ROMAN (CSM) | WebLogic version | WL 11 | 10 |
-| JOBS | WebLogic version | WL 12 | 11 |
-| ABB | Current DB | `192.1.1.31` / SID ABB | `192.1.1.31` and `192.1.1.190` (two IPs) |
+| GIAR | Versión de WebLogic | WL 11 | 12.2 |
+| ROMAN (CSM) | Versión de WebLogic | WL 11 | 10 |
+| JOBS | Versión de WebLogic | WL 12 | 11 |
+| ABB | DB actual | `192.1.1.31` / SID ABB | `192.1.1.31` y `192.1.1.190` (dos IPs) |
 | CEFAS | SID | CEFASPDB | CEFAS |
 | BOCA | SID | BOCAPDB | BOCA |
-| EBY | WebLogic server | destination `10.77.7.201` | actual, shared: `192.1.2.54` |
-| Enerflex | Charset | `WE8ISO8859P15` | unverified — flagged as possibly mistyped |
+| EBY | Servidor WebLogic | destino `10.77.7.201` | actual, compartido: `192.1.2.54` |
+| Enerflex | Charset | `WE8ISO8859P15` | sin verificar — marcado como posible error de tipeo |
 
-The document explicitly did **not** pick one value over the other when sources disagreed — same
-policy this project should follow. See `clients[].matrix_detail` in inventory.json for the full
-per-client detail (SID, DB version/edition/size/charset, migration destination, which Condor
-products each client uses).
+El documento explícitamente **no** eligió un valor por sobre el otro cuando las fuentes no coincidían — la misma política que debería seguir este proyecto. Ver `clients[].matrix_detail` en inventory.json para el detalle completo por cliente (SID, versión/edición/tamaño/charset de DB, destino de migración, qué productos Condor usa cada cliente).
 
-## Still open
+## Todavía abierto
 
-### 1. Relevamiento's WL+DB-only scope means absence ≠ new client
+### 1. El alcance de Relevamiento (solo WL+DB) implica que ausencia ≠ cliente nuevo
 
-(See prior analysis, still holds.) Only 2 of 13 original clients show a naming hit for
-additional undocumented infra: **GIAR** has an extra `WL-GIAR` instance beyond its mapped
-`OPENWLPROD01`/`DB-GIAR`, and **ROMAN** has an extra `WL-ROMAN` and `DB-ROMAN-HISTORICO` beyond
-its mapped `WL-CLIENTES`/`DB-ROMAN`. ~31 more WL/DB-pattern VMs carry no client-code substring at
-all and still need a TeamViewer pass to classify as: another component of a known client, a
-dev/QA/test copy, or a genuinely separate client (as Argocean turned out to be).
+(Ver análisis previo, sigue vigente.) Solo 2 de los 13 clientes originales muestran una coincidencia de nombre para infraestructura adicional sin documentar: **GIAR** tiene una instancia extra `WL-GIAR` además de su `OPENWLPROD01`/`DB-GIAR` mapeados, y **ROMAN** tiene un `WL-ROMAN` y un `DB-ROMAN-HISTORICO` extra además de su `WL-CLIENTES`/`DB-ROMAN` mapeados. Otras ~31 VMs con patrón WL/DB no llevan ningún código de cliente en el nombre y todavía necesitan una pasada por TeamViewer para clasificarlas como: otro componente de un cliente conocido, una copia de dev/QA/test, o un cliente genuinamente separado (como resultó ser Argocean).
 
-### 2. Two unresolved Relevamiento rows outside the 13 clients — one now explained
+### 2. Dos filas sin resolver de Relevamiento fuera de los 13 clientes — una ya explicada
 
-`opendocker03`'s claimed IP (`192.1.1.113`) doesn't appear in ExportList.csv — but that's
-explained now: `OPENDOCKER03` is powered off ("Apagado") in the export, and vCenter only reports
-a guest's IPs when VMware Tools is running. The Docker survey doc independently confirms
-`OPENDOCKER03` is at `192.1.1.113` (Ubuntu 22.04, 1 active container — Portainer), so the
-Relevamiento entry is correct; ExportList.csv just couldn't see it at capture time because the VM
-was off. `portalDM` (IP `10.77.10.5`) likely = `OPENPORTAL01` (same IP) but still unconfirmed.
+La IP que Relevamiento le atribuye a `opendocker03` (`192.1.1.113`) no aparece en ExportList.csv — pero eso ya tiene explicación: `OPENDOCKER03` está apagada ("Apagado") en el export, y vCenter solo reporta las IPs de un invitado cuando VMware Tools está corriendo. El documento de relevamiento de Docker confirma de forma independiente que `OPENDOCKER03` está en `192.1.1.113` (Ubuntu 22.04, 1 contenedor activo — Portainer), así que la entrada de Relevamiento es correcta; ExportList.csv simplemente no pudo verla en el momento de la captura porque la VM estaba apagada. `portalDM` (IP `10.77.10.5`) probablemente sea = `OPENPORTAL01` (misma IP) pero sigue sin confirmar.
 
-### 3. Second ESXi host (`192.1.3.252`) — likely separate site
+### 3. Segundo host ESXi (`192.1.3.252`) — probablemente un sitio separado
 
-Still unconfirmed whether this is a second physical location or a standalone box; hosts
-GIAR's and ROMAN's non-`192.1.1.x` infrastructure.
+Todavía sin confirmar si es una segunda ubicación física o una máquina standalone; aloja la infraestructura de GIAR y ROMAN que no está en el rango `192.1.1.x`.
 
-### 4. Azure network has no internal segmentation (security finding, not just a mapping gap)
+### 4. La red de Azure no tiene segmentación interna (hallazgo de seguridad, no solo un vacío de mapeo)
 
-Both the prod and dev/test AKS environments in Azure use a single flat subnet for app traffic,
-VPN, and internet-facing services — no NSGs, no Azure Firewall, no Private Endpoints. Worth
-flagging to whoever owns security posture for this client, independent of the infra-mapping work.
+Tanto el entorno de producción como el de dev/test de AKS en Azure usan una única subred plana para tráfico de aplicaciones, VPN, y servicios expuestos a internet — sin NSGs, sin Azure Firewall, sin Private Endpoints. Vale la pena reportarlo a quien tenga a cargo la postura de seguridad de este cliente, independientemente del trabajo de mapeo de infraestructura.
 
-## Suggested next TeamViewer / Azure-portal pass (priority order)
+## Próxima pasada sugerida por TeamViewer / portal de Azure (en orden de prioridad)
 
-1. Confirm ABB and GIAR's decommissioned status before deprioritizing their environments.
-2. Resolve Rex Argentina's DB VM identity — it's a current PROD client with no VM mapped yet.
-3. Walk the remaining 8 `firewall_candidate_pfsense` VMs to confirm/deny pfsense, now that one
-   (`OPENVPNFW01`) is confirmed — the others may share config.
-4. Walk the 12 `infra_generic_unclear` (`OPENINFRxx`) VMs — no naming signal at all.
-5. For the ~31 still-unmapped WL/DB-pattern VMs, classify each as prod-for-an-undocumented-client
-   vs. dev/QA/test/historical vs. component of a known client.
-6. Confirm the real role of `OPENPORTAL01`, `OPENPORTALCLI02`, `WEBSERVER` now that the nginx
-   guess for them is known to be wrong.
+1. Confirmar el estado de baja de ABB y GIAR antes de bajarles prioridad a sus entornos.
+2. Resolver la identidad de la VM de base de datos de Rex Argentina — es un cliente PROD actual sin VM mapeada todavía.
+3. Recorrer las 8 VMs `firewall_candidate_pfsense` restantes para confirmar o descartar pfsense, ahora que una (`OPENVPNFW01`) ya está confirmada — las demás pueden compartir configuración.
+4. Recorrer las 12 VMs `infra_generic_unclear` (`OPENINFRxx`) — sin ninguna señal en el nombre.
+5. Para las ~31 VMs con patrón WL/DB todavía sin mapear, clasificar cada una como producción-de-un-cliente-sin-documentar vs. dev/QA/test/histórico vs. componente de un cliente conocido.
+6. Confirmar el rol real de `OPENPORTAL01`, `OPENPORTALCLI02`, `WEBSERVER` ahora que se sabe que la conjetura de nginx para ellos era incorrecta.

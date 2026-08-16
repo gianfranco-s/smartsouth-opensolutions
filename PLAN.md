@@ -18,47 +18,60 @@
 - **Acotado el alcance a on-premise.** Se decidió no seguir investigando activamente infraestructura en proveedores cloud (Azure/AWS) por ahora. Todo lo relacionado (sección `azure` de inventory.json, el diagrama Azure/AKS, los hallazgos y preguntas sobre la VM Core/AWS/segmentación de red) se movió a `cloud-infra/` — ver `cloud-infra/README.md` para cómo retomarlo si hace falta.
 - Agregado "Piedras" como pregunta abierta: se mencionó verbalmente como sitio adicional, pero el único rastro técnico (`VEEAM-PIEDRAS`) está dentro del cluster principal, no en un sitio aparte — no coincide con lo esperado, así que queda como algo a verificar, no a dar por cierto.
 - Incorporado un relevamiento manual de firewalls (`Relevamiento (sin claves) - Pfsense.csv`, agregado a `source-files/`) con acceso real a cada dashboard pfSense. **Confirmados 6 candidatos más** (`CliProFw01`, `DMFW01`, `FW`, `FWOPEN`, `OPENFWCLI001`, `OPENFWCLI10`) — quedan solo 2 sin confirmar (`OPENFWCLI02`, `VM_FW`) de los 9 originales. También confirma un hallazgo de seguridad positivo (sin puertos TCP expuestos a Internet, solo OpenVPN/UDP 2190) y aporta una segunda fuente independiente para "Piedras" (un dashboard etiquetado "Open - Piedras" en `192.168.100.1`, que no respondió durante el relevamiento).
+- **Primera verificación en vivo por TeamViewer:** versión real de WebLogic de GIAR confirmada en `12.2.1.4.0` (ver `infra/findings.md`) — resuelve esa fila de la hoja Discrepancias a favor del valor técnico.
 
 ## Próximos pasos
 
-**Contexto clave: probablemente tengamos una sola reunión con el equipo saliente.** Todo lo que se pueda resolver entrando a un host por TeamViewer nosotros mismos va acá, no en QUESTIONS.md — esa lista queda reservada para lo que solo ellos pueden responder (decisiones de negocio, contactos, accesos). Ver `infra/findings.md` para el detalle completo de cada punto.
+**Objetivo activo: llegar a un mapeo completo cliente → ruta de recursos.** Hoy tenemos cliente → WebLogic → DB para los 15 clientes (`infra/topology.md` §1), pero falta la capa intermedia — dominio → proxy → firewall/NAT → servidor — que es la que de verdad permite rastrear un incidente rápido. "La app de X está caída" ya se resuelve rápido; "este dominio tira error" todavía no. Los ítems de abajo están ordenados por qué tan directamente cierran esa brecha, no por orden de descubrimiento.
 
-### A resolver nosotros mismos, por TeamViewer (no requiere al equipo saliente)
+**Contexto: probablemente una sola reunión con el equipo saliente.** Todo lo de acá se resuelve por TeamViewer nosotros mismos; `QUESTIONS.md` queda para lo que solo ellos pueden responder.
 
-1. **Verificar cada ítem de la hoja "Discrepancias" de la matriz conectándonos directamente** en vez de esperar una respuesta — detalle paso a paso abajo.
-2. **Resolver la identidad de la VM de base de datos de Rex Argentina** buscando un schema/SID "REX" en los servidores de base de datos accesibles.
-3. **Resolver si `OPENDBPROD006` es realmente la base de EBY** — conectarse y comparar el SID contra lo esperado (`MBA` actual / `EBYPROD` destino, según la matriz).
-4. **Identificar el/los servidor(es) NFS** que montan `OPENDOCKER.57` y `VM-DOCKER-Clientes` — correr `mount` o revisar `/etc/fstab` en esos dos hosts.
-5. **Clasificar las ~31 VMs con patrón WL/DB sin mapear** — para cada una, determinar: componente de un cliente conocido, copia de no-producción, o cliente genuinamente sin documentar (así se encontró Argocean, así que puede haber más).
-6. **Recorrer las 12 VMs `infra_generic_unclear` (`OPENINFRxx`)** — sin ninguna señal en el nombre, hay que entrar a mirar.
-7. **Confirmar pfsense en los últimos 2 candidatos (`OPENFWCLI02`, `VM_FW`)** — el relevamiento de firewalls que se sumó ya confirmó los otros 7 de 9.
-8. **Confirmar el rol real de `OPENPORTAL01`, `OPENPORTALCLI02`, `WEBSERVER`** — la conjetura anterior de que eran nginx resultó incorrecta; rol real todavía desconocido. De paso, confirmar si `portalDM` es un alias de `OPENPORTAL01` (mismo IP).
-9. **Construir el mapa dominio → host proxy → servidor/puerto interno nosotros mismos**, a partir de las 4 instancias confirmadas de Nginx Proxy Manager y las reglas NAT de `pfsense` — decidido no preguntarle al equipo saliente si ya tienen uno armado, lo hacemos entrando a cada instancia.
-10. **Investigar nosotros mismos si el segundo host ESXi (`192.1.3.252`) es un sitio separado** (ruteo, IPs públicas asociadas) — decidido no preguntarlo en la reunión.
-11. **Revisar los jobs de backup de `VEEAM-PIEDRAS`** (repositorios, destinos de replicación) para ver si confirman un sitio adicional real detrás del nombre "Piedras", antes de preguntarlo en la reunión.
-12. **Reintentar el acceso a `192.168.100.1`** (el dashboard "Open - Piedras" que no respondió en el relevamiento de firewalls) desde dentro de la red, por si el problema fue de ruteo/alcance y no que el host esté caído.
+### Tier 1 — completa la ruta de recursos de un cliente
 
-### Detalle paso a paso — ítem 1 (Discrepancias)
+1. **Construir el mapa dominio → instancia Nginx Proxy Manager → servidor/puerto interno**, a partir de las 4 instancias confirmadas y las reglas NAT de `pfsense`. Esta es la pieza que realmente falta del mapeo completo.
+2. **Resolver la identidad de la VM de base de datos de Rex Argentina** — cliente PROD actual, cero recursos mapeados hoy.
+3. **Resolver la ruta completa de EBY** — ¿`OPENDBPROD006` es realmente su base? ¿su WL ya migró a `10.77.7.201` o sigue en el `192.1.2.54` compartido? Dos discrepancias de la misma hoja, mismo cliente — detalle abajo.
+4. **ABB — cuál de las dos DBs es la productiva** (`192.1.1.31` / `DBClientes-12C.31` vs `192.1.1.190` / `DBClientes.190`) — detalle abajo.
 
-El chequeo más rápido y confiable para casi todos estos es leer la URL de conexión del datasource JDBC en la consola de WebLogic — ahí figura literalmente a qué IP/SID/servicio se está conectando la aplicación en producción, sin ambigüedad. La versión de WebLogic y el charset de Oracle requieren conectarse directo a cada servidor.
+### Tier 2 — extiende el mapa, atrapa desconocidos
 
-**GIAR — versión real de WebLogic: ✅ resuelto, `12.2.1.4.0` (ver `infra/findings.md`).** Confirmado desde la pantalla de login en `http://10.77.7.201:7001/console/login/LoginForm.jsp`, sin necesidad de entrar a la consola. Pendiente: la cuenta compartida (`soportesmart`) fue rechazada al intentar loguearse — probar usuario `weblogic` con la misma contraseña antes de dar por perdido el acceso a la consola en sí (haría falta para confirmar deployments, no solo versión).
+5. **Clasificar las 32 VMs con patrón WL/DB sin mapear** (24 encendidas, 8 apagadas — arrancar por las encendidas) — componente de un cliente conocido, copia de no-producción, o cliente genuinamente sin documentar (así se encontró Argocean).
+6. **Confirmar el rol real de `OPENPORTAL01`, `OPENPORTALCLI02`, `WEBSERVER`** — la conjetura de que eran nginx resultó incorrecta; podrían ser parte de la ruta real de algún cliente. De paso, confirmar si `portalDM` es un alias de `OPENPORTAL01`.
+7. **Identificar el/los servidor(es) NFS** que montan `OPENDOCKER.57` y `VM-DOCKER-Clientes` — `mount` / `/etc/fstab`.
+8. **Recorrer las 12 VMs `infra_generic_unclear` (`OPENINFRxx`)**.
 
-**ROMAN — versión real de WebLogic (¿11 o 10?).** Conectarse a `WL-CLIENTES` (`172.18.5.40`, ojo que está en el host ESXi `192.1.3.252` — el candidato a segundo sitio). Mismo método que GIAR (consola o `weblogic.version`).
+### Tier 3 — pausado, baja urgencia (no bloquea el mapeo de rutas)
 
-**JOBS — versión real de WebLogic (¿12 o 11?).** Conectarse a `WL12C-PROD` (`192.1.1.1`). Mismo método que GIAR.
+- Versión de WebLogic en ROMAN, JOBS; SID en CEFAS, BOCA; charset en Enerflex — dato de higiene de la hoja Discrepancias, no bloquea nada operativo. Ya se abrió consola a `WL-CLIENTES` (ROMAN) en una sesión anterior; retomar desde ahí si se vuelve a priorizar. Detalle de método abajo.
+- Últimos 2 candidatos a firewall (`OPENFWCLI02`, `VM_FW`).
+- Si el segundo host ESXi (`192.1.3.252`) es un sitio separado.
+- Piedras: revisar jobs de backup de `VEEAM-PIEDRAS`, reintentar `192.168.100.1`.
 
-**ABB — cuál DB es la productiva (`192.1.1.31` / `DBClientes-12C.31` vs `192.1.1.190` / `DBClientes.190`).** Camino más directo: en la consola de WebLogic de `WL12C-Desarrollo.2.54` (`192.1.2.54`), ir a Services → Data Sources, buscar el datasource de ABB, y leer su URL JDBC — ahí dice a cuál de las dos IPs apunta realmente. Como segundo chequeo, conectarse a cada una de las dos DBs y correr `SELECT sid, serial#, username, program FROM v$session WHERE username IS NOT NULL;` — la que tenga sesiones activas de la app es la productiva.
+### Detalle paso a paso — Tier 1, ítem 3 (EBY)
 
-**CEFAS — SID real (¿`CEFASPDB` o `CEFAS`?).** Conectarse a `CLIENTES-DB` (`192.1.1.32`, compartida con BOCA). Correr `cat /etc/oratab` para ver qué instancias corren ahí, y por cada una `sqlplus / as sysdba` → `SELECT name FROM v$database;`. Cruzar contra el datasource JDBC en `WebLogic.191` (el WL de Cefas).
+**DB:** comparar el SID de `OPENDBPROD006` contra lo esperado (`MBA` actual / `EBYPROD` destino, según la matriz).
 
-**BOCA — SID real (¿`BOCAPDB` o `BOCA`?).** Mismo servidor que CEFAS (`CLIENTES-DB`, `192.1.1.32`) — aprovechar la misma conexión. Cruzar contra el datasource JDBC en `WL12C-Desarrollo.2.54` (el WL de Boca).
+**WL:** `10.77.7.201` es literalmente `OPENWLPROD01` — el mismo WL de GIAR. Entrar a la consola ahí y ver si hay un dominio/aplicación desplegada para EBY. Después entrar a `WL12C-Desarrollo.2.54` (`192.1.2.54`) y ver si el deployment de EBY sigue activo ahí también. El que tenga sesiones/logs recientes de usuarios de EBY es el real.
 
-**EBY — ¿el WL ya migró a `10.77.7.201` o sigue en el `192.1.2.54` compartido?** `10.77.7.201` es literalmente `OPENWLPROD01` — el mismo WL de GIAR. Entrar a la consola de WebLogic ahí y ver si hay un dominio/aplicación desplegada para EBY. Después entrar a `WL12C-Desarrollo.2.54` (`192.1.2.54`) y ver si el deployment de EBY sigue activo ahí también. El que tenga sesiones/logs recientes de usuarios de EBY es el real.
+### Detalle paso a paso — Tier 1, ítem 4 (ABB)
 
-**Enerflex — ¿el charset es realmente `WE8ISO8859P15`?** Conectarse a `CLIENTES-DB2` (`192.1.1.51`, compartida con JOBS). `sqlplus / as sysdba` → `SELECT value FROM nls_database_parameters WHERE parameter = 'NLS_CHARACTERSET';`.
+Camino más directo: en la consola de WebLogic de `WL12C-Desarrollo.2.54` (`192.1.2.54`), ir a Services → Data Sources, buscar el datasource de ABB, y leer su URL JDBC — ahí dice a cuál de las dos IPs apunta realmente. Como segundo chequeo, conectarse a cada una de las dos DBs y correr `SELECT sid, serial#, username, program FROM v$session WHERE username IS NOT NULL;` — la que tenga sesiones activas de la app es la productiva.
 
-**Al terminar cada uno:** actualizar `clients[].matrix_detail` en `infra/inventory.json` con el valor confirmado, y mover la fila correspondiente de la tabla de Discrepancias en `infra/findings.md` a una sección "Resueltos" con el valor real y la fecha.
+### Detalle paso a paso — Tier 3 (si se retoma)
+
+El chequeo más rápido y confiable para la mayoría de estos es leer la URL de conexión del datasource JDBC en la consola de WebLogic — ahí figura literalmente a qué IP/SID/servicio se está conectando la aplicación en producción. La versión de WebLogic y el charset de Oracle requieren conectarse directo a cada servidor.
+
+**ROMAN — versión real de WebLogic (¿11 o 10?).** `WL-CLIENTES` (`172.18.5.40`, host ESXi `192.1.3.252` — el candidato a segundo sitio). Consola de administración (puerto 7001, versión visible en la pantalla de login) o `java weblogic.version` / `ps -ef | grep -i weblogic` por consola.
+
+**JOBS — versión real de WebLogic (¿12 o 11?).** `WL12C-PROD` (`192.1.1.1`). Mismo método que ROMAN.
+
+**CEFAS — SID real (¿`CEFASPDB` o `CEFAS`?).** `CLIENTES-DB` (`192.1.1.32`, compartida con BOCA). `cat /etc/oratab` para ver qué instancias corren ahí, y por cada una `sqlplus / as sysdba` → `SELECT name FROM v$database;`. Cruzar contra el datasource JDBC en `WebLogic.191` (el WL de Cefas).
+
+**BOCA — SID real (¿`BOCAPDB` o `BOCA`?).** Mismo servidor que CEFAS — aprovechar la misma conexión. Cruzar contra el datasource JDBC en `WL12C-Desarrollo.2.54` (el WL de Boca).
+
+**Enerflex — ¿el charset es realmente `WE8ISO8859P15`?** `CLIENTES-DB2` (`192.1.1.51`, compartida con JOBS). `sqlplus / as sysdba` → `SELECT value FROM nls_database_parameters WHERE parameter = 'NLS_CHARACTERSET';`.
+
+**Al terminar cualquiera de estos:** actualizar `clients[].matrix_detail` en `infra/inventory.json` con el valor confirmado, y mover la fila correspondiente de la tabla de Discrepancias en `infra/findings.md` a una sección "Resueltos" con el valor real y la fecha.
 
 ### Requiere al equipo saliente
 

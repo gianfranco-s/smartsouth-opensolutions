@@ -25,7 +25,7 @@
 
 ### A resolver nosotros mismos, por TeamViewer (no requiere al equipo saliente)
 
-1. **Verificar cada ítem de la hoja "Discrepancias" de la matriz conectándonos directamente** en vez de esperar una respuesta: versión real de WebLogic en GIAR/ROMAN/JOBS (consola de administración o archivo de dominio), cuál IP de DB es la productiva en ABB, SID real en uso en CEFAS y BOCA, si el WL de EBY ya migró a `10.77.7.201` o sigue en el compartido, y si el charset de Enerflex es realmente `WE8ISO8859P15`.
+1. **Verificar cada ítem de la hoja "Discrepancias" de la matriz conectándonos directamente** en vez de esperar una respuesta — detalle paso a paso abajo.
 2. **Resolver la identidad de la VM de base de datos de Rex Argentina** buscando un schema/SID "REX" en los servidores de base de datos accesibles.
 3. **Resolver si `OPENDBPROD006` es realmente la base de EBY** — conectarse y comparar el SID contra lo esperado (`MBA` actual / `EBYPROD` destino, según la matriz).
 4. **Identificar el/los servidor(es) NFS** que montan `OPENDOCKER.57` y `VM-DOCKER-Clientes` — correr `mount` o revisar `/etc/fstab` en esos dos hosts.
@@ -37,6 +37,28 @@
 10. **Investigar nosotros mismos si el segundo host ESXi (`192.1.3.252`) es un sitio separado** (ruteo, IPs públicas asociadas) — decidido no preguntarlo en la reunión.
 11. **Revisar los jobs de backup de `VEEAM-PIEDRAS`** (repositorios, destinos de replicación) para ver si confirman un sitio adicional real detrás del nombre "Piedras", antes de preguntarlo en la reunión.
 12. **Reintentar el acceso a `192.168.100.1`** (el dashboard "Open - Piedras" que no respondió en el relevamiento de firewalls) desde dentro de la red, por si el problema fue de ruteo/alcance y no que el host esté caído.
+
+### Detalle paso a paso — ítem 1 (Discrepancias)
+
+El chequeo más rápido y confiable para casi todos estos es leer la URL de conexión del datasource JDBC en la consola de WebLogic — ahí figura literalmente a qué IP/SID/servicio se está conectando la aplicación en producción, sin ambigüedad. La versión de WebLogic y el charset de Oracle requieren conectarse directo a cada servidor.
+
+**GIAR — versión real de WebLogic (¿11 o 12.2?).** Conectarse a `OPENWLPROD01` (`10.77.7.201`). Opción rápida: entrar a la consola de administración de WebLogic (puerto 7001 salvo que esté cambiado) — la versión figura en el pie de la página principal. Opción por consola: correr `java weblogic.version` desde `$WL_HOME/server/lib` (o `unzip -p weblogic.jar META-INF/MANIFEST.MF | grep -i Implementation-Version`).
+
+**ROMAN — versión real de WebLogic (¿11 o 10?).** Conectarse a `WL-CLIENTES` (`172.18.5.40`, ojo que está en el host ESXi `192.1.3.252` — el candidato a segundo sitio). Mismo método que GIAR (consola o `weblogic.version`).
+
+**JOBS — versión real de WebLogic (¿12 o 11?).** Conectarse a `WL12C-PROD` (`192.1.1.1`). Mismo método que GIAR.
+
+**ABB — cuál DB es la productiva (`192.1.1.31` / `DBClientes-12C.31` vs `192.1.1.190` / `DBClientes.190`).** Camino más directo: en la consola de WebLogic de `WL12C-Desarrollo.2.54` (`192.1.2.54`), ir a Services → Data Sources, buscar el datasource de ABB, y leer su URL JDBC — ahí dice a cuál de las dos IPs apunta realmente. Como segundo chequeo, conectarse a cada una de las dos DBs y correr `SELECT sid, serial#, username, program FROM v$session WHERE username IS NOT NULL;` — la que tenga sesiones activas de la app es la productiva.
+
+**CEFAS — SID real (¿`CEFASPDB` o `CEFAS`?).** Conectarse a `CLIENTES-DB` (`192.1.1.32`, compartida con BOCA). Correr `cat /etc/oratab` para ver qué instancias corren ahí, y por cada una `sqlplus / as sysdba` → `SELECT name FROM v$database;`. Cruzar contra el datasource JDBC en `WebLogic.191` (el WL de Cefas).
+
+**BOCA — SID real (¿`BOCAPDB` o `BOCA`?).** Mismo servidor que CEFAS (`CLIENTES-DB`, `192.1.1.32`) — aprovechar la misma conexión. Cruzar contra el datasource JDBC en `WL12C-Desarrollo.2.54` (el WL de Boca).
+
+**EBY — ¿el WL ya migró a `10.77.7.201` o sigue en el `192.1.2.54` compartido?** `10.77.7.201` es literalmente `OPENWLPROD01` — el mismo WL de GIAR. Entrar a la consola de WebLogic ahí y ver si hay un dominio/aplicación desplegada para EBY. Después entrar a `WL12C-Desarrollo.2.54` (`192.1.2.54`) y ver si el deployment de EBY sigue activo ahí también. El que tenga sesiones/logs recientes de usuarios de EBY es el real.
+
+**Enerflex — ¿el charset es realmente `WE8ISO8859P15`?** Conectarse a `CLIENTES-DB2` (`192.1.1.51`, compartida con JOBS). `sqlplus / as sysdba` → `SELECT value FROM nls_database_parameters WHERE parameter = 'NLS_CHARACTERSET';`.
+
+**Al terminar cada uno:** actualizar `clients[].matrix_detail` en `infra/inventory.json` con el valor confirmado, y mover la fila correspondiente de la tabla de Discrepancias en `infra/findings.md` a una sección "Resueltos" con el valor real y la fecha.
 
 ### Requiere al equipo saliente
 

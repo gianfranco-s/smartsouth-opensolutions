@@ -124,6 +124,8 @@ Solo 2 de las 15 VMs están encendidas — el resto no reporta IP en el export (
 | `OPENSHARE`, `OPENAPPS`, `COBRA`, `CLIENTESRDP` | Apagadas | Almacenamiento compartido, apps, y una VM (`COBRA`) que no coincide con ningún cliente conocido — mismo patrón por el que se encontró Argocean, sin confirmar todavía |
 | `OEM`, `OPENMONITOR10`, `OPEN_GRAFANA` | Apagadas | Monitoreo/administración del sitio |
 
+**Conectividad de red hacia el cluster principal, confirmada en vivo (18 ago 2026).** Desde la sesión de TeamViewer en `Win10-Piedras` (`192.168.100.165`), `http://192.1.1.38:81/` — el panel de Nginx Proxy Manager de `VM-DOCKER-Clientes`, en el cluster principal — respondió directamente, sin salto intermedio. Piedras no es un sitio aislado de red: alcanza al menos el segmento `192.1.1.x`, además del `10.77.254.x` ya inferido por el backup de `OPENDB_31` hacia `OPENBK`. Esto habilita mapear el ítem 1 de Tier 1 (dominio → NPM → servidor, ver `../plan_tier_1.md`) directamente desde una sesión a Piedras, sin necesitar un salto a una VM del cluster principal primero.
+
 Detalle completo, notas de cada VM y hallazgos derivados en `infra/inventory.json` → `meta.piedras_site` / `vms[].site == "Piedras"` y en `infra/findings.md`.
 
 ## Cómo regenerar estos diagramas

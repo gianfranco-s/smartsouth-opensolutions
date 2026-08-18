@@ -25,6 +25,7 @@ Firewalls pfSense confirmados con acceso real por dashboard (7 de 9 — ver tabl
 
 1. **Entrar a cada una de las 4 instancias de Nginx Proxy Manager** (puerto de admin típico `81`, a veces detrás del propio proxy — revisar `docker ps` si no responde) y exportar/anotar, por cada Proxy Host configurado: dominio, destino interno (IP:puerto del contenedor/servicio real), y si tiene SSL/forzado HTTPS.
    - Empezar por `VM-DOCKER-Clientes` y `VM-DOCKER-Clientes (1)` — ya se sabe que sirven CEFAS, así que dan un caso de referencia para validar el método antes de generalizar.
+   - Confirmado en vivo (18 ago 2026): `http://192.1.1.38:81/` (`VM-DOCKER-Clientes`) responde con la pantalla de login de NPM desde una sesión de TeamViewer a Piedras (`192.168.100.165`) sin necesitar un salto intermedio — ver `infra/findings.md`. Falta la credencial para entrar de verdad.
 2. **Para cada dominio encontrado, ubicar la regla NAT/port-forward correspondiente en el pfSense que lo recibe.** No asumir cuál firewall es — cruzar por rango de IP: cada host Docker está detrás de un pfSense distinto según su segmento (`192.1.1.x` → probablemente `FWOPEN`/`FW`; `10.77.7.x` → posible `OPENFWCLI10`/`CliProFw01`, que tienen patas en `10.77.x`; confirmar en el dashboard, no adivinar).
    - En cada pfSense: Firewall → NAT → Port Forward. Anotar IP/puerto externo → IP:puerto interno del host Docker.
 3. **Armar la tabla dominio → NPM host → destino interno → NAT/firewall** y guardarla en `inventory.json` (nuevo bloque, p.ej. `infra_docker.nginx_proxy_manager_routes` o dentro de cada `docker_detail` como `proxy_hosts`) más un resumen en `topology.md`.
@@ -81,5 +82,5 @@ Ya tiene detalle en `PLAN.md` § "Tier 1, ítem 4" — reproducido acá. Nota: A
    ```sql
    SELECT sid, serial#, username, program FROM v$session WHERE username IS NOT NULL;
    ```
-   La que tenga sesiones activas de la aplicación de ABB es la productiva.
+La que tenga sesiones activas de la aplicación de ABB es la productiva.
 3. Actualizar `clients[].database.resolved` de ABB en `inventory.json` (marcar la IP no productiva como histórica/legacy si corresponde) y mover la fila ABB de Discrepancias a "Resueltos" en `findings.md`.

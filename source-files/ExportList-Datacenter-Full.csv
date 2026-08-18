@@ -1,0 +1,279 @@
+﻿Nombre,Estado,Condición,Administrada por,Host,Clúster,Espacio aprovisionado,Espacio utilizado,Sistema operativo invitado,Compatibilidad,Tamaño de memoria,Reserva,CPU,NIC,Tiempo de actividad,Dirección IP,Estado de versión de VMware Tools,Estado de ejecución de VMware Tools,CPU de host,Memoria de host,Memoria invitada - %,Nombre de DNS,Modo EVC,UUID,Notas,Acciones de alarma,Protección de HA,Necesidad de consolidación,Cumplimiento de directivas de almacenamiento de máquina ,Cifrado,TPM,VBS
+OpenRepo,Apagado,Normal,,192.1.1.220,,"158,21 GB","131,88 GB",Ubuntu Linux (64-bit),ESXi 5.0 y posterior (máquina virtual versión 8),8 GB,0 B,1,1,0 segundo,,guestToolsUnmanaged|11269,No está en ejecución,0 Hz,0 B,0,openrepo,,564d0599-ea2f-6b00-4c15-b6db5b034ba8,"1.117
+en teoria no se usa mas x migracion a git",Habilitado,N/D,No se requiere, --,No,false,
+OpenDevServices,Apagado,Normal,,192.1.1.220,,"262,22 GB","250,03 GB",Ubuntu Linux (64-bit),ESXi 5.0 y posterior (máquina virtual versión 8),12 GB,0 B,2,1,0 segundo,,guestToolsUnmanaged|11269,No está en ejecución,0 Hz,0 B,0,opendevservices,,564da8cd-43e4-75b1-4f9f-021756ab7f42,172.18.0.1,Habilitado,N/D,No se requiere, --,No,false,
+OPENDOCKER03,Apagado,Normal,,192.1.1.220,,"326,23 GB","310,04 GB",Ubuntu Linux (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,4,1,0 segundo,,guestToolsUnmanaged|12389,No está en ejecución,0 Hz,0 B,0,,,42192619-d846-954c-b65d-dc1b406d9780,192.1.1.113,Habilitado,N/D,No se requiere, --,No,false,
+openbackend01,Apagado,Normal,,192.1.3.252,,"76,19 GB",60 GB,Ubuntu Linux (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,4,1,0 segundo,,guestToolsUnmanaged|12325,No está en ejecución,0 Hz,0 B,0,openbackend01,,42190c9e-a3f9-9815-2a5f-ce45cecb86b0,192.1.2.105,Habilitado,N/D,No se requiere, --,No,false,
+OPENORACLEDB02,Apagado,Normal,,192.1.1.222,,"338,23 GB","306,01 GB",Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),32 GB,0 B,6,1,0 segundo,,guestToolsUnmanaged|11269,No está en ejecución,0 Hz,0 B,0,openoracledb02.open.solutions,,4219853d-83ba-8a8e-2d02-0a12eac771f0,"81  -  PDBOPENWL12PROD01
+Last backup: [3/21/2026 2:23:23 AM]; Veeam server: [openbk]; Job: [Job_002_Backup_quincenal]; Repository: [openbk]",Habilitado,N/D,No se requiere, --,No,false,
+DB-ARGOCEAN,Apagado,Normal,,192.1.3.252,,"216,12 GB","176,38 GB",Oracle Linux 4/5 or later (64-bit),ESXi 5.0 y posterior (máquina virtual versión 8),"5,86 GB",0 B,8,1,0 segundo,,guestToolsSupportedOld|9349,No está en ejecución,0 Hz,0 B,0,argocean,,564d2c02-b836-c726-d418-cd9c93075042,argocean 172.18.5.60,Habilitado,N/D,No se requiere, --,No,false,
+DB-TEST,Apagado,Normal,,192.1.3.252,,"412,25 GB",396 GB,Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,8,2,0 segundo,,guestToolsUnmanaged|11269,No está en ejecución,0 Hz,0 B,0,dbtest,,564d6869-78ce-06ce-8b22-beb369f9539a,,Habilitado,N/D,No se requiere, --,No,false,
+OPENSYTDB01,Apagado,Normal,,192.1.3.252,,"176,22 GB",160 GB,Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,8,1,0 segundo,,guestToolsUnmanaged|11269,No está en ejecución,0 Hz,0 B,0,,,4219f4f8-2a86-cd7e-ec74-59035083a828,,Habilitado,N/D,No se requiere, --,No,false,
+OPENWLCLI01,Apagado,Normal,,192.1.1.223,,"246,22 GB","230,01 GB",Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,6,1,0 segundo,,guestToolsUnmanaged|12389,No está en ejecución,0 Hz,0 B,0,openwlcli01.localdomain,,421924ac-be09-dde4-c678-bc053ffa9064,"EBY PRODUCCION
+10.77.8.201 
+(se clono de la 10.77.7.201) dejar apagada
+EBYPROD
+
+CEFAS
+GIARG
+
+
+test weblogix simple licence.
+12.2.1.19  y db 23ia",Habilitado,N/D,No se requiere, --,No,false,false
+OL8DBMULTI01,Apagado,Normal,,192.1.1.222,,"371,22 GB","347,01 GB",Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),24 GB,0 B,4,1,0 segundo,,guestToolsUnmanaged|12357,No está en ejecución,0 Hz,0 B,0,ol8dbmulti01.localdomain,,42199d8e-14fe-a8e8-a905-a3d12a66c363,,Habilitado,N/D,No se requiere, --,No,false,
+VM_FW,Apagado,Normal,,192.1.3.252,,"44,21 GB","40,02 GB",FreeBSD (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),4 GB,0 B,4,3,0 segundo,,guestToolsUnmanaged|2147483647,No está en ejecución,0 Hz,0 B,0,fwsyt.localdomain,,564da22a-fd19-46c9-012e-fcfb7bb81021,,Habilitado,N/D,No se requiere, --,No,false,
+OPENWLPROD001,Apagado,Normal,,192.1.1.224,,"146,21 GB",130 GB,Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,4,1,0 segundo,,guestToolsNotInstalled|0,No está en ejecución,0 Hz,0 B,0,,,42191e6d-63af-b543-3202-c7726114ca35,"10.77.7.101
+ORIG de los openwl01X",Habilitado,N/D,No se requiere, --,No,false,false
+OPENWLPROD02,Apagado,Normal,,192.1.1.224,,"206,22 GB",190 GB,Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,4,1,0 segundo,,guestToolsUnmanaged|12389,No está en ejecución,0 Hz,0 B,0,openwlprod02.localdomain,,4219f744-55a5-d775-e132-e9b93ecc5108,"10.77.7.202
+CEFAS
+GIARG
+
+
+test weblogix simple licence.
+12.2.1.19  y db 23ia",Habilitado,N/D,No se requiere, --,No,false,false
+MICRO,Apagado,Normal,,192.1.1.214,,"304,24 GB","280,02 GB",Microsoft Windows Server 2016 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),24 GB,0 B,8,1,0 segundo,,guestToolsSupportedOld|10304,No está en ejecución,0 Hz,0 B,0,,,4219c1e1-f780-87fa-aeca-0b45e2f8aa20,1.15  lo usa angie,Habilitado,N/D,No se requiere, --,No,false,
+Database 12c .17,Apagado,Normal,,192.1.1.216,,"354,22 GB","330,01 GB",Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),24 GB,0 B,4,1,0 segundo,,guestToolsUnmanaged|11269,No está en ejecución,0 Hz,0 B,0,,,4219f164-9dcb-eb6d-b73d-110841d5e2c6,"ERP:/u01/app/oracle/product/12.2.0/db_1:N
+TABLEROERP:/u01/app/oracle/product/12.2.0/db_1:N
+petro:/u01/app/oracle/product/12.2.0/db_1:N
+UIA:/u01/app/oracle/product/12.2.0/db_1:Y
+tuia:/u01/app/oracle/product/12.2.0/db_1:N
+
+
+UIA Base Prod
+Last backup: [5/1/2024 1:13:34 AM]; Veeam server: [openbk]; Job: [Job_002_Backup_quincenal]; Repository: [openbk.open.solutions]",Habilitado,N/D,No se requiere, --,No,false,false
+OPENCLIVPN03,Apagado,Normal,,192.1.1.221,,"90,21 GB",82 GB,Microsoft Windows 10 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),8 GB,0 B,2,1,0 segundo,,guestToolsCurrent|10304,No está en ejecución,0 Hz,0 B,0,,,4219b294-ecde-5fd5-a39b-a5bd5bbd7627,1.53,Habilitado,N/D,No se requiere, --,No,false,false
+OPEN1-W10,Apagado,Normal,,192.1.1.221,,"54,21 GB",50 GB,Microsoft Windows 10 (64-bit),ESXi 6.7 y posterior (máquina virtual versión 14),4 GB,0 B,2,1,0 segundo,,guestToolsCurrent|10304,No está en ejecución,0 Hz,0 B,0,,,4219c8a5-3454-bbe5-0338-d30871ce64cb,192.1.1.135,Habilitado,N/D,No se requiere, --,No,false,false
+OPEN2-W10,Apagado,Normal,,192.1.1.221,,"54,21 GB",50 GB,Microsoft Windows 10 (64-bit),ESXi 6.7 y posterior (máquina virtual versión 14),4 GB,0 B,2,1,0 segundo,,guestToolsCurrent|10304,No está en ejecución,0 Hz,0 B,0,,,4219382b-7412-0115-480b-45151959b8d9,,Habilitado,N/D,No se requiere, --,No,false,false
+OPEN3-W10,Apagado,Normal,,192.1.1.221,,"54,21 GB",50 GB,Microsoft Windows 10 (64-bit),ESXi 6.7 y posterior (máquina virtual versión 14),4 GB,0 B,2,1,0 segundo,,guestToolsCurrent|10304,No está en ejecución,0 Hz,0 B,0,,,42195d90-addc-e4eb-1f8b-14ebc68a4999,192.1.1.136,Habilitado,N/D,No se requiere, --,No,false,false
+OPEN1,Apagado,Normal,,192.1.1.221,,"85,25 GB","80,06 GB",Microsoft Windows 7 (32-bit),ESXi 5.5 y posterior (máquina virtual versión 10),4 GB,0 B,2,1,0 segundo,,guestToolsNotInstalled|0,No está en ejecución,0 Hz,0 B,0,,,42194646-3029-756e-3a68-35391744ba1e,"1.193
+Virtual OPEN1 con W7 remota para uso en caso de que VMs locales no funcionen",Habilitado,N/D,No se requiere, --,No,false,false
+OPEN2,Apagado,Normal,,192.1.1.221,,"86,83 GB","81,65 GB",Microsoft Windows 7 (32-bit),ESXi 5.5 y posterior (máquina virtual versión 10),4 GB,0 B,2,1,0 segundo,,guestToolsCurrent|10304,No está en ejecución,0 Hz,0 B,0,,,4219a515-efbb-8b9a-b81c-ab604eac314f,"1.198
+Virtual OPEN2 con W7 remota para uso en caso de que VMs locales no funcionen",Habilitado,N/D,No se requiere, --,No,false,false
+COCO ORT,Apagado,Normal,,192.1.1.221,,"83,23 GB","80,04 GB",Microsoft Windows 7 (32-bit),ESXi 5.5 y posterior (máquina virtual versión 10),2 GB,0 B,2,1,0 segundo,192.1.2.37,guestToolsSupportedOld|9409,No está en ejecución,0 Hz,0 B,0,VM-1,,42199c4b-fdde-1cd4-2b00-efaea944c349,"2.37
+PRESTADA A COCO PARA CONEXIÓN A ORT",Habilitado,N/D,No se requiere, --,No,false,false
+MAGUILERA-OPEN2,Apagado,Normal,,192.1.1.221,,"83,21 GB","80,03 GB",Microsoft Windows 7 (32-bit),ESXi 5.5 y posterior (máquina virtual versión 10),2 GB,0 B,2,1,0 segundo,,guestToolsSupportedOld|9409,No está en ejecución,0 Hz,0 B,0,,,42192558-3b9e-d918-1370-cef55c6844e2,"1.188
+Acceso a Mario Aguilera",Habilitado,N/D,No se requiere, --,No,false,false
+MAGUILERA-OPEN3,Apagado,Normal,,192.1.1.221,,"83,2 GB","80,01 GB",Microsoft Windows 7 (32-bit),ESXi 5.5 y posterior (máquina virtual versión 10),2 GB,0 B,2,1,0 segundo,,guestToolsSupportedOld|9409,No está en ejecución,0 Hz,0 B,0,,,42194cdb-4ded-90d5-681d-65bb820c01a4,"1.106
+Acceso a Mario Aguilera",Habilitado,N/D,No se requiere, --,No,false,false
+MAGUILERA-OPEN1,Apagado,Normal,,192.1.1.221,,"83,21 GB","80,02 GB",Microsoft Windows 7 (32-bit),ESXi 5.5 y posterior (máquina virtual versión 10),2 GB,0 B,2,1,0 segundo,,guestToolsSupportedOld|9409,No está en ejecución,0 Hz,0 B,0,,,4219d7a6-cc59-9cf8-bbbc-0d661dd43329,"1.87
+Acceso a Mario Aguilera",Habilitado,N/D,No se requiere, --,No,false,false
+MARCO-OPEN2,Apagado,Normal,,192.1.1.221,,"85,26 GB","80,07 GB",Microsoft Windows 7 (32-bit),ESXi 5.5 y posterior (máquina virtual versión 10),4 GB,0 B,4,1,0 segundo,,guestToolsSupportedOld|9409,No está en ejecución,0 Hz,0 B,0,,,4219d2a7-5691-197a-f8f5-f20653482801,"1.145
+
+Virtual Florencia de Victor",Habilitado,N/D,No se requiere, --,No,false,false
+MARCO-OPEN3,Apagado,Normal,,192.1.1.221,,"83,24 GB","80,05 GB",Microsoft Windows 7 (64-bit),ESXi 5.5 y posterior (máquina virtual versión 10),2 GB,0 B,2,1,0 segundo,,guestToolsSupportedOld|9409,No está en ejecución,0 Hz,0 B,0,,,421960ca-cd2e-c53c-fae2-9772deb6b566,"1.101
+
+Virtual Florencia de Victor",Habilitado,N/D,No se requiere, --,No,false,false
+MARCO-OPEN1,Apagado,Normal,,192.1.1.221,,"83,23 GB","80,04 GB",Microsoft Windows 7 (64-bit),ESXi 5.5 y posterior (máquina virtual versión 10),2 GB,0 B,2,1,0 segundo,,guestToolsCurrent|9409,No está en ejecución,0 Hz,0 B,0,,,4219801f-14fe-4747-9a95-e9632638141f,"1.150
+
+Virtual Florencia de Victor",Habilitado,N/D,No se requiere, --,No,false,false
+OPEN3,Apagado,Normal,,192.1.1.221,,"90,74 GB","83,47 GB",Microsoft Windows 7 (64-bit),ESXi 6.7 y posterior (máquina virtual versión 14),6 GB,0 B,2,1,0 segundo,,guestToolsSupportedNew|12294,No está en ejecución,0 Hz,0 B,0,,,42198f39-9526-c2c5-e225-75f436375905,"2.27
+Virtual OPEN3 con W7 remota para uso en caso de que VMs locales no funcionen",Habilitado,N/D,No se requiere, --,No,false,false
+OPENCLIVPN02,Apagado,Normal,,192.1.1.221,,"90,27 GB","82,06 GB",Microsoft Windows 10 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),8 GB,0 B,2,1,0 segundo,,guestToolsCurrent|10304,No está en ejecución,0 Hz,0 B,0,,,4219f602-564b-890a-34d9-475d5c799c61,1.52,Habilitado,N/D,No se requiere, --,No,false,false
+OPENCLIVPN04,Apagado,Normal,,192.1.1.221,,"90,21 GB",82 GB,Microsoft Windows 10 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),8 GB,0 B,2,1,0 segundo,,guestToolsCurrent|10304,No está en ejecución,0 Hz,0 B,0,,,421916ae-6279-a0ce-6f3e-ac31f838c625,1.164,Habilitado,N/D,No se requiere, --,No,false,false
+OPENCLIRDP02,Apagado,Normal,,192.1.1.221,,"128,23 GB","112,02 GB",Microsoft Windows 10 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,6,1,0 segundo,,guestToolsCurrent|10304,No está en ejecución,0 Hz,0 B,0,,,4219da88-3f8e-5563-523f-a0cb817f1888,1.121,Habilitado,N/D,No se requiere, --,No,false,false
+DEV12C,Apagado,Normal,,192.1.1.219,,"126,24 GB","120,03 GB",Microsoft Windows 10 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),6 GB,0 B,8,1,0 segundo,,guestToolsCurrent|11265,No está en ejecución,0 Hz,0 B,0,,,4219cdf5-3da2-a421-6c5f-748e58998c63,"1.122
+usa desarrollo para modificar forms",Habilitado,N/D,No se requiere, --,No,false,
+OPENDBPROD006,Encendido,Normal,,192.1.1.217,,"700,11 GB","700,11 GB",Oracle Linux 8 (64-bit),ESXi 6.7 y posterior (máquina virtual versión 14),24 GB,0 B,8,1,28 días,"192.1.1.22, fe80::250:56ff:fe99:afcb",guestToolsUnmanaged|12325,En ejecución,191 MHz,"17,36 GB",3,opendbprod006,"Intel® ""Haswell"" Generation",42198e3c-4893-1e4d-a1d7-2be7c3fa79e3,,Habilitado,N/D,No se requiere, --,No,false,false
+OPENBK,Encendido,Normal,,192.1.1.217,,"3,62 TB","3,62 TB",Microsoft Windows Server 2016 (64-bit),ESXi 6.7 y posterior (máquina virtual versión 14),18 GB,18 GB,8,4,31 días,"192.1.1.14, 10.77.254.114",guestToolsSupportedNew|13322,En ejecución,622 MHz,"14,35 GB",9,openbk,"Intel® ""Haswell"" Generation",42197e94-ccbb-f04d-b15f-7c15ceaffa8a,Servidor de backup Veeam,Deshabilitado,N/D,No se requiere, --,No,false,false
+VEEAM-PIEDRAS,Encendido,Normal,,192.1.1.221,,"188,11 GB","188,11 GB",Microsoft Windows Server 2016 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),8 GB,0 B,2,1,40 días,"192.1.1.195, fe80::53b:aeb5:62aa:af6d",guestToolsSupportedNew|10305,En ejecución,25 MHz,"7,93 GB",3,WIN-T4PNNOQ5G2K,"Intel® ""Westmere"" Generation",4219e72c-2812-906c-ba53-ea9d52cb2125,,Habilitado,N/D,No se requiere, --,No,false,false
+VPNCLIENTESRDP,Encendido,Normal,,192.1.1.221,,"58,11 GB","58,11 GB",Microsoft Windows 10 (64-bit),ESXi 6.7 y posterior (máquina virtual versión 14),8 GB,0 B,4,1,47 días,"169.254.193.114, 192.1.1.136, fe80::69ee:ffbd:22f2:f29f",guestToolsCurrent|10304,En ejecución,278 MHz,"8,06 GB",19,VPNCLIENTESRDP,"Intel® ""Westmere"" Generation",4219f0d5-fb53-f8c7-8334-e598f71faaa4,"192.1.1.136
+RDP de acceso a clientes no compatibles localmente
+Allianz, Monroe, Rovella, SMQ, NABSA",Habilitado,N/D,No se requiere, --,No,false,false
+OL8LABWL01,Encendido,Normal,,192.1.3.252,,"152,11 GB","152,11 GB",Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,4,1,55 días,192.1.2.195,guestToolsUnmanaged|12389,En ejecución,167 MHz,"16,07 GB",9,ol8labwl01.localdomain,,421909e1-934b-c048-9d1f-a62876d8e574,,Habilitado,N/D,No se requiere, --,No,false,
+OPENDBPROD03,Encendido,Normal,,192.1.1.224,,"580,09 GB","580,09 GB",Other 4.x or later Linux (64-bit),ESXi 6.7 Update 2 and later (VM version 15),20 GB,0 B,8,1,61 días,"10.77.7.30, fe80::250:56ff:fe99:b29",guestToolsUnmanaged|13312,En ejecución,251 MHz,"16,9 GB",2,opendbprod03,"Generación Intel® ""Broadwell""",4219b00d-8f9f-b898-dc20-558ecb6d16a5,,Habilitado,N/D,No se requiere, --,No,false,false
+OPENINFR04,Encendido,Normal,,192.1.1.215,,"32,31 GB","32,31 GB",Red Hat Enterprise Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),12 GB,0 B,4,2,69 días,"192.1.1.124, fe80::250:56ff:fe99:ea5b",guestToolsUnmanaged|11269,En ejecución,19 MHz,"2,59 GB",1,openinfr04,"Intel® ""Nehalem"" Generation",4219e878-7c6c-31f3-94f8-c97881fa0bb3,1.124,Habilitado,N/D,No se requiere, --,No,false,
+Database.28,Encendido,Normal,,192.1.1.215,,"288,41 GB","288,41 GB",Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),8 GB,0 B,4,1,70 días,,guestToolsCurrent|10357,En ejecución,0 Hz,"1,03 GB",2,dbdesa.open.solutions,"Intel® ""Nehalem"" Generation",42190f89-baa1-c8b7-20d4-4637acfaade9,Last backup: [3/21/2026 1:03:54 AM]; Veeam server: [openbk]; Job: [Job_002_Backup_quincenal]; Repository: [openbk],Habilitado,N/D,No se requiere, --,No,false,
+OPENCLOUD - Jasper .4,Encendido,Normal,,192.1.1.215,,"262,13 GB","262,13 GB",Ubuntu Linux (64-bit),ESXi 5.0 y posterior (máquina virtual versión 8),2 GB,0 B,4,1,70 días,"192.1.1.4, fe80::250:56ff:fe97:8e4c",guestToolsCurrent|10357,En ejecución,0 Hz,"2,03 GB",1,Wiki-Cloud,"Intel® ""Nehalem"" Generation",42170457-f3c9-8736-54c0-e1667e6bcfcf,,Habilitado,N/D,No se requiere, --,No,false,
+Database .44 - Clientes TEST,Encendido,Normal,,192.1.1.215,,"402,2 GB","402,2 GB",Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),32 GB,0 B,6,1,70 días,192.1.1.44,guestToolsUnmanaged|12389,En ejecución,339 MHz,"31,94 GB",12,database44,"Intel® ""Nehalem"" Generation",421920ff-c839-75b2-e347-fcb6cb134a07,"1.44
+
+Last backup: [5/1/2024 1:04:57 AM]; Veeam server: [openbk]; Job: [Job_002_Backup_quincenal]; Repository: [openbk.open.solutions]",Habilitado,N/D,No se requiere, --,No,false,
+Weblogic .16,Encendido,Normal,,192.1.1.215,,"122,13 GB","122,13 GB",Oracle Linux 4/5 or later (64-bit),ESX/ESXi 4.0 y posterior (máquina virtual versión 7),12 GB,0 B,8,1,72 días,"192.1.1.16, fe80::250:56ff:fea0:a070",guestToolsCurrent|10357,En ejecución,339 MHz,"2,01 GB",1,openAS11g,"Intel® ""Nehalem"" Generation",564d85aa-e5c6-c0a3-9ea0-7f0b3461be98,,Habilitado,N/D,No se requiere, --,No,false,
+Database .23,Encendido,Normal,,192.1.1.215,,"474,21 GB","474,21 GB",Oracle Linux 6 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),24 GB,0 B,6,1,72 días,192.1.1.23,guestToolsCurrent|10357,En ejecución,578 MHz,"7,26 GB",2,database05.open.solutions,"Intel® ""Nehalem"" Generation",564db271-f294-ed76-4330-6175e8caf59e,"1.23
+database05
+BD: Corriendo
+TESTOPEN 
+ROVELLA(T2021)
+ESYOPT
+Apagada:( SARHA5,CITEDEF)
+Last backup: [7/10/2025 1:07:35 AM]; Veeam server: [openbk]; Job: [Job_002_Backup_quincenal]; Repository: [openbk]",Habilitado,N/D,No se requiere, --,No,false,
+Database .27,Encendido,Normal,,192.1.1.215,,"424,16 GB","424,16 GB",Oracle Linux 6 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),24 GB,0 B,8,1,72 días,"192.168.122.1, 192.1.1.27, 10.101.2.180, fe80::250:56ff:fe99:54d9",guestToolsUnmanaged|10245,En ejecución,99 MHz,"4,81 GB",1,db27,"Intel® ""Nehalem"" Generation",564dae10-e183-6e89-b0b8-69104be722c8,"BD Corriendo: DEMOOPEN,T2015,BLOQUES,T2015ERP,SIGOTEST
+Last backup: [7/10/2025 1:04:40 AM]; Veeam server: [openbk]; Job: [Job_002_Backup_quincenal]; Repository: [openbk]",Habilitado,N/D,No se requiere, --,No,false,
+PIVOT-INTEGRACIONES01,Encendido,Normal,,192.1.1.216,,"64,11 GB","64,11 GB",Oracle Linux 8 (64-bit),ESXi 6.7 y posterior (máquina virtual versión 14),4 GB,0 B,2,1,83 días,"192.1.2.60, fe80::250:56ff:fe99:f776",guestToolsUnmanaged|11328,En ejecución,0 Hz,"1,34 GB",1,pivot-integraciones01,"Intel® ""Sandy Bridge"" Generation",42193df7-4d44-00bb-dcd2-6d7bfbac276c,,Habilitado,N/D,No se requiere, --,No,false,false
+OPENVPNFW01,Encendido,Normal,,192.1.1.216,,"52,13 GB","52,13 GB",FreeBSD 12 or later versions (64-bit),ESXi 6.7 y posterior (máquina virtual versión 14),18 GB,16 GB,2,2,103 días,"200.55.243.92, 200.55.243.115, 192.1.2.11, 192.1.3.11, fe80::250:56ff:fe99:93db, fe80::250:56ff:fe99:cc39",guestToolsUnmanaged|2147483647,En ejecución,95 MHz,"3,48 GB",7,openvpnfw01.open.solutions,"Intel® ""Sandy Bridge"" Generation",42190cd3-abbf-0fcb-2947-4b2ea140076f,200.55.243.92,Habilitado,N/D,No se requiere, --,No,false,false
+OPENWLQA01,Encendido,Normal,,192.1.1.224,,"258,09 GB","258,09 GB",Oracle Linux 8 (64-bit),ESXi 6.7 y posterior (máquina virtual versión 14),16 GB,0 B,4,1,104 días,10.77.7.80,guestToolsUnmanaged|12389,En ejecución,146 MHz,"14,74 GB",3,openwlqa01,"Generación Intel® ""Broadwell""",4219f6b2-adb4-488d-3578-cf94c83deaba,,Habilitado,N/D,No se requiere, --,No,false,false
+OPENPORTALCLI02,Encendido,Normal,,192.1.1.223,,"96,09 GB","96,09 GB",Ubuntu Linux (64-bit),ESXi 6.7 y posterior (máquina virtual versión 14),16 GB,0 B,4,1,130 días,"10.77.8.2, 172.20.0.1, 172.19.0.1, 172.18.0.1, fe80::250:56ff:fe99:3d48, fe80::42:fcff:fedd:96d5",guestToolsUnmanaged|12448,En ejecución,377 MHz,"15,62 GB",6,openportalcli02,"Generación Intel® ""Broadwell""",4219fee1-5fdb-5344-0ead-da1df052a6ac,,Habilitado,N/D,No se requiere, --,No,false,false
+OPEN1-SABRINA,Encendido,Normal,,192.1.1.221,,"82,13 GB","82,13 GB",Microsoft Windows 7 (64-bit),ESXi 5.5 y posterior (máquina virtual versión 10),2 GB,0 B,2,1,130 días,"169.254.222.144, 169.254.102.215, 169.254.156.216, 169.254.194.22, 192.1.1.189, fe80::fd81:b0d7:8e83:de90, fe80::5512:aba1:398e:66d7, fe80::f9b8:231a:f076:9cd8, fe80::ccb5:9e3b:393:c216",guestToolsCurrent|9409,En ejecución,25 MHz,"2,12 GB",8,VM-1-SABRINA,"Intel® ""Westmere"" Generation",42191c0e-3858-59de-c7d6-73142bec1946,"1.189
+
+Virtual Sabrina San Martin",Habilitado,N/D,No se requiere, --,No,false,false
+OPEN01,Encendido,Normal,,192.1.1.221,,"62,17 GB","62,17 GB",Microsoft Windows 10 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),12 GB,0 B,4,1,131 días,192.1.1.166,guestToolsCurrent|10304,En ejecución,329 MHz,"12,08 GB",12,DESKTOP-LHIE5P4,"Intel® ""Westmere"" Generation",4219e613-9f39-fd5c-f8d7-7664a7dbb118,1.166 HPC,Habilitado,N/D,No se requiere, --,No,false,false
+OPENINFR10,Encendido,Normal,,192.1.1.221,,"28,11 GB","28,11 GB",Red Hat Enterprise Linux 7 (64-bit),ESXi 6.7 y posterior (máquina virtual versión 14),16 GB,0 B,8,1,131 días,192.1.1.120,guestToolsUnmanaged|11269,En ejecución,25 MHz,"2,33 GB",1,openinfr10,"Intel® ""Westmere"" Generation",4219a6b1-e7e9-6704-77aa-18dbf1613e12,,Habilitado,N/D,No se requiere, --,No,false,false
+OPENFWCLI02,Encendido,Normal,,192.1.1.217,,"66,11 GB","66,11 GB",FreeBSD Pre-11 versions (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,4,2,138 días,,guestToolsUnmanaged|2147483647,No está en ejecución,47 MHz,"2,52 GB",5,,"Intel® ""Nehalem"" Generation",421907b2-6514-a7ce-9c15-3d0f11196a93,,Habilitado,N/D,No se requiere, --,No,false,false
+VM-DOCKER-Clientes,Encendido,Normal,,192.1.1.223,,"214,09 GB","214,09 GB",Debian GNU/Linux 10 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),4 GB,0 B,4,1,138 días,"192.1.1.38, 172.18.0.1, 172.19.0.1, fe80::250:56ff:fe99:4b31, fe80::42:d5ff:fe6e:6544, fe80::42:9cff:fe6c:e99f",guestToolsUnmanaged|10346,En ejecución,104 MHz,"3,72 GB",8,vm-docker,"Intel® ""Haswell"" Generation",564d3b3c-638a-5713-62af-ba4a9611a548,"192.1.1.38 
+vm-docker 
+NG Proxy Manager - Clientes 
+Argocean
+Roman",Habilitado,N/D,No se requiere, --,No,false,false
+Database.25.,Encendido,Normal,,192.1.1.224,,"310,1 GB","310,1 GB",Oracle Linux 7 (64-bit),ESXi 6.7 Update 2 and later (VM version 15),24 GB,0 B,8,1,139 días,192.1.1.25,guestToolsUnmanaged|11269,En ejecución,335 MHz,"22,67 GB",6,database25.open.solutions,"Generación Intel® ""Broadwell""",4219e04e-c2b2-a5ae-0223-f0da936962d7,"BD 19: CONDORERP(T2022)
+Last backup: [7/14/2025 1:09:55 AM]; Veeam server: [openbk]; Job: [Job_002_Backup_quincenal]; Repository: [openbk]",Habilitado,N/D,No se requiere, --,No,false,false
+DOCKER-DEB,Encendido,Normal,,192.1.1.223,,"176,12 GB","176,12 GB",Debian GNU/Linux 10 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,8,1,139 días,"192.1.1.37, 172.19.0.1, 172.18.0.1, fe80::250:56ff:fe99:64b1, fe80::6815:5bff:fe3d:997",guestToolsUnmanaged|11333,En ejecución,104 MHz,"15,65 GB",3,docker-deb,"Intel® ""Nehalem"" Generation",4219762a-5ecd-5ad6-81e1-748c317f79fe,,Habilitado,N/D,No se requiere, --,No,false,false
+OPENZABBIX03,Encendido,Normal,,192.1.1.224,,"136,09 GB","136,09 GB",Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,4,2,139 días,192.1.1.5,guestToolsUnmanaged|12389,En ejecución,62 MHz,"11,04 GB",1,openzabbix03.open,"Intel® ""Nehalem"" Generation",4219b7c2-8fa6-073a-6f78-063ad4b22993,,Habilitado,N/D,No se requiere, --,No,false,false
+OPENDBQA01,Encendido,Normal,,192.1.1.224,,"436,09 GB","436,09 GB",Oracle Linux 8 (64-bit),ESXi 6.7 y posterior (máquina virtual versión 14),16 GB,0 B,4,1,139 días,10.77.7.70,guestToolsUnmanaged|13312,En ejecución,272 MHz,"15,41 GB",4,opendbqa01,"Generación Intel® ""Broadwell""",4219f207-3ecd-4630-4141-070dc8ff9a5f,,Habilitado,N/D,No se requiere, --,No,false,false
+openinfr214,Encendido,Normal,,192.1.1.214,,"32,12 GB","32,12 GB",Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,4,1,140 días,"192.1.2.214, fe80::250:56ff:fe99:861",guestToolsUnmanaged|11269,En ejecución,0 Hz,"3,72 GB",1,openinfr214,"Intel® ""Nehalem"" Generation",42190966-b9af-8e56-3adf-a0f2d2bda8b8,,Habilitado,N/D,No se requiere, --,No,false,
+OPENINFR222,Encendido,Normal,,192.1.1.222,,"48,11 GB","48,11 GB",Ubuntu Linux (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,8,1,140 días,"192.1.2.222, fe80::250:56ff:fe99:ef36",guestToolsUnmanaged|11360,En ejecución,0 Hz,"3,15 GB",0,openinfr222,"Intel® ""Nehalem"" Generation",42198947-d41d-0b77-35ce-ec5d61004ef5,,Habilitado,N/D,No se requiere, --,No,false,
+OPENINFR01,Encendido,Normal,,192.1.3.252,,"23,25 GB","23,25 GB",Red Hat Enterprise Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),8 GB,0 B,4,1,140 días,"192.1.1.128, fe80::250:56ff:fe99:a3a0",guestToolsUnmanaged|11269,En ejecución,0 Hz,"3,42 GB",1,openinfr01,,4219bd78-705f-d59e-f00e-61484ec82963,,Habilitado,N/D,No se requiere, --,No,false,
+CLIENTES-DB,Encendido,Normal,,192.1.1.224,,"594,17 GB","594,17 GB",CentOS 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),32 GB,0 B,10,1,145 días,192.1.1.32,guestToolsSupportedOld|10304,En ejecución,545 MHz,"30,25 GB",3,clientes-db,"Intel® ""Haswell"" Generation",42193659-4a7b-b719-0bb8-cbd20bc9267d,".32
+
+BD Boca 
+BD PVINST
+BD Cefas (PRO- TEST)
+BD Electroban
+Bd Wlogic12
+Last backup: [7/8/2025 2:32:07 AM]; Veeam server: [openbk]; Job: [Job_002_Backup_quincenal]; Repository: [openbk]",Habilitado,N/D,No se requiere, --,No,false,false
+OPENBI001,Encendido,Normal,,192.1.1.214,,"188,12 GB","188,12 GB",Microsoft Windows 10 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),8 GB,0 B,4,1,151 días,192.1.2.196,guestToolsCurrent|10305,En ejecución,101 MHz,"8,07 GB",29,OPENBI001,"Intel® ""Nehalem"" Generation",421917cf-dec9-a8e1-aa35-1fe71fde5ee5,192.1.2.196,Habilitado,N/D,No se requiere, --,No,false,
+DMFW01,Encendido,Normal,,192.1.1.223,,"76,09 GB","76,09 GB",FreeBSD 12 or later versions (64-bit),ESXi 6.7 y posterior (máquina virtual versión 14),16 GB,0 B,4,3,158 días,"200.55.240.146, 192.1.3.93, 10.77.10.1, fe80::250:56ff:fe99:7af5, fe80::250:56ff:fe99:7943, fe80::250:56ff:fe99:ae85",guestToolsUnmanaged|2147483647,En ejecución,41 MHz,"9,97 GB",7,dmfw01.home.arpa,,42192055-f567-fe00-3cdb-9467084fbbb7,Last backup: [5/5/2026 9:00:38 PM]; Veeam server: [openbk]; Job: [2026_DiagMaipu]; Repository: [openbk],Habilitado,N/D,No se requiere, --,No,false,false
+OPENDB19DEV01,Encendido,Normal,,192.1.1.218,,"138,11 GB","138,11 GB",Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),18 GB,0 B,2,1,169 días,192.1.2.240,guestToolsUnmanaged|12325,En ejecución,249 MHz,"10,47 GB",4,OPENDB19DEV01,"Intel® ""Ivy Bridge"" Generation",4219b04b-5602-5538-df6d-85bc61f210a4,"2.240
+Last backup: [3/21/2026 2:16:42 AM]; Veeam server: [openbk]; Job: [Job_002_Backup_quincenal]; Repository: [openbk]",Habilitado,N/D,No se requiere, --,No,false,false
+OPENOEM24ai,Encendido,Normal,,192.1.1.223,,"304,1 GB","304,1 GB",Oracle Linux 8 (64-bit),ESXi 6.7 y posterior (máquina virtual versión 14),24 GB,0 B,12,1,172 días,10.77.8.15,guestToolsUnmanaged|12389,En ejecución,314 MHz,"23,68 GB",30,openoem24ai,"Generación Intel® ""Broadwell""",421956f2-4cda-35f8-3fb4-70d8d473ca90,,Habilitado,N/D,No se requiere, --,No,false,false
+DASADBPROD01,Encendido,Normal,,192.1.1.223,,"532,14 GB","532,14 GB",Oracle Linux 7 (64-bit),ESXi 6.7 Update 2 and later (VM version 15),32 GB,0 B,16,1,180 días,10.77.10.201,guestToolsUnmanaged|11269,En ejecución,188 MHz,"28,71 GB",11,dasadbprod01,"Generación Intel® ""Broadwell""",4219d626-c553-38a8-4d30-7e6390ce1b1d,"DASA db PRODUCCION NUEVO
+10.77.10.201
+Last backup: [5/5/2026 9:00:38 PM]; Veeam server: [openbk]; Job: [2026_DiagMaipu]; Repository: [openbk]",Habilitado,N/D,No se requiere, --,No,false,false
+OPENSVNLINUX .3,Encendido,Normal,,192.1.1.220,,"208,2 GB","208,2 GB",CentOS 4/5 or later (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),8 GB,0 B,2,1,196 días,"192.1.1.3, fe80::250:56ff:fea0:3dd1",guestToolsSupportedOld|9355,En ejecución,0 Hz,"4,09 GB",1,opensvn,"Intel® ""Nehalem"" Generation",42202755-120c-a0cf-7442-64f147403efa,,Habilitado,N/D,No se requiere, --,No,false,
+OPENDOCKER04,Encendido,Normal,,192.1.1.224,,"96,09 GB","96,09 GB",Ubuntu Linux (64-bit),ESXi 6.7 y posterior (máquina virtual versión 14),16 GB,0 B,8,1,196 días,"10.77.7.5, 172.18.0.1, fe80::250:56ff:fe99:afbf, fe80::68e9:adff:feb2:1350",guestToolsUnmanaged|12389,En ejecución,41 MHz,"7,21 GB",1,opendocker04,"Generación Intel® ""Broadwell""",4219e64f-62b2-d394-f6b1-79a7941b302c,,Habilitado,N/D,No se requiere, --,No,false,false
+OPENDBPROD005,Encendido,Normal,,192.1.1.224,,"332,13 GB","332,13 GB",Oracle Linux 7 (64-bit),ESXi 6.7 Update 2 and later (VM version 15),32 GB,0 B,16,1,198 días,10.77.7.15,guestToolsUnmanaged|11269,En ejecución,209 MHz,"28,99 GB",4,opendbprod005.open,"Generación Intel® ""Broadwell""",421900f0-d2f7-3925-c50c-a6e97e83761a,"10.77.7.15
+
+ebyprod",Habilitado,N/D,No se requiere, --,No,false,false
+OPENDBPROD001,Encendido,Normal,,192.1.1.224,,"732,13 GB","732,13 GB",Oracle Linux 7 (64-bit),ESXi 6.7 Update 2 and later (VM version 15),32 GB,0 B,16,2,198 días,10.77.7.11,guestToolsUnmanaged|11269,En ejecución,251 MHz,"29,14 GB",5,opendbprod001.open,"Generación Intel® ""Broadwell""",42195b57-6dbd-c002-0d16-7b56dd7ee1ec,7.11,Habilitado,N/D,No se requiere, --,No,false,false
+OPENWLDES010,Encendido,Normal,,192.1.1.224,,"146,09 GB","146,09 GB",Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,4,1,198 días,10.77.7.51,guestToolsUnmanaged|12389,En ejecución,293 MHz,"13,81 GB",2,openwldes011.open,"Generación Intel® ""Broadwell""",42197c98-c826-b4d2-a901-241863f28ad0,10.77.7.51,Habilitado,N/D,No se requiere, --,No,false,false
+OPENWLPROD01,Encendido,Normal,,192.1.1.224,,"246,1 GB","246,1 GB",Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,4,1,198 días,10.77.7.201,guestToolsUnmanaged|12389,En ejecución,314 MHz,"15,63 GB",5,openwlprod01.localdomain,"Generación Intel® ""Broadwell""",42199ad4-1e57-1410-8583-17cb194d261b,"10.77.7.201 
+EBYPROD
+CEFAS
+GIARG
+test weblogix simple licence.
+12.2.1.19  y db 23ia",Habilitado,N/D,No se requiere, --,No,false,false
+OPENDBDES011,Encendido,Normal,,192.1.1.224,,"332,12 GB","332,12 GB",Oracle Linux 7 (64-bit),ESXi 6.7 Update 2 and later (VM version 15),32 GB,0 B,16,2,198 días,10.77.7.151,guestToolsUnmanaged|11269,En ejecución,209 MHz,"20,53 GB",3,opendbdes011.open,"Generación Intel® ""Broadwell""",42194071-052b-228f-3cd4-9838c9dac2cc,"Roman test
+
+10.77.7.151
+7.151",Habilitado,N/D,No se requiere, --,No,false,false
+OPENFWCLI10,Encendido,Normal,,192.1.1.224,,"58,08 GB","58,08 GB",FreeBSD Pre-11 versions (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),8 GB,0 B,1,3,198 días,"200.55.240.147, 192.1.3.6, 10.77.7.1, fe80::250:56ff:fe99:51da, fe80::250:56ff:fe99:2c63, fe80::250:56ff:fe99:94e6",guestToolsUnmanaged|2147483647,En ejecución,41 MHz,"6,91 GB",10,OPENFWCLI10.open.local,"Generación Intel® ""Broadwell""",42199fb5-2907-79f8-0272-2402dd5f4129,"200.55.240.147
+192.1.3.6
+10.77.7.1",Habilitado,N/D,No se requiere, --,No,false,false
+OPENINFR224,Encendido,Normal,,192.1.1.224,,"66,25 GB","66,25 GB",Red Hat Enterprise Linux 7 (64-bit),ESXi 6.7 y posterior (máquina virtual versión 14),16 GB,0 B,4,1,198 días,"192.1.2.224, fe80::e3b2:7fce:67c8:d6ce",guestToolsUnmanaged|11269,En ejecución,20 MHz,"4,73 GB",1,openinf224,"Generación Intel® ""Broadwell""",4219d0bf-6a52-3d62-1166-cb2f30473678,,Habilitado,N/D,No se requiere, --,No,false,false
+CliProFw01,Encendido,Normal,,192.1.1.223,,"74,1 GB","74,1 GB",FreeBSD Pre-11 versions (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),24 GB,0 B,8,4,198 días,"192.1.3.5, 10.77.6.1, 10.77.8.1, fe80::250:56ff:fe99:cc6f, fe80::250:56ff:fe99:9c3b, fe80::250:56ff:fe99:188d, fe80::250:56ff:fe99:e0bf",guestToolsUnmanaged|2147483647,En ejecución,41 MHz,"16,69 GB",4,CliProFw01.open.local,"Generación Intel® ""Broadwell""",4219cdbb-ac5d-97b3-a17b-eff2fec79ee1,Maquina: Apagada,Habilitado,N/D,No se requiere, --,No,false,false
+WL12C-PROD,Encendido,Normal,,192.1.1.223,,"130,15 GB","130,15 GB",Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,16 GB,4,1,198 días,192.1.1.1,guestToolsUnmanaged|11269,En ejecución,83 MHz,15 GB,5,wlprod-n1,"Generación Intel® ""Broadwell""",42195bee-d12d-274c-ee9a-e36321937350,"Maquina: Encendida
+192.1.1.1  prod enerflex jobs, db de WL en 1.32",Habilitado,N/D,No se requiere, --,No,false,false
+WebLogic.19,Encendido,Normal,,192.1.1.223,,"226,14 GB","226,14 GB",Oracle Linux 6 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),6 GB,0 B,12,1,198 días,"192.1.1.19, fe80::250:56ff:fe97:c510",guestToolsSupportedOld|10304,En ejecución,62 MHz,"5,23 GB",9,DBWLOPEN,"Generación Intel® ""Broadwell""",4217bf8a-6946-0922-c97d-39e95b2e9319,"Maquina: Encendida
+.19",Habilitado,N/D,No se requiere, --,No,false,false
+OPENPORTAL01,Encendido,Normal,,192.1.1.223,,"292,12 GB","292,12 GB",Ubuntu Linux (64-bit),ESXi 6.7 y posterior (máquina virtual versión 14),32 GB,0 B,8,1,198 días,"10.77.10.5, 172.18.0.1, 172.19.0.1, fe80::250:56ff:fe99:ae3b",guestToolsUnmanaged|12448,En ejecución,104 MHz,"6,19 GB",1,openportal01,"Generación Intel® ""Broadwell""",4219b272-42b6-8c2e-afc5-4d6c315a651d,"portal prod DM
+10.77.10.5 (ex 192.1.3.22)
+Last backup: [5/5/2026 9:07:01 PM]; Veeam server: [openbk]; Job: [2026_DiagMaipu]; Repository: [openbk]",Habilitado,N/D,No se requiere, --,No,false,false
+OPENORACLEDB01,Encendido,Normal,,192.1.1.223,,"314,15 GB","314,15 GB",Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),24 GB,0 B,4,1,198 días,"192.1.1.80, 10.5.1.177",guestToolsUnmanaged|11269,En ejecución,272 MHz,"23,19 GB",3,openoracledb01.open.solutions,"Generación Intel® ""Broadwell""",421991fd-000b-3ed4-6599-307a5984791f,"Maquina: Encendida
+1.80",Habilitado,N/D,No se requiere, --,No,false,false
+OPENDBPR001,Encendido,Normal,,192.1.1.223,,"392,14 GB","392,14 GB",Oracle Linux 8 (64-bit),ESXi 6.7 Update 2 and later (VM version 15),32 GB,0 B,16,1,198 días,192.1.3.30,guestToolsUnmanaged|11269,En ejecución,293 MHz,"24,7 GB",3,opendbpr001.local,"Generación Intel® ""Broadwell""",4219aa2b-ef04-23ad-8b4a-0aa9c637d061,"migracion SIGO
+Maquina: Encendida
+3.30",Habilitado,N/D,No se requiere, --,No,false,false
+OPENREMOTECLI01,Encendido,Normal,,192.1.1.222,,"130,11 GB","130,11 GB",Microsoft Windows 10 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,4,1,198 días,"169.254.8.113, 192.1.1.102, 169.254.7.97, 192.168.25.1, 192.168.72.1, fe80::856d:d391:db7:1e8c, fe80::eda0:ab62:fed2:9c22, fe80::d597:579e:ac2c:37ad, fe80::7734:4e90:a0dd:8a00",guestToolsCurrent|10305,En ejecución,111 MHz,"16,08 GB",46,OPENCLIVPN02,"Intel® ""Nehalem"" Generation",4219e6d3-7dcf-8905-e641-c2d7af0a02f2,"1.102
+conexion holando",Habilitado,N/D,No se requiere, --,No,false,
+Win10-test-python,Encendido,Alerta,,192.1.1.222,,"64,11 GB","64,11 GB",Microsoft Windows 10 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),4 GB,0 B,1,1,198 días,,guestToolsNotInstalled|0,No está en ejecución,83 MHz,"4,05 GB",97,,"Intel® ""Nehalem"" Generation",421911a3-d913-3cc5-6e64-818bbce6dbe1,,Deshabilitado,N/D,No se requiere, --,No,false,
+OPENINFR223,Encendido,Normal,,192.1.1.223,,"36,39 GB","36,39 GB",Red Hat Enterprise Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,4,1,198 días,192.1.2.223,guestToolsUnmanaged|11269,En ejecución,20 MHz,"4,76 GB",1,openinfr223,"Generación Intel® ""Broadwell""",4219b9f4-f7a9-ee7e-d692-4f6946ab23b2,"Maquina: Encendida
+2.223
+veeam agent 223",Habilitado,N/D,No se requiere, --,No,false,false
+OPENFWCLI001,Encendido,Normal,,192.1.1.223,,"66,08 GB","66,08 GB",FreeBSD Pre-11 versions (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,2,3,198 días,"200.55.243.93, 192.1.3.250, fe80::250:56ff:fe99:31d1, fe80::250:56ff:fe99:13b8, fe80::250:56ff:fe99:ffb5",guestToolsUnmanaged|2147483647,En ejecución,41 MHz,"8,51 GB",6,openfwcli001.clientes.open,"Generación Intel® ""Broadwell""",4219d7bb-f07e-108f-9811-036b10567536,"200.55.243.93
+3.250",Habilitado,N/D,No se requiere, --,No,false,false
+DMWL01,Encendido,Normal,,192.1.1.223,,"246,1 GB","246,1 GB",Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,4,1,198 días,10.77.10.101,guestToolsUnmanaged|12389,En ejecución,293 MHz,"14,82 GB",4,dmwl01.localdomain,"Generación Intel® ""Broadwell""",42192a61-f1ce-96b8-01ae-63ec76e9589b,Last backup: [5/5/2026 9:04:40 PM]; Veeam server: [openbk]; Job: [2026_DiagMaipu]; Repository: [openbk],Habilitado,N/D,No se requiere, --,No,false,false
+CLIENTES-DB2,Encendido,Normal,,192.1.1.223,,"524,19 GB","524,19 GB",Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),24 GB,0 B,18,1,198 días,192.1.1.51,guestToolsUnmanaged|11269,En ejecución,398 MHz,"23,58 GB",14,clientes-db2,"Generación Intel® ""Broadwell""",4219799a-5f03-7672-1888-9335803c88e5,"Maquina: Encendida
+BD Pietroboni
+Last backup: [6/23/2025 3:36:45 AM]; Veeam server: [openbk]; Job: [Job_002_Backup_quincenal]; Repository: [openbk]",Habilitado,N/D,No se requiere, --,No,false,false
+Database12c .18,Encendido,Normal,,192.1.1.220,,"408,16 GB","408,16 GB",Oracle Linux 6 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),8 GB,0 B,2,1,198 días,"192.1.1.18, fe80::250:56ff:fe97:3dd5",guestToolsSupportedNew|10357,En ejecución,0 Hz,"3,94 GB",2,database12c,"Intel® ""Nehalem"" Generation",4217f07e-fc42-b3b2-c4f1-e2379694ae78,"1.18
+
+WORK12C:/home/oracle/app/oracle/product/12.1.0/dbhome_1:N
+T2016RETRO:/home/oracle/app/oracle/product/12.1.0/dbhome_1:Y
+CWORK19:/home/oracle/app/oracle/product/12.1.0/dbhome_1:Y
+erp:/home/oracle/app/oracle/product/12.1.0/dbhome_2:N
+NQN:/home/oracle/app/oracle/product/12.1.0/dbhome_1:N
+DBRHGOB:/home/oracle/app/oracle/product/12.1.0/dbhome_1:N
+fmw35:/home/oracle/app/oracle/product/12.1.0/dbhome_1:N
+DEV12C:/home/oracle/app/oracle/product/12.1.0/dbhome_1:N",Habilitado,N/D,No se requiere, --,No,false,
+Database-24,Encendido,Normal,,192.1.1.220,,"524,19 GB","524,19 GB",Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),24 GB,0 B,16,1,198 días,192.1.1.24,guestToolsUnmanaged|11269,En ejecución,390 MHz,24 GB,20,opendb,"Intel® ""Nehalem"" Generation",4219b03a-657a-40f2-d7fb-a72ab6cc9ea2,"1.24
+
+ESYOP:/u01/app/oracle/product/19.0.0:N
+OPEN:/u01/app/oracle/product/19.0.0/dbhome_1:Y
+VINST:/u01/app/oracle/product/19.0.0/dbhome_1:N
+VALG:/u01/app/oracle/product/19.0.0/dbhome_1:N
+
+
+Last backup: [7/14/2025 1:04:40 AM]; Veeam server: [openbk]; Job: [Job_002_Backup_quincenal]; Repository: [openbk]",Habilitado,N/D,No se requiere, --,No,false,
+OPENDBPROD011,Encendido,Normal,,192.1.1.218,,"196,11 GB","196,11 GB",Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,4,1,198 días,192.1.3.21,guestToolsUnmanaged|11269,En ejecución,24 MHz,"2,42 GB",1,opendbprod011.open,"Intel® ""Ivy Bridge"" Generation",42195b50-3957-e6b0-8679-a6f2ba9e7e14,192.1.3.21,Habilitado,N/D,No se requiere, --,No,false,false
+OPENDOCKER02,Encendido,Normal,,192.1.1.220,,"126,14 GB","126,14 GB",Ubuntu Linux (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,4,1,198 días,"192.1.1.112, 198.11.1.1, 198.11.11.1, 198.11.9.1, 198.11.6.1, 198.11.12.1, 198.11.5.1, 198.11.7.1, 198.11.3.1, 198.11.10.1, 198.11.4.1, 198.11.8.1, fe80::250:56ff:fe99:e46f",guestToolsUnmanaged|11360,En ejecución,55 MHz,"3,09 GB",2,opendocker02,"Intel® ""Nehalem"" Generation",4219892a-c945-f127-fdf9-84ae01ca373a,"1.112
+
+portal work prod",Habilitado,N/D,No se requiere, --,No,false,
+OPENINFR02,Encendido,Normal,,192.1.1.220,,"268,23 GB","268,23 GB",Other Linux (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),8 GB,0 B,4,1,198 días,192.1.1.200,guestToolsUnmanaged|12325,En ejecución,0 Hz,"7,9 GB",2,OPENINFR02,"Intel® ""Nehalem"" Generation",4219137e-ecfa-0d6c-f499-f31466ff76ae,".200
+servidore de VEEAM y BACKUPS MANUALES VIA SSH",Habilitado,N/D,No se requiere, --,No,false,
+SMTP-OPEN,Encendido,Normal,,192.1.1.220,,"86,13 GB","86,13 GB",CentOS 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),6 GB,0 B,4,1,198 días,192.1.1.46,guestToolsUnmanaged|11269,En ejecución,0 Hz,"1,07 GB",2,smtp.open.com.ar,"Intel® ""Nehalem"" Generation",4219cf6f-8d59-b734-ebe0-b0fd277102f1,,Habilitado,N/D,No se requiere, --,No,false,
+OPENINFR06,Encendido,Normal,,192.1.1.218,,"20,22 GB","20,22 GB",Red Hat Enterprise Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),8 GB,0 B,4,1,198 días,"192.1.1.126, fe80::250:56ff:fe99:1f8",guestToolsUnmanaged|11269,En ejecución,24 MHz,"1,68 GB",1,openinfr06,"Intel® ""Ivy Bridge"" Generation",4219a9c7-0f71-be09-9ea4-15d5aaf0ac5b,,Habilitado,N/D,No se requiere, --,No,false,false
+Microstrategy.111,Encendido,Normal,,192.1.1.218,,"276,13 GB","271,43 GB",Microsoft Windows Server 2008 R2 (64-bit),ESXi 6.7 y posterior (máquina virtual versión 14),16 GB,0 B,4,1,198 días,192.1.1.111,guestToolsSupportedNew|10305,En ejecución,224 MHz,"8,42 GB",2,MICROSTRATEGY.open.solutions,"Intel® ""Ivy Bridge"" Generation",564d50f8-80f5-b559-b3fe-fa6217c6ea37,"Maquina: Encendida
+1.111  2008R2  lo usa Cari para demos",Habilitado,N/D,No se requiere, --,No,false,false
+DBClientes.238,Encendido,Normal,,192.1.1.218,,"255,19 GB","244,1 GB",Oracle Linux 4/5 or later (64-bit),ESXi 5.0 y posterior (máquina virtual versión 8),9 GB,0 B,6,1,198 días,192.1.1.238,guestToolsUnmanaged|11269,En ejecución,349 MHz,"8,29 GB",6,dbclientes238,"Intel® ""Sandy Bridge"" Generation",564d154f-fb21-47b9-54a5-d9acd11a1126,Last backup: [3/21/2026 1:00:48 AM]; Veeam server: [openbk]; Job: [Job_002_Backup_quincenal]; Repository: [openbk],Habilitado,N/D,No se requiere, --,No,false,false
+DBClientes.190,Encendido,Normal,,192.1.1.218,,"412,15 GB","412,15 GB",Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),12 GB,0 B,8,1,198 días,192.1.1.190,guestToolsUnmanaged|11269,En ejecución,149 MHz,"7,66 GB",4,dbclientes.open.solutions,"Intel® ""Ivy Bridge"" Generation",421919b5-62d2-d209-9f20-534914303b08,,Habilitado,N/D,No se requiere, --,No,false,false
+DBClientes-12C.31,Encendido,Normal,,192.1.1.218,,"237,19 GB","237,19 GB",Oracle Linux 6 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),21 GB,0 B,8,1,198 días,192.1.1.31,guestToolsUnmanaged|2147483647,En ejecución,698 MHz,"19,21 GB",3,dbclientes,"Intel® ""Ivy Bridge"" Generation",4219493c-ac96-e933-9820-d34f4cb89e29,"1.31
+aqualum:/app/oracle/product/12.2.0/dbhome_1:N
+esyop:/app/oracle/product/12.2.0/dbhome_1:Y
+abbhist:/app/oracle/product/12.2.0/dbhome_1:N
+ABB:/app/oracle/product/12.2.0/dbhome_1:Y
+abbtubio:/app/oracle/product/12.2.0/dbhome_1:N
+
+
+Last backup: [7/10/2025 1:11:06 AM]; Veeam server: [openbk]; Job: [Job_002_Backup_quincenal]; Repository: [openbk]",Habilitado,N/D,No se requiere, --,No,false,false
+openinfr217,Encendido,Normal,,192.1.1.217,,"32,12 GB","32,12 GB",Oracle Linux 7 (64-bit),ESXi 6.7 y posterior (máquina virtual versión 14),16 GB,0 B,4,1,218 días,"192.1.2.217, fe80::250:56ff:fe99:650c",guestToolsUnmanaged|11269,En ejecución,0 Hz,"4,3 GB",1,opeminfr217,"Intel® ""Haswell"" Generation",4219c811-cf0b-e399-cef7-258f186ff641,,Habilitado,N/D,No se requiere, --,No,false,false
+WebLogic.191,Encendido,Normal,,192.1.1.217,,"366,12 GB","362,71 GB",Red Hat Enterprise Linux 6 (64-bit),ESXi 5.5 y posterior (máquina virtual versión 10),16 GB,0 B,16,1,383 días,192.1.1.191,guestToolsSupportedNew|10305,En ejecución,"5,55 GHz","8,51 GB",3,NAI,"Intel® ""Haswell"" Generation",564d858c-4bd3-9108-7671-bd688db4155f,192.1.1.191,Habilitado,N/D,No se requiere, --,No,false,false
+WL12C-Desarrollo.2.54,Encendido,Normal,,192.1.1.214,,"162,13 GB","162,13 GB",Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),32 GB,0 B,8,1,432 días,192.1.2.54,guestToolsUnmanaged|11269,En ejecución,202 MHz,"31,89 GB",3,localhost.localdomain,"Intel® ""Nehalem"" Generation",4219eced-9e81-6c8f-323c-feb7cd27297e,2.54,Habilitado,N/D,No se requiere, --,No,false,
+OPENHUMHUB,Encendido,Normal,,192.1.1.219,,"158,11 GB","158,11 GB",Ubuntu Linux (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),8 GB,0 B,2,1,439 días,"192.1.2.238, fe80::250:56ff:fe99:1715",guestToolsUnmanaged|12448,En ejecución,71 MHz,"7,29 GB",1,openhumhub,"Intel® ""Westmere"" Generation",42198bda-6ff0-3d39-b46b-eaf0d92714cb,"Humhub Open
+192.1.2.238/humhub",Habilitado,N/D,No se requiere, --,No,false,
+Database .90,Encendido,Normal,,192.1.1.214,,"206,14 GB","206,14 GB",Other Linux (64-bit),ESX/ESXi 4.0 y posterior (máquina virtual versión 7),6 GB,0 B,6,1,536 días,192.1.1.90,guestToolsCurrent|10357,En ejecución,176 MHz,"6,04 GB",15,OPEN,"Intel® ""Nehalem"" Generation",564df82f-a79a-f566-ca69-206ffb643578,Last backup: [7/14/2025 1:07:44 AM]; Veeam server: [openbk]; Job: [Job_002_Backup_quincenal]; Repository: [openbk],Habilitado,N/D,No se requiere, --,No,false,
+WL-GIAR,Encendido,Normal,,192.1.3.252,,"56,15 GB","55,13 GB",Red Hat Enterprise Linux 6 (64-bit),ESXi 5.0 y posterior (máquina virtual versión 8),6 GB,0 B,8,1,627 días,10.10.1.50,guestToolsSupportedOld|9344,En ejecución,62 MHz,"6,06 GB",7,ARDMZWEB108,,564dc713-4b8c-fa1c-1589-a6d691692b4b,,Habilitado,N/D,No se requiere, --,No,false,
+DC1,Encendido,Normal,,192.1.1.216,,"96,14 GB","96,14 GB",Microsoft Windows Server 2016 (64-bit),ESXi 6.7 y posterior (máquina virtual versión 14),16 GB,0 B,4,1,659 días,192.1.1.13,guestToolsCurrent|10304,En ejecución,311 MHz,"14,97 GB",24,DC1.open.solutions,"Generación Intel® ""Skylake""",42199cb8-c21e-3b84-68d5-1a32a10a548d,,Habilitado,N/D,No se requiere, --,No,false,false
+TRUENAS,Encendido,Normal,,192.1.1.216,,"1,82 TB","1,82 TB",FreeBSD Pre-11 versions (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,4,1,684 días,192.1.1.41,guestToolsUnmanaged|2147483647,En ejecución,191 MHz,"14,74 GB",18,truenas.open.solutions,"Intel® ""Sandy Bridge"" Generation",4219228f-b8f8-5c2e-00c6-379e5c6253b6,"1.41
+es //repo",Habilitado,N/D,No se requiere, --,No,false,false
+Weblogic.21,Encendido,Normal,,192.1.1.216,,"276,11 GB","276,11 GB",Oracle Linux 6 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,4,1,718 días,192.1.1.21,guestToolsUnmanaged|10277,En ejecución,0 Hz,"2,47 GB",1,wl11g21,"Intel® ""Sandy Bridge"" Generation",4219ad5a-5af0-a088-846d-d07ad6ce80a3,"lo usa ariel
+WL 192.1.1.21",Habilitado,N/D,No se requiere, --,No,false,false
+SARHA_ONLINE .109,Encendido,Normal,,192.1.1.216,,"26,12 GB","26,12 GB",Debian GNU/Linux 6 (64-bit),ESX/ESXi 4.0 y posterior (máquina virtual versión 7),2 GB,0 B,2,1,719 días,"192.1.1.109, fe80::250:56ff:feac:175f",guestToolsSupportedOld|10272,En ejecución,0 Hz,594 MB,5,sarha-ws,"Intel® ""Westmere"" Generation",422cc94e-306f-2812-253d-5b29adce1424,"1.109
+Sistema SARHA:
+Servidor web y sistema SARHA OnLine
+Debian Server 6.0.6 (64bits)
+Instalación básica. Actualizado al 21/11/12.
+Apache 2 + OCI 8 + Oracle Instantclient 11.",Habilitado,N/D,No se requiere, --,No,false,false
+OPENINFR05,Encendido,Normal,,192.1.1.216,,"208,24 GB","208,24 GB",Red Hat Enterprise Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),8 GB,0 B,4,1,719 días,"192.1.1.123, fe80::250:56ff:fe99:6302",guestToolsUnmanaged|11269,En ejecución,23 MHz,"1,83 GB",1,openinfr05,"Intel® ""Sandy Bridge"" Generation",42199ef2-e4e0-5c91-1a18-79285b94b988,1.123,Habilitado,N/D,No se requiere, --,No,false,false
+OPENTECNO,Encendido,Normal,,192.1.1.216,,"221,16 GB","221,16 GB",Ubuntu Linux (64-bit),ESXi 6.7 y posterior (máquina virtual versión 14),1 GB,0 B,1,1,719 días,"192.1.1.8, fe80::20c:29ff:fefc:f79c",guestToolsUnmanaged|11360,En ejecución,23 MHz,912 MB,13,opentecno,"Intel® ""Sandy Bridge"" Generation",564d0e8d-995a-ffe5-3225-dd0809fcf79c,".1.8
+Public disco compartido",Habilitado,N/D,No se requiere, --,No,false,false
+WEBSERVER,Encendido,Normal,,192.1.1.216,,"636,18 GB","636,18 GB",Debian GNU/Linux 10 (64-bit),ESXi 6.7 y posterior (máquina virtual versión 14),16 GB,0 B,4,1,719 días,"192.1.1.6, 172.23.0.1, 172.22.0.1, 192.168.176.1, 192.168.0.1, 172.18.0.1, 172.19.0.1, 172.20.0.1, 192.168.192.1, 172.25.0.1, 172.21.0.1, 172.24.0.1, fe80::250:56ff:fe99:bf0d, fe80::42:3cff:fe28:9fe, fe80::42:4aff:fef1:c02f, fe80::42:60ff:fe57:a634, fe80::42:6aff:fe34:8935, fe80::42:15ff:fe79:617b, fe80::42:d7ff:fe46:256",guestToolsUnmanaged|11269,En ejecución,47 MHz,"6,02 GB",1,openweb.open.solutions,"Intel® ""Sandy Bridge"" Generation",4219fbde-5c6d-18dc-c986-043a43420ce8,"Docker
+Contenedores
+help.open.com.ar
+documize
+nagios
+ppc-prod",Habilitado,N/D,No se requiere, --,No,false,false
+OPENDOCKER.57,Encendido,Normal,,192.1.1.216,,"188,13 GB","188,13 GB",CentOS 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),8 GB,0 B,2,1,719 días,"192.1.1.57, 172.28.0.1, 192.168.80.1, 172.20.0.1, 192.168.16.1, fe80::250:56ff:fe99:7b06, fe80::42:a1ff:fed8:b901, fe80::42:2ff:fe2b:9319, fe80::42:83ff:fe93:3418, fe80::42:88ff:fefe:db93",guestToolsUnmanaged|2147483647,En ejecución,23 MHz,"2,7 GB",2,dbdocker.open.solutions,"Intel® ""Sandy Bridge"" Generation",4219225a-bc04-176f-8b70-d4cb77dd92fc,,Habilitado,N/D,No se requiere, --,No,false,false
+vCenter,Encendido,Normal,,192.1.1.217,,"295,8 GB","295,8 GB",VMware Photon OS (64-bit),ESXi 6.7 y posterior (máquina virtual versión 14),16 GB,0 B,8,2,748 días,192.1.1.29,guestToolsUnmanaged|11365,En ejecución,550 MHz,"14,87 GB",18,vcenter.opensol.com.ar,"Intel® ""Haswell"" Generation",564d0d2e-0156-3f5f-3f7b-20da65eb67d3,"VMware vCenter Server Appliance
+    192.1.1.29
+    172.18.5.29",Habilitado,N/D,No se requiere, --,No,false,false
+FW,Encendido,Normal,,192.1.3.252,,"48,14 GB","9,85 GB",FreeBSD (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),8 GB,0 B,6,4,784 días,"10.10.1.1, 192.1.3.1, 172.18.5.2, 200.55.243.116, 200.55.243.117, fe80::20c:29ff:fe86:fbb2, fe80::250:56ff:fe99:3f39, fe80::20c:29ff:fe86:fb9e, fe80::20c:29ff:fe86:fba8",guestToolsUnmanaged|2147483647,En ejecución,20 MHz,"8,03 GB",3,fwclientes.localdomain,,564dab57-4591-b2c9-e4a6-4521ca86fb9e,,Habilitado,N/D,No se requiere, --,No,false,
+NUBE-OPEN-DOCKER,Encendido,Normal,,192.1.1.219,,"868,19 GB","868,19 GB",CentOS 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),8 GB,0 B,8,1,813 días,"192.1.1.33, 172.19.0.1, 172.23.0.1, 172.20.0.1, 172.21.0.1, 172.31.0.1, 172.18.0.1, fe80::250:56ff:fe99:ddcd, fe80::42:22ff:fe70:b7d4, fe80::42:54ff:fe3c:a119, fe80::42:93ff:fe76:6ee, fe80::42:33ff:fe01:52f5, fe80::42:28ff:fef3:8e6d",guestToolsUnmanaged|11269,En ejecución,167 MHz,"7,36 GB",4,vmdock.opensol.com.ar,"Intel® ""Nehalem"" Generation",564d5fad-ac34-3c5e-d025-f4891e0fafb4,"PPC - test
+Cloud Open",Habilitado,N/D,No se requiere, --,No,false,
+DB-ROMAN,Encendido,Normal,,192.1.3.252,,"132,14 GB","124,34 GB",Red Hat Enterprise Linux 5 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),12 GB,0 B,6,1,823 días,"172.18.5.43, fe80::20c:29ff:fe0d:97ab",guestToolsSupportedOld|10305,En ejecución,"1,32 GHz","12,07 GB",3,DB-02,,564d74a7-534e-f59c-bacc-8a49e00d97ab,"172.18.5.43
+romandb pro (test)",Habilitado,N/D,No se requiere, --,No,false,
+WL-CLIENTES,Encendido,Normal,,192.1.3.252,,"60,15 GB","59,27 GB",Red Hat Enterprise Linux 6 (64-bit),ESXi 5.0 y posterior (máquina virtual versión 8),10 GB,0 B,8,1,823 días,172.18.5.40,guestToolsCurrent|10357,En ejecución,"2,01 GHz","10,08 GB",6,NAI,,564da5ab-2a8a-49e4-da03-755221f7891a,"172.18.5.40 
+WebLogic Argocean",Habilitado,N/D,No se requiere, --,No,false,
+DB-GIAR,Encendido,Normal,,192.1.3.252,,"262,16 GB","253,61 GB",Oracle Linux 6 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),12 GB,0 B,8,1,1017 días,"10.10.1.9, fe80::20c:29ff:fe7f:c211",guestToolsSupportedOld|9349,En ejecución,0 Hz,"11,96 GB",1,bases2,,564d6e4f-f780-493d-ab4a-b9465c7fc211,,Habilitado,N/D,No se requiere, --,No,false,
+WL12-Clientes,Encendido,Normal,,192.1.3.252,,"232,16 GB","232,16 GB",Oracle Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),12 GB,0 B,8,1,1017 días,,guestToolsUnmanaged|11269,No está en ejecución,"3,08 GHz","11,73 GB",20,wl12-cl-syt,,564dd8d5-baac-eca2-ce08-c7ea20f1fc8e,,Habilitado,N/D,No se requiere, --,No,false,
+VM-DOCKER-Clientes (1),Encendido,Normal,,192.1.3.252,,"214,18 GB","214,18 GB",Debian GNU/Linux 10 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),4 GB,0 B,4,3,1017 días,"172.18.5.123, 10.10.1.43, 172.18.0.1, 172.19.0.1, 192.1.3.4, fe80::250:56ff:fe99:90d5, fe80::20c:29ff:fe11:a548, fe80::42:79ff:fe54:d9cf, fe80::42:dcff:fe85:c7a4, fe80::20c:29ff:fe11:a552",guestToolsUnmanaged|10346,En ejecución,62 MHz,"4,04 GB",6,vm-docker,,564d3b3c-638a-5713-62af-ba4a9611a548,,Habilitado,N/D,No se requiere, --,No,false,
+DB-ROMAN-HISTORICO,Encendido,Normal,,192.1.3.252,,"124,14 GB","115,14 GB",Red Hat Enterprise Linux 5 (64-bit),ESX/ESXi 4.0 y posterior (máquina virtual versión 7),4 GB,0 B,4,1,1017 días,"172.18.5.38, fe80::20c:29ff:fe38:a92a",guestToolsCurrent|10357,En ejecución,146 MHz,"3,97 GB",3,DB-02,,564dae59-3f26-6aad-6a1a-84594738a92a,,Habilitado,N/D,No se requiere, --,No,false,
+WL-ROMAN,Encendido,Normal,,192.1.3.252,,"78,15 GB","73,34 GB",Red Hat Enterprise Linux 5 (64-bit),ESX/ESXi 4.0 y posterior (máquina virtual versión 7),8 GB,0 B,4,1,1017 días,"172.18.5.39, fe80::20c:29ff:fe47:8aa8",guestToolsCurrent|10357,En ejecución,167 MHz,"7,97 GB",9,DB-02-WEB,,564d2cc2-68c8-6de3-f4fa-5a7c3c478aa8,172.18.5.39,Habilitado,N/D,No se requiere, --,No,false,
+OPENDOCKER01,Encendido,Normal,,192.1.1.219,,"126,14 GB","126,14 GB",Ubuntu Linux (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),16 GB,0 B,4,1,1053 días,"192.1.1.110, 172.19.0.1, 172.18.0.1",guestToolsUnmanaged|11360,En ejecución,47 MHz,"15,59 GB",1,opendocker01,"Intel® ""Westmere"" Generation",421903bf-6897-7321-8625-fafe71ff4a9c,,Habilitado,N/D,No se requiere, --,No,false,
+OPENFILE,Encendido,Normal,,192.1.1.219,,"1,45 TB","1,45 TB",Microsoft Windows Server 2008 R2 (64-bit),ESXi 5.0 y posterior (máquina virtual versión 8),4 GB,0 B,4,1,1104 días,,guestToolsCurrent|11265,No está en ejecución,"2,75 GHz","4,05 GB",23,,"Intel® ""Westmere"" Generation",564d7f17-93fd-6da7-f9ff-14478de425da,1.250,Habilitado,N/D,No se requiere, --,No,false,
+OPENINFR07,Encendido,Normal,,192.1.1.219,,"20,21 GB","20,21 GB",Red Hat Enterprise Linux 7 (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),8 GB,0 B,4,1,1139 días,"192.1.1.127, fe80::250:56ff:fe99:aa34",guestToolsUnmanaged|11269,En ejecución,23 MHz,"6,27 GB",1,openinfr07,"Intel® ""Westmere"" Generation",4219cb5a-7521-7a37-f7f9-35090fc5fa76,,Habilitado,N/D,No se requiere, --,No,false,
+FWOPEN,Encendido,Normal,,192.1.1.217,,"104,15 GB","104,15 GB",FreeBSD Pre-11 versions (64-bit),ESXi 5.0 y posterior (máquina virtual versión 8),4 GB,0 B,8,5,1567 días,"192.1.1.11, 200.55.243.90, 200.55.243.94, 172.18.5.1, fe80::250:56ff:fe99:facf, fe80::250:56ff:fe99:7f61, fe80::250:56ff:fe99:33, fe80::250:56ff:fe99:facf, fe80::250:56ff:fe99:facf",guestToolsUnmanaged|2147483647,En ejecución,119 MHz,"3,42 GB",16,fw.open.com.ar,"Intel® ""Haswell"" Generation",422c9a9b-ae2a-5a85-4e04-cce14a6953d6,".11
+
+192.1.1.11
+10.10.10.1
+200.55.243.90
+200.55.243.94
+172.18.5.1",Habilitado,N/D,No se requiere, --,No,false,false
+Jasper-Server,Encendido,Normal,,192.1.1.219,,"33,13 GB","33,13 GB",Ubuntu Linux (64-bit),ESXi 6.5 y posterior (máquina virtual versión 13),8 GB,0 B,2,1,1669 días,,guestToolsNotInstalled|0,No está en ejecución,23 MHz,"5,37 GB",3,,"Intel® ""Westmere"" Generation",4219516f-43a1-a211-657f-c61acdc787a7,1.118,Habilitado,N/D,No se requiere, --,No,false,

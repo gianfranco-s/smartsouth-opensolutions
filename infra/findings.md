@@ -2,7 +2,7 @@
 
 **Alcance: solo infraestructura on-premise.** La infraestructura en proveedores cloud (Azure/AWS) se estacionó fuera de este relevamiento — ver [`../cloud-infra/findings-cloud.md`](../cloud-infra/findings-cloud.md) para lo que ya se había encontrado ahí (incluye un hallazgo importante, una VM de Azure sin inventariar, por si se retoma).
 
-Fuentes: ExportList.csv (export de vCenter, verdad de base para "qué VM existe"), CSV de Relevamiento (manual, 13 clientes, solo WL+DB), y — agregado después — dos emails internos más su adjunto RAR (`source-files/extracted/`), que contiene una matriz de servicios por cliente más completa y un relevamiento de infraestructura Docker. **Todo el material derivado de Relevamiento y de los emails es documentación interna de trabajo, no verdad verificada — tratar cada hallazgo de abajo con las mismas pinzas que aplican los propios documentos fuente** (la hoja "Discrepancias" de la matriz existe justamente porque el propio equipo de Open encontró que sus dos fuentes de datos no coincidían).
+Fuentes: ExportList.csv (export de vCenter, verdad de base para "qué VM existe" — desde el 18 ago 2026 incluye también "Tiempo de actividad"/uptime y una columna "Notas" con anotaciones manuales por VM, cargadas en `vms[].uptime_days` / `vms[].notes` en el inventario), CSV de Relevamiento (manual, 13 clientes, solo WL+DB), y — agregado después — dos emails internos más su adjunto RAR (`source-files/extracted/`), que contiene una matriz de servicios por cliente más completa y un relevamiento de infraestructura Docker. **Todo el material derivado de Relevamiento y de los emails es documentación interna de trabajo, no verdad verificada — tratar cada hallazgo de abajo con las mismas pinzas que aplican los propios documentos fuente** (la hoja "Discrepancias" de la matriz existe justamente porque el propio equipo de Open encontró que sus dos fuentes de datos no coincidían).
 
 ## Nuevo: infraestructura on-premise real que no está en nuestro inventario
 
@@ -12,7 +12,41 @@ Buscamos todas las IPs mencionadas en el material fuente y las cruzamos contra `
 
 (El mismo cruce encontró dos cosas del lado cloud — una VM de Azure sin inventariar y una mención sin detalle de AWS — documentadas en `cloud-infra/findings-cloud.md` en vez de acá.)
 
+## Nuevo: ¿cuál fue el cliente/servidor incorporado o migrado más recientemente? (18 ago 2026)
+
+vCenter no expone fecha de creación de VM en el export que tenemos, y no hay acceso programático a los hosts — así que no hay una respuesta exacta. Pero el export enriquecido con "Tiempo de actividad" (uptime desde el último reinicio) y "Notas" manuales da la mejor señal disponible hasta ahora:
+
+- **Señal fuerte, explícita: `DASADBPROD01` (base de datos de producción de Maipú).** La nota dice literalmente "DASA db PRODUCCION NUEVO" — no es una inferencia por uptime, es una anotación directa de que es una base nueva. Maipú figura como `"Solo infraestructura"` en `inventory.json` (todavía sin WebLogic/Condor terminado de configurar sobre esa base), consistente con una incorporación en curso.
+- **Señal débil, por uptime bajo: `OPENDBPROD006` (base de datos de Entidad Binacional Yacyretá, 28 días de actividad)** — el uptime más bajo entre todos los servidores de cliente encendidos. EBY figura como `"Migrado / actualización pendiente"`.
+- **Señal débil, por uptime bajo: `OL8LABWL01` (WebLogic de Heinlein, 55 días de actividad)** — segundo uptime más bajo. Heinlein también figura como `"Solo infraestructura"`.
+- Los tres clientes con las señales más fuertes (Maipú, EBY, Heinlein) coinciden en tener un `status` de migración/infraestructura incompleta en el inventario — consistente con la idea de que son las incorporaciones más recientes y todavía en curso.
+
+**Caveat importante:** el uptime mide el último reinicio de la VM, no su fecha de creación — un reinicio por mantenimiento o parche produce la misma señal que una VM recién provisionada. Solo `DASADBPROD01` tiene evidencia directa (la nota "NUEVO"); el resto es inferencia. Para una respuesta definitiva, preguntar directamente al equipo saliente en la reunión pendiente, o (si hay una sesión de TeamViewer a vCenter) revisar la propiedad "Created"/`Config.CreateDate` de cada VM candidata — no está en el export CSV que tenemos.
+
 ## Resueltos / confirmados
+
+**"Piedras" — confirmado como sitio real (18 ago 2026).** Dos vías independientes el mismo día: una sesión de TeamViewer activa dentro de un host Windows en `192.168.100.165/24` (gateway `192.168.100.254`) — exactamente el subnet del dashboard pfSense "Open - Piedras" (`192.168.100.1`) que había quedado como "no responde" en el relevamiento manual de firewalls — y un export de vCenter propio del sitio, `ExportList-Piedras-Full.csv`, que confirma un tercer host ESXi (`192.168.100.4`, distinto tanto del cluster principal `192.1.1.x` como del segundo host `192.1.3.252`) con 15 VMs propias. El host Windows resultó ser una de esas 15 VMs (`Win10-Piedras`, IP y hostname `DESKTOP-RK7PGB6` coinciden exacto con el export). Detalle completo en `infra/inventory.json` → `meta.piedras_site` / `vms[].site == "Piedras"`, y tabla resumen en `infra/topology.md` §3.
+
+Hallazgos derivados de las 15 VMs de Piedras, todas apagadas salvo `Win10-Piedras` y `DC2`:
+
+- **`DC2` — segundo controlador de dominio.** El sitio principal ya tenía `DC1`; que Piedras tenga su propio `DC2` sugiere que es un sitio de Active Directory replicado, no un entorno aislado — dato a favor de tratarlo como parte del mismo dominio administrativo, no como infraestructura completamente separada.
+- **`OpenPiedrasFw01` — candidato fuerte a ser el pfSense que "no responde".** FreeBSD, 2 NICs, nombre explícito. Está *apagada* en el export — probable explicación de por qué el dashboard `192.168.100.1` nunca respondió durante el relevamiento de firewalls. Sigue sin confirmarse por acceso directo (para eso habría que encenderla).
+- **`OPENDB_31` — Piedras respalda hacia el datacenter principal, no localmente.** Su nota de backup Veeam apunta al servidor `openbk` / repositorio `openbk.open.solutions` — que es literalmente la VM `OPENBK` del sitio principal (`192.1.1.14` / `10.77.254.114`), no un Veeam local de Piedras. Confirma conectividad activa entre ambos sitios vía `10.77.254.114`.
+- **`PiedrasDB01` — nota cruzada sin explicar.** Su campo `Notas` contiene solo una IP, `192.1.3.121`, que pertenece al rango del *segundo* host del sitio principal (`192.1.3.252`), no al rango de Piedras (`192.168.100.x`). Podría ser una referencia a una migración o replicación entre sitios — sin confirmar.
+- **`COBRA` — posible cliente sin documentar.** Windows Server 2012, DNS `COBRA.open.solutions`, no coincide con ninguno de los 15 clientes conocidos. Mismo patrón por el que se encontró Argocean — no asumir que es un cliente nuevo sin verificar.
+- **`PiedrasWL01` es explícitamente de prueba** — su propia nota dice "test weblogix simple licence. 12.2.1.19 y db 23ia", así que no cuenta como WebLogic productivo del sitio.
+
+**`ExportList-Datacenter-Full.csv` — mismo snapshot, sin novedad.** Llegó junto con el export de Piedras como un re-export "más completo" del sitio principal, pero al comparar registro por registro contra `ExportList.csv` (129 VMs) el estado, host e IP de cada VM son idénticos — es el mismo snapshot con columnas extra (Clúster, UUID, DNS, estado de VMware Tools). El campo `Clúster` viene vacío para las 129 VMs, así que no resuelve la pregunta abierta sobre si `192.1.3.252` es un cluster/sitio separado. No aportó VMs ni hallazgos nuevos — se documenta acá para que nadie vuelva a re-parsearlo esperando encontrar algo distinto.
+
+**`OPENPORTAL01` = "portalDM" — resuelto.** La nota de la VM en el export enriquecido dice "portal prod DM" con IP `10.77.10.5 (ex 192.1.3.22)` — coincide exactamente con la entrada de Relevamiento para `portalDM` que quedaba sin confirmar (ver "Todavía abierto" más abajo, antes ítem 2). Es el portal de producción de **Maipú** (mismo prefijo "DM" que `DMWL01`/`DMFW01`, y su job de backup Veeam es `2026_DiagMaipu`).
+
+**`OPENDOCKER03` — resuelto (ya estaba explicado, ahora sin ítem abierto pendiente).** La IP que Relevamiento le atribuye (`192.1.1.113`) no aparecía en el ExportList.csv original porque la VM estaba apagada al momento del export y vCenter solo reporta IP de invitado con VMware Tools corriendo. El relevamiento de Docker la confirma de forma independiente en esa misma IP (Ubuntu 22.04, Portainer). La nota del export enriquecido confirma la IP una tercera vez.
+
+**`WEBSERVER` — rol confirmado.** La nota dice: corre Docker, con contenedores para `help.open.com.ar` (probablemente un wiki/portal de ayuda — el nombre del contenedor es `documize`), `nagios` (monitoreo) y `ppc-prod`. No es un frontend nginx (esa conjetura ya se había descartado) ni un servidor web genérico — es un host de utilidades internas.
+
+**`OPENWLCLI01` — aclarado.** La nota dice "(se clono de la 10.77.7.201) dejar apagada" — es un clon intencionalmente apagado de `OPENWLPROD01` (WebLogic de producción de EBY/GIAR), no un servidor productivo separado. Coherente con que figura "Apagado" y 0 días de actividad en el export.
+
+**`OpenRepo` — aclarado.** La nota dice "en teoria no se usa mas x migracion a git" — repositorio de código legado, reemplazado por un sistema de control de versiones git. VM apagada, sin uso activo esperado.
 
 **nginx — resuelto.** `Relevamiento_general_infraestructura_Docker_actualizado.docx` confirma que Nginx Proxy Manager corre como contenedor en 4 de los 9 hosts docker: `DOCKER-DEB`, `OPENDOCKER04`, `VM-DOCKER-Clientes`, y `VM-DOCKER-Clientes (1)`. No es una categoría de host dedicado — es un servicio containerizado. La conjetura anterior `web_frontend_nginx_candidate` (`OPENPORTAL01`, `OPENPORTALCLI02`, `WEBSERVER`) estaba equivocada; el rol real de esas VMs sigue sin confirmar.
 
@@ -55,22 +89,24 @@ El documento explícitamente **no** eligió un valor por sobre el otro cuando la
 
 (Ver análisis previo, sigue vigente.) Solo 2 de los 13 clientes originales muestran una coincidencia de nombre para infraestructura adicional sin documentar: **GIAR** tiene una instancia extra `WL-GIAR` además de su `OPENWLPROD01`/`DB-GIAR` mapeados, y **ROMAN** tiene un `WL-ROMAN` y un `DB-ROMAN-HISTORICO` extra además de su `WL-CLIENTES`/`DB-ROMAN` mapeados. Otras ~31 VMs con patrón WL/DB no llevan ningún código de cliente en el nombre y todavía necesitan una pasada por TeamViewer para clasificarlas como: otro componente de un cliente conocido, una copia de dev/QA/test, o un cliente genuinamente separado (como resultó ser Argocean).
 
-### 2. Dos filas sin resolver de Relevamiento fuera de los 13 clientes — una ya explicada
-
-La IP que Relevamiento le atribuye a `opendocker03` (`192.1.1.113`) no aparece en ExportList.csv — pero eso ya tiene explicación: `OPENDOCKER03` está apagada ("Apagado") en el export, y vCenter solo reporta las IPs de un invitado cuando VMware Tools está corriendo. El documento de relevamiento de Docker confirma de forma independiente que `OPENDOCKER03` está en `192.1.1.113` (Ubuntu 22.04, 1 contenedor activo — Portainer), así que la entrada de Relevamiento es correcta; ExportList.csv simplemente no pudo verla en el momento de la captura porque la VM estaba apagada. `portalDM` (IP `10.77.10.5`) probablemente sea = `OPENPORTAL01` (misma IP) pero sigue sin confirmar.
-
-### 3. Segundo host ESXi (`192.1.3.252`) — probablemente un sitio separado
+### 2. Segundo host ESXi (`192.1.3.252`) — probablemente un sitio separado
 
 Todavía sin confirmar si es una segunda ubicación física o una máquina standalone; aloja la infraestructura de GIAR y ROMAN que no está en el rango `192.1.1.x`.
 
-### 4. "Piedras" — más evidencia de que es real, pero todavía sin confirmar
+### 3. Nombres de posibles clientes sin trackear, vistos en las Notas del export enriquecido (18 ago 2026)
 
-Se nos había mencionado verbalmente que existiría un sitio llamado "Piedras". Dos rastros técnicos independientes, y ninguno cierra la pregunta:
+Ninguno de estos está en la lista de 15 clientes conocidos (13 de Relevamiento + Rex Argentina + Argocean). Ninguno está confirmado — son nombres sueltos en anotaciones manuales o en listas de esquemas/tablespaces de Oracle, que pueden ser clientes reales, entornos legados, o nombres internos sin relación con un cliente. Priorizar por fuerza de la señal:
 
-- El nombre de una VM, `VEEAM-PIEDRAS` (backup, Windows Server 2016), que corre en `192.1.1.221` — **dentro del cluster principal**, no en `192.1.3.252`.
-- Una fila en `Relevamiento (sin claves) - Pfsense.csv` etiquetada explícitamente **"Open - Piedras"**, apuntando a un dashboard de firewall en `https://192.168.100.1/` — un rango de IP que no aparece en ningún otro documento ni en ExportList.csv, lo que sí apoya que sea un sitio físico separado. Pero la observación del relevamiento dice **"no responde"** — no se pudo entrar ni confirmar nada más.
+- **Señal más fuerte — lista explícita de clientes.** La nota de `VPNCLIENTESRDP` (VM de acceso RDP, IP `192.1.1.136`) dice: "RDP de acceso a clientes no compatibles localmente — Allianz, Monroe, Rovella, SMQ, NABSA". Es una anotación humana enumerando clientes por nombre, no un nombre de esquema — la fuente más confiable de esta pasada. Ninguno de los cinco tiene VM mapeada todavía.
+- **Señal más débil — nombres de esquema/tablespace de Oracle**, que podrían ser clientes o podrían ser artefactos internos/legados: `Electroban` y `Pietroboni` (notas de `CLIENTES-DB`/`CLIENTES-DB2`), `PVINST`/`VINST` (aparece igual en `CLIENTES-DB` y en `Database-24`, lo que sube algo la confianza de que sea el mismo nombre real), `CITEDEF` (nota de `Database .23` — coincide con el nombre de un organismo real, Centro de Investigaciones Científicas y Técnicas para las Fuerzas Armadas), `aqualum`/`abbhist`/`abbtubio` (nota de `DBClientes-12C.31` — los dos últimos parecen sub-esquemas de ABB, no clientes nuevos), y `SIGO`/`NQN`/`DBRHGOB` (notas de `OPENDBPR001` y `Database12c .18`).
 
-Sube la confianza en que "Piedras" es un sitio real (dos fuentes independientes lo nombran), pero seguimos sin poder confirmar qué es ni por qué no responde. Ver `QUESTIONS.md` y el paso 7 de la próxima pasada, abajo.
+Antes de tratar cualquiera de estos como cliente nuevo, confirmar por TeamViewer o preguntándole al equipo saliente — mezclar nombre de esquema con nombre de cliente fue justo el tipo de error que este proyecto viene evitando a propósito.
+
+### 4. Posible tercera IP para EBY, pero la nota que la menciona es sospechosa de estar contaminada
+
+El cruce de IPs (`cross_reference_ips.py`) contra los nuevos exports encontró `10.77.8.201` dentro de la nota de `OPENWLCLI01` (el clon apagado de `OPENWLPROD01`/`10.77.7.201`): "EBY PRODUCCION / 10.77.8.201 / (se clono de la 10.77.7.201) dejar apagada / EBYPROD / CEFAS / GIARG / test weblogix simple licence. / 12.2.1.19 y db 23ia". A primera vista es una tercera IP candidata para la ruta de EBY (Tier 1, ítem 3 de `PLAN.md`), pero la misma nota mezcla textualmente varios clientes sueltos (EBY, CEFAS, GIARG) y termina con **la frase idéntica, palabra por palabra**, a la nota propia de `PiedrasWL01` ("test weblogix simple licence. 12.2.1.19 y db 23ia") — una VM completamente distinta, en el sitio Piedras. Esa coincidencia exacta de texto entre dos VMs no relacionadas es la señal más fuerte hasta ahora de que la columna `Notas` del export tiene contenido pegado/desplazado entre celdas, no una anotación fiable celda-por-celda. Tratar `10.77.8.201` como un dato a verificar, no a asumir, al resolver el ítem 3 de Tier 1 — y tener la misma cautela con cualquier otra nota de `OPENWLCLI01` de acá en más.
+
+También apareció `10.10.10.1` en la nota de `FWOPEN` (junto a sus otras IPs conocidas) — sin indicio de qué es; baja prioridad.
 
 ## Próxima pasada sugerida por TeamViewer (en orden de prioridad)
 
@@ -80,4 +116,6 @@ Sube la confianza en que "Piedras" es un sitio real (dos fuentes independientes 
 4. Recorrer las 12 VMs `infra_generic_unclear` (`OPENINFRxx`) — sin ninguna señal en el nombre.
 5. Para las ~31 VMs con patrón WL/DB todavía sin mapear, clasificar cada una como producción-de-un-cliente-sin-documentar vs. dev/QA/test/histórico vs. componente de un cliente conocido.
 6. Confirmar el rol real de `OPENPORTAL01`, `OPENPORTALCLI02`, `WEBSERVER` ahora que se sabe que la conjetura de nginx para ellos era incorrecta.
-7. Entrar a `VEEAM-PIEDRAS` y revisar la configuración de sus jobs de backup (repositorios, destinos de replicación) — si replica hacia una IP/rango fuera de los que ya conocemos, eso confirmaría un sitio adicional real detrás del nombre "Piedras".
+7. Confirmar si Allianz, Monroe, Rovella, SMQ y NABSA (nombrados en la nota de `VPNCLIENTESRDP`) son clientes activos sin VM mapeada, o clientes ya dados de baja que solo quedaron en una nota vieja.
+8. Si hay oportunidad de entrar a vCenter directamente (no solo al export CSV), anotar la fecha de creación ("Created"/`Config.CreateDate`) de `DASADBPROD01`, `OPENDBPROD006` y `OL8LABWL01` — son los tres candidatos a incorporación/migración más reciente (ver hallazgo arriba), y una fecha real cerraría la pregunta en vez de inferirla por uptime.
+9. **Sitio Piedras, ahora que está confirmado:** identificar `COBRA` (¿cliente sin documentar o nombre interno?), entender la nota cruzada `192.1.3.121` en `PiedrasDB01`, y — si hace falta confirmar `OpenPiedrasFw01` como el pfSense de Piedras — encenderla y entrar al dashboard.

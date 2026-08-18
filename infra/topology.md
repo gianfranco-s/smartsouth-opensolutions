@@ -81,9 +81,9 @@ flowchart LR
 
 > La topología Azure/AKS que estaba acá se movió a [`../cloud-infra/topology-cloud.md`](../cloud-infra/topology-cloud.md) — infraestructura cloud fuera de alcance por ahora, ver [`../cloud-infra/README.md`](../cloud-infra/README.md).
 
-## 2. Inventario de VMs por categoría (las 129 VMs, de ExportList.csv)
+## 2. Inventario de VMs por categoría (las 129 VMs del sitio principal, de ExportList.csv)
 
-Solo los totales — ver `inventory.json` → `vms[].category` para la lista de miembros de cada grupo. Las categorías se asignaron por coincidencia de nombre/SO salvo que se indique lo contrario por confirmación vía el material de los emails/RAR (ver findings.md para qué está confirmado y qué sigue siendo conjetura).
+Solo los totales — ver `inventory.json` → `vms[].category` para la lista de miembros de cada grupo. Las categorías se asignaron por coincidencia de nombre/SO salvo que se indique lo contrario por confirmación vía el material de los emails/RAR (ver findings.md para qué está confirmado y qué sigue siendo conjetura). Acotado al sitio principal — las 15 VMs del sitio Piedras (`vms[].site == "Piedras"`) tienen su propia tabla en la §3 de abajo, tanto por ser un cluster/host separado como por venir de un export distinto (`ExportList-Piedras-Full.csv`).
 
 | Categoría | Cantidad | Confianza |
 |---|---|---|
@@ -102,12 +102,29 @@ Solo los totales — ver `inventory.json` → `vms[].category` para la lista de 
 
 ## 3. Hosts / clusters ESXi
 
-Aparecen 12 IPs de host ESXi distintas en la columna `Host` de ExportList.csv:
+13 IPs de host ESXi en total, entre `ExportList.csv` (sitio principal) y `ExportList-Piedras-Full.csv` (sitio Piedras, confirmado el 18 ago 2026 — ver abajo):
 
 - **192.1.1.214 – 192.1.1.224** (11 hosts) — cluster principal, aloja la mayoría de las VMs WL/DB de cara al cliente.
-- **192.1.3.252** (1 host) — aloja un conjunto distinto de VMs en otros rangos de IP (`172.18.5.x`, `10.10.1.x`, `192.1.3.x`) incluyendo `WL-ROMAN`, `DB-ROMAN`, `DB-GIAR`, `WL-GIAR`, `FW`, `WL12-Clientes`. **Probablemente un sitio físico separado o una máquina standalone fuera del cluster principal** — vale la pena confirmarlo, ya que no comparte el patrón de gestión 192.1.1.x de los demás.
+- **192.1.3.252** (1 host) — aloja un conjunto distinto de VMs en otros rangos de IP (`172.18.5.x`, `10.10.1.x`, `192.1.3.x`) incluyendo `WL-ROMAN`, `DB-ROMAN`, `DB-GIAR`, `WL-GIAR`, `FW`, `WL12-Clientes`. **Probablemente un sitio físico separado o una máquina standalone fuera del cluster principal** — todavía sin confirmar, no comparte el patrón de gestión 192.1.1.x de los demás.
+- **192.168.100.4** (1 host) — **sitio "Piedras", confirmado.** Ver sección aparte abajo.
 
-**"Piedras" — mencionado, sin confirmar, y probablemente no es esto.** Se nos mencionó (de forma verbal, sin más contexto) que existiría un sitio adicional llamado "Piedras". El único rastro técnico que tenemos es el nombre de una VM, `VEEAM-PIEDRAS` (servidor de backup), que corre en `192.1.1.221` — **dentro del cluster principal**, no en `192.1.3.252`. Así que si "Piedras" es un sitio físico real, no coincide con el único candidato a segundo sitio que ya teníamos identificado; podría ser un tercer lugar (por ejemplo, un destino de replicación de backups) del que no tenemos ningún otro dato. Ver `infra/findings.md` y `QUESTIONS.md`.
+### Sitio "Piedras" — confirmado (18 ago 2026)
+
+Lo que era una mención verbal sin más rastro que el nombre de una VM de backup (`VEEAM-PIEDRAS`, dentro del cluster principal — no coincide con esto) quedó confirmado por dos vías independientes el mismo día: una sesión de TeamViewer activa dentro de un host en `192.168.100.165/24` (mismo subnet que el dashboard pfSense "Open - Piedras" en `192.168.100.1` que no había respondido durante el relevamiento manual de firewalls), y un export de vCenter propio del sitio (`ExportList-Piedras-Full.csv`) que lista 15 VMs en un host ESXi separado, `192.168.100.4`.
+
+Solo 2 de las 15 VMs están encendidas — el resto no reporta IP en el export (vCenter solo ve la IP de un invitado con VMware Tools corriendo, mismo patrón que `OPENDOCKER03` en el sitio principal):
+
+| VM | Estado | Rol (inferido) |
+|---|---|---|
+| `Win10-Piedras` | Encendido, `192.168.100.165` | Estación desde la que se confirmó el sitio — sesión de TeamViewer activa |
+| `DC2` | Encendido, `192.168.100.2` | Controlador de dominio (el sitio principal tiene `DC1`) — sugiere que Piedras es un sitio AD replicado, no aislado |
+| `OpenPiedrasFw01` | Apagado | Candidato fuerte a pfSense (FreeBSD, 2 NICs, nombre) — probablemente el firewall detrás del dashboard `192.168.100.1` que "no responde"; estar apagada lo explicaría |
+| `PiedrasDB01`, `PiedrasWL01` | Apagadas | DB/WL propios del sitio — `PiedrasWL01` tiene una nota explícita de que es un WebLogic de prueba/licencia, no producción |
+| `weblogic14C01`, `OPENDB_31`, `OPENDBRMAN` | Apagadas | WebLogic/DB adicionales |
+| `OPENSHARE`, `OPENAPPS`, `COBRA`, `CLIENTESRDP` | Apagadas | Almacenamiento compartido, apps, y una VM (`COBRA`) que no coincide con ningún cliente conocido — mismo patrón por el que se encontró Argocean, sin confirmar todavía |
+| `OEM`, `OPENMONITOR10`, `OPEN_GRAFANA` | Apagadas | Monitoreo/administración del sitio |
+
+Detalle completo, notas de cada VM y hallazgos derivados en `infra/inventory.json` → `meta.piedras_site` / `vms[].site == "Piedras"` y en `infra/findings.md`.
 
 ## Cómo regenerar estos diagramas
 

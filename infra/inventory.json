@@ -1295,6 +1295,11 @@
           "client": "Heinlein",
           "code": "HEINLEIN",
           "role": "database"
+        },
+        {
+          "client": "Cefas S.A.",
+          "code": "CEFAS",
+          "role": "database (destino de migración)"
         }
       ],
       "uptime_days": 198,
@@ -3299,7 +3304,8 @@
           "MicroStrategy": "Sí"
         },
         "observaciones": "BD y WL migrados; falta actualizar la base mediante import, configurar VPN del cliente y revisar FSAL.",
-        "validacion_pendiente": "Confirmar SID actual definitivo: CEFAS o CEFASPDB; validar cierre de migración."
+        "validacion_pendiente": "Confirmar SID actual definitivo: CEFAS o CEFASPDB; validar cierre de migración.",
+        "servidor_db_destino_resolved": "OPENDBPROD001 (resuelto por IP, 18 ago 2026 -- ya compartido con Heinlein, ver used_by_clients de esa VM)"
       },
       "source": [
         "Relevamiento (sin claves) - VM Linux.csv",

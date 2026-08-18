@@ -128,6 +128,59 @@ Solo 2 de las 15 VMs están encendidas — el resto no reporta IP en el export (
 
 Detalle completo, notas de cada VM y hallazgos derivados en `infra/inventory.json` → `meta.piedras_site` / `vms[].site == "Piedras"` y en `infra/findings.md`.
 
+## 4. Diagrama de red de alto nivel (sitios, firewalls, conectividad)
+
+A diferencia de §1–§3 (que agrupan VMs por cliente o por categoría), esta vista es a nivel de **red**: qué sitios existen, qué firewall hay en el borde de cada uno, y qué conectividad entre sitios está confirmada vs. inferida. Es la vista que responde "¿qué hay en el datacenter Open y qué hay en la oficina Piedras, a alto nivel?".
+
+**A mano, no generado del JSON** — a diferencia de §1, esta vista no se recorre mecánicamente desde `clients[]`; se arma leyendo `vms[].category` (firewalls, docker hosts) y `meta`/`esxi_hosts`/`piedras_esxi_hosts`. Si cambia la topología de red (un firewall nuevo confirmado, conectividad nueva entre sitios), actualizar el diagrama a mano y anotar la fuente en el label del enlace, igual que se hizo abajo.
+
+```mermaid
+flowchart TB
+  Internet(("Internet"))
+
+  subgraph DC["Datacenter Open (sitio principal)"]
+    direction TB
+    EDGE["OPENVPNFW01 — pfSense borde<br/>200.55.243.92<br/>único puerto expuesto: OpenVPN UDP/2190"]
+
+    subgraph CLUSTER["Cluster ESXi principal<br/>192.1.1.214–224 (11 hosts)"]
+      direction TB
+      FWINT["6 pfSense internos confirmados<br/>FWOPEN · FW · CliProFw01<br/>OPENFWCLI001 · OPENFWCLI10 · DMFW01<br/>(+2 candidatos sin confirmar)"]
+      NPM["4 hosts Docker con Nginx Proxy Manager<br/>DOCKER-DEB · OPENDOCKER04<br/>VM-DOCKER-Clientes (x2)"]
+      OTHERDOCKER["5 hosts Docker más<br/>(sin NPM)"]
+      WLDB["VMs WebLogic / DB de clientes<br/>(ver §1)"]
+      BACKUP["OPENBK — backup Veeam<br/>192.1.1.14 / 10.77.254.114"]
+    end
+
+    subgraph HOST2["Host ESXi standalone — ¿sitio separado? (sin confirmar)<br/>192.1.3.252"]
+      direction TB
+      GIARROMAN["WL-GIAR · DB-GIAR<br/>WL-ROMAN · DB-ROMAN · WL12-Clientes<br/>rangos 172.18.5.x / 10.10.1.x / 192.1.3.x"]
+    end
+  end
+
+  subgraph PIEDRAS["Sitio Piedras (oficina) — confirmado 18 ago 2026<br/>subred 192.168.100.0/24"]
+    direction TB
+    PFW["OpenPiedrasFw01 — candidato pfSense<br/>192.168.100.1 — apagada"]
+    PHOST["Host ESXi Piedras<br/>192.168.100.4 (15 VMs, 2 encendidas)"]
+    PWIN["Win10-Piedras<br/>192.168.100.165"]
+    PDC["DC2 — AD replicado<br/>192.168.100.2"]
+  end
+
+  Internet -->|"OpenVPN 2190/UDP<br/>(único puerto expuesto, confirmado)"| EDGE
+  EDGE --> CLUSTER
+  CLUSTER -.->|"sin confirmar si es sitio físico distinto o standalone"| HOST2
+  NPM --> WLDB
+  FWINT -.-> NPM
+
+  PWIN -->|"confirmado en vivo 18ago2026:<br/>http://192.1.1.38:81/ responde directo,<br/>sin salto intermedio"| NPM
+  PHOST -.->|"inferido — nota de backup Veeam<br/>de OPENDB_31 apunta a OPENBK"| BACKUP
+```
+
+**Qué está confirmado vs. qué es todavía hipótesis, en este diagrama:**
+
+- **Confirmado:** el edge `OPENVPNFW01` como único punto de entrada desde Internet (OpenVPN/2190 UDP, nada más expuesto); el sitio Piedras como real, con su propio host ESXi y subred `192.168.100.0/24`; la conectividad Piedras → cluster principal (`192.1.1.x`), probada en vivo llegando al panel de NPM de `VM-DOCKER-Clientes` sin salto intermedio.
+- **Inferido, no probado en vivo:** la conectividad Piedras → `OPENBK` (backup) — viene de una nota de texto en `OPENDB_31`, no de una prueba de red hecha a mano.
+- **Todavía abierto:** si el host `192.1.3.252` es un tercer sitio físico separado o una máquina standalone dentro del mismo datacenter (ver findings.md, "Todavía abierto" #2); si `OpenPiedrasFw01` es efectivamente el pfSense de Piedras (está apagada, sin confirmar por acceso directo); el mapeo dominio → NPM → firewall/NAT → servidor completo (ítem 1 de `../plan_tier_1.md`, todavía pendiente).
+
 ## Cómo regenerar estos diagramas
 
 El diagrama de mapeo de clientes en la sección 1 es generado, no dibujado a mano. Si `inventory.json` cambia, regenerarlo con el mismo enfoque: recorrer `clients[]`, emitir un nodo por cliente y uno por cada `resolved_vm` distinta bajo `weblogic`/`database`, deduplicar nodos, y conectar cliente→WL→DB. Mantenerlo acotado al subconjunto de clientes — un diagrama con las 129 VMs no se puede leer y no vale la pena construirlo; el JSON es la fuente de verdad para el resto.

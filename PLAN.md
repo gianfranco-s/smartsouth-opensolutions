@@ -29,7 +29,7 @@
 ### Tier 1 — completa la ruta de recursos de un cliente
 
 1. **Construir el mapa dominio → instancia Nginx Proxy Manager → servidor/puerto interno**, a partir de las 4 instancias confirmadas y las reglas NAT de `pfsense`. Esta es la pieza que realmente falta del mapeo completo.
-2. **Resolver la identidad de la VM de base de datos de Rex Argentina** — cliente PROD actual, cero recursos mapeados hoy.
+2. **Resolver la identidad de la VM de base de datos de Rex Argentina** — cliente PROD actual, cero recursos mapeados hoy. **Actualización (19 ago 2026):** ya apareció la capa app — reglas NAT de `FWOPEN` ("SS Rex Front"/"SS Rex Back") apuntan a `192.1.1.57` (`OPENDOCKER.57`), mismo patrón "Self Service" que CEFAS. Falta la DB.
 3. **Resolver la ruta completa de EBY** — ¿`OPENDBPROD006` es realmente su base? ¿su WL ya migró a `10.77.7.201` o sigue en el `192.1.2.54` compartido? Dos discrepancias de la misma hoja, mismo cliente — detalle abajo.
 4. **ABB — cuál de las dos DBs es la productiva** (`192.1.1.31` / `DBClientes-12C.31` vs `192.1.1.190` / `DBClientes.190`) — detalle abajo.
 

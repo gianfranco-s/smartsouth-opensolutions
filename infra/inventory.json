@@ -5,7 +5,8 @@
       "Relevamiento (sin claves) - VM Linux.csv (manually curated client mapping, may be inaccurate/incomplete)",
       "ExportList (1).csv (2026-08-18 vCenter export refresh, same 129 VMs/IPs, adds 'Tiempo de actividad' uptime and manual 'Notas' per VM -> vms[].uptime_days / vms[].notes)",
       "ExportList-Datacenter-Full.csv (2026-08-18, mismo snapshot que ExportList.csv/ExportList (1).csv -- mismas 129 VMs, mismo estado/host/IP, columnas extra: Clúster/UUID/DNS/VMware Tools -- no aporta VMs ni hallazgos nuevos, campo Clúster vacío para las 129)",
-      "DOCKER-DEB-NginxProxyManager/proxy_hosts.csv (19 ago 2026, transcripcion manual de 8 capturas del panel NPM de DOCKER-DEB -- 79 proxy hosts reales, primer mapeo dominio->destino confirmado)"
+      "DOCKER-DEB-NginxProxyManager/proxy_hosts.csv (19 ago 2026, transcripcion manual de 8 capturas del panel NPM de DOCKER-DEB -- 79 proxy hosts reales, primer mapeo dominio->destino confirmado)",
+      "FWOPEN-nat-rules/nat_rules.csv (19 ago 2026, 46 reglas NAT reales de FWOPEN -- confirma que WebLogic.191 es compartido por 7 clientes distintos, ninguno CEFAS)"
     ],
     "vm_count": 129,
     "esxi_host_count": 12,
@@ -1269,7 +1270,380 @@
       "used_by_clients": [],
       "confirmation": "Confirmado pfSense vía relevamiento manual de firewalls (source-files/Relevamiento (sin claves) - Pfsense.csv): dashboard accesible en 192.1.1.11, etiquetado 'Open Dashboard'.",
       "uptime_days": 1567,
-      "notes": ".11\n\n192.1.1.11\n10.10.10.1\n200.55.243.90\n200.55.243.94\n172.18.5.1"
+      "notes": ".11\n\n192.1.1.11\n10.10.10.1\n200.55.243.90\n200.55.243.94\n172.18.5.1",
+      "nat_rules": {
+        "source": "FWOPEN-nat-rules/nat_rules.csv -- transcripcion completa de Firewall > NAT > Port Forward, via TeamViewer (19 ago 2026). 45 reglas.",
+        "rules": [
+          {
+            "protocol": "TCP",
+            "source": "pfB_SAmerica_v4",
+            "wan_port": "60099",
+            "nat_to": "192.1.1.110:18080",
+            "resolved_vm": "OPENDOCKER01",
+            "description": "TEST GeoIP Argentina - TEMP"
+          },
+          {
+            "protocol": "TCP",
+            "source": "JOBS_REDES_PUBLICAS",
+            "wan_port": "50556",
+            "nat_to": "192.1.1.44:1521",
+            "resolved_vm": "Database .44 - Clientes TEST",
+            "description": "acceso jobs"
+          },
+          {
+            "protocol": "TCP",
+            "source": "YACYRETA_IPS_Publicas",
+            "wan_port": "60001",
+            "nat_to": "192.1.1.22:1521",
+            "resolved_vm": "OPENDBPROD006",
+            "description": "acceso YACYRETA"
+          },
+          {
+            "protocol": "TCP",
+            "source": "JOBS_REDES_PUBLICAS",
+            "wan_port": "50555",
+            "nat_to": "192.1.1.51:1521",
+            "resolved_vm": "CLIENTES-DB2",
+            "description": "acceso jobs"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "60050",
+            "nat_to": "192.1.1.5:10051",
+            "resolved_vm": "OPENZABBIX03",
+            "description": "Zabbix agent active"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "5555",
+            "nat_to": "192.1.1.200:22 (SSH)",
+            "resolved_vm": "OPENINFR02",
+            "description": "NAT guardado de BACKUPS externos"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "11517",
+            "nat_to": "192.1.1.32:1525",
+            "resolved_vm": "CLIENTES-DB",
+            "description": "mitiga Cefas DB 1525"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "80 (HTTP)",
+            "nat_to": "192.1.1.10:80 (HTTP)",
+            "resolved_vm": null,
+            "description": "exchange http"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "8090",
+            "nat_to": "192.1.1.133:80 (HTTP)",
+            "resolved_vm": null,
+            "description": "Firma Digital"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "80 (HTTP)",
+            "nat_to": "192.1.1.70:80 (HTTP)",
+            "resolved_vm": null,
+            "description": "Access to SELFSERVICE"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "9010",
+            "nat_to": "192.1.1.4:9010",
+            "resolved_vm": "OPENCLOUD - Jasper .4",
+            "description": "Access to SELFSERVICE backend"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "9001",
+            "nat_to": "192.1.1.2:9001",
+            "resolved_vm": null,
+            "description": "Access to SIGOWEB Backend"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "9210",
+            "nat_to": "192.1.1.7:9210",
+            "resolved_vm": null,
+            "description": "Access to TESTSIGO Backend"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "8012",
+            "nat_to": "192.1.1.7:8012",
+            "resolved_vm": null,
+            "description": "Demo Self service"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "9012",
+            "nat_to": "192.1.1.7:9012",
+            "resolved_vm": null,
+            "description": "Demo Self service -back"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "12255",
+            "nat_to": "192.1.1.97:9080",
+            "resolved_vm": null,
+            "description": "Jira"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "8907",
+            "nat_to": "192.1.1.27:8080",
+            "resolved_vm": "Database .27",
+            "description": "Selfs Service Demo Work"
+          },
+          {
+            "protocol": "TCP/UDP",
+            "source": "*",
+            "wan_port": "8906",
+            "nat_to": "192.1.1.19:8888",
+            "resolved_vm": "WebLogic.19",
+            "description": "esyop acceso"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "443 (HTTPS)",
+            "nat_to": "192.1.1.10:443 (HTTPS)",
+            "resolved_vm": null,
+            "description": "owa Exchange"
+          },
+          {
+            "protocol": "TCP/UDP",
+            "source": "*",
+            "wan_port": "8089",
+            "nat_to": "192.1.1.191:80 (HTTP)",
+            "resolved_vm": "WebLogic.191",
+            "description": "Mafisa Publicacion"
+          },
+          {
+            "protocol": "TCP/UDP",
+            "source": "*",
+            "wan_port": "25 (SMTP)",
+            "nat_to": "192.1.1.10:25 (SMTP)",
+            "resolved_vm": null,
+            "description": "NAT 25 Exchange"
+          },
+          {
+            "protocol": "TCP/UDP",
+            "source": "*",
+            "wan_port": "587 (SUBMISSION)",
+            "nat_to": "192.1.1.10:587 (SUBMISSION)",
+            "resolved_vm": null,
+            "description": "NAT SMTPS Exchange"
+          },
+          {
+            "protocol": "TCP/UDP",
+            "source": "*",
+            "wan_port": "993 (IMAP/S)",
+            "nat_to": "192.1.1.10:993 (IMAP/S)",
+            "resolved_vm": null,
+            "description": "NAT IMAP Exchange"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "8088",
+            "nat_to": "192.1.1.191:80 (HTTP)",
+            "resolved_vm": "WebLogic.191",
+            "description": "NAT DVAL"
+          },
+          {
+            "protocol": "TCP/UDP",
+            "source": "*",
+            "wan_port": "1111",
+            "nat_to": "192.1.1.111:8080",
+            "resolved_vm": "Microstrategy.111",
+            "description": "Microstrategy"
+          },
+          {
+            "protocol": "TCP/UDP",
+            "source": "*",
+            "wan_port": "8080",
+            "nat_to": "192.1.1.111:8080",
+            "resolved_vm": "Microstrategy.111",
+            "description": "Microstrategy"
+          },
+          {
+            "protocol": "TCP/UDP",
+            "source": "*",
+            "wan_port": "666",
+            "nat_to": "192.1.1.11:443 (HTTPS)",
+            "resolved_vm": "FWOPEN",
+            "description": "firewall"
+          },
+          {
+            "protocol": "TCP/UDP",
+            "source": "*",
+            "wan_port": "666",
+            "nat_to": "192.1.1.11:443 (HTTPS)",
+            "resolved_vm": "FWOPEN",
+            "description": "firewall"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "667",
+            "nat_to": "192.1.1.29:443 (HTTPS)",
+            "resolved_vm": "vCenter",
+            "description": "vcenter"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "8069",
+            "nat_to": "192.1.1.6:8069",
+            "resolved_vm": "WEBSERVER",
+            "description": "Crm Odoo"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "4431",
+            "nat_to": "192.1.1.57:80 (HTTP)",
+            "resolved_vm": "OPENDOCKER.57",
+            "description": "SS Rex Front"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "4433",
+            "nat_to": "192.1.1.57:4433",
+            "resolved_vm": "OPENDOCKER.57",
+            "description": "SS Rex Back"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "9011",
+            "nat_to": "192.1.1.17:9001",
+            "resolved_vm": null,
+            "description": "Cliente UIPBA"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "8191",
+            "nat_to": "192.1.1.191:80 (HTTP)",
+            "resolved_vm": "WebLogic.191",
+            "description": "UIA Weblogic"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "8906",
+            "nat_to": "192.1.1.19:8888",
+            "resolved_vm": "WebLogic.19",
+            "description": "Weblogic TARANTO"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "80 (HTTP)",
+            "nat_to": "192.1.1.4:81",
+            "resolved_vm": "OPENCLOUD - Jasper .4",
+            "description": "sigo web"
+          },
+          {
+            "protocol": "TCP",
+            "source": "200.55.243.94",
+            "wan_port": "80 (HTTP)",
+            "nat_to": "192.1.1.37:80 (HTTP)",
+            "resolved_vm": "DOCKER-DEB",
+            "description": "Proxy Nginx Manager"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "80 (HTTP)",
+            "nat_to": "192.1.1.38:80 (HTTP)",
+            "resolved_vm": "VM-DOCKER-Clientes",
+            "description": "Proxy Nginx Manager WAN1"
+          },
+          {
+            "protocol": "TCP",
+            "source": "200.55.243.94",
+            "wan_port": "443 (HTTPS)",
+            "nat_to": "192.1.1.37:443 (HTTPS)",
+            "resolved_vm": "DOCKER-DEB",
+            "description": "Proxy Nginx Manager"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "443 (HTTPS)",
+            "nat_to": "192.1.1.38:443 (HTTPS)",
+            "resolved_vm": "VM-DOCKER-Clientes",
+            "description": "Proxy Nginx Manager WAN1"
+          },
+          {
+            "protocol": "TCP",
+            "source": "ip_uia",
+            "wan_port": "11511",
+            "nat_to": "192.1.1.17:1521",
+            "resolved_vm": null,
+            "description": "UIA DB 1521"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "1155",
+            "nat_to": "192.1.1.39:3389 (MS RDP)",
+            "resolved_vm": null,
+            "description": "REMOTO_SALUD"
+          },
+          {
+            "protocol": "TCP/UDP",
+            "source": "*",
+            "wan_port": "15211",
+            "nat_to": "192.1.1.26:1521",
+            "resolved_vm": null,
+            "description": "TETST"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "7000 (MMS/UDP)",
+            "nat_to": "192.1.1.12:443 (HTTPS)",
+            "resolved_vm": null,
+            "description": "NAT Remote App"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "3389 (MS RDP)",
+            "nat_to": "192.1.1.12:443 (HTTPS)",
+            "resolved_vm": null,
+            "description": "NAT Remote App2"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "wan_port": "9998",
+            "nat_to": "192.1.2.54:9001",
+            "resolved_vm": "WL12C-Desarrollo.2.54",
+            "description": "test"
+          }
+        ]
+      }
     },
     {
       "name": "Jasper-Server",
@@ -4720,6 +5094,11 @@
       "topic": "NFS server(s)",
       "evidence": "relevamiento_docker.txt: OPENDOCKER.57 ('Utiliza almacenamiento local y recursos NFS. Se detectó un montaje NFS con error y otro con alta ocupación.') and VM-DOCKER-Clientes ('un recurso NFS externo') both mount NFS from an unnamed server.",
       "known_detail": "None — target host/IP never named. Self-resolvable: run `mount`/check `/etc/fstab` on those two hosts over TeamViewer."
+    },
+    {
+      "topic": "10 IPs del segmento 192.1.1.x sin ningun rastro en ExportList.csv, encontradas via reglas NAT completas de FWOPEN",
+      "evidence": "FWOPEN-nat-rules/nat_rules.csv (19 ago 2026, tabla completa Firewall > NAT > Port Forward, 45 reglas): 192.1.1.10 (NAT IMAP Exchange); 192.1.1.12 (NAT Remote App2); 192.1.1.133 (Firma Digital); 192.1.1.17 (UIA DB 1521); 192.1.1.2 (Access to SIGOWEB Backend); 192.1.1.26 (TETST); 192.1.1.39 (REMOTO_SALUD); 192.1.1.7 (Demo Self service -back); 192.1.1.70 (Access to SELFSERVICE); 192.1.1.97 (Jira)",
+      "known_detail": "Ninguna de estas 10 IPs aparece en las 129 VMs de ExportList.csv ni en ExportList-Datacenter-Full.csv, pese a estar en el mismo segmento 192.1.1.x que el cluster principal. Podrian ser hosts fisicos fuera de vSphere, VMs de un vCenter/cluster distinto al relevado, o servicios contratados. Etiquetas mas relevantes: 192.1.1.10 (mail Exchange), 192.1.1.12 (gateway RemoteApp/RDS), 192.1.1.17 ('Cliente UIPBA' + DB Oracle de UIA), 192.1.1.39 ('REMOTO_SALUD', RDP expuesto), 192.1.1.97 (Jira), 192.1.1.133 (Firma Digital), 192.1.1.2/192.1.1.7/192.1.1.70 (backends de SIGOWEB/TESTSIGO/SELFSERVICE), 192.1.1.26 (Oracle de test)."
     }
   ],
   "cloud_infra_note": "Azure/AWS data moved to cloud-infra/inventory-cloud.json — out of scope for this discovery, see cloud-infra/README.md.",

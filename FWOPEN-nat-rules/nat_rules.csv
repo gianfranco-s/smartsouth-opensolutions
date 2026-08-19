@@ -1,0 +1,47 @@
+interface,protocol,source_address,dest_address,dest_ports,nat_ip,nat_ports,description
+WAN1,TCP,pfB_SAmerica_v4,WAN1 address,60099,192.1.1.110,18080,TEST GeoIP Argentina - TEMP
+WAN1,TCP,JOBS_REDES_PUBLICAS,WAN1 address,50556,192.1.1.44,1521,acceso jobs
+WAN1,TCP,YACYRETA_IPS_Publicas,WAN1 address,60001,192.1.1.22,1521,acceso YACYRETA
+WAN1,TCP,JOBS_REDES_PUBLICAS,WAN1 address,50555,192.1.1.51,1521,acceso jobs
+WAN1,TCP,*,WAN1 address,60050,192.1.1.5,10051,Zabbix agent active
+WAN1,TCP,*,WAN1 address,5555,192.1.1.200,22 (SSH),NAT guardado de BACKUPS externos
+WAN1,TCP,*,WAN1 address,11517,192.1.1.32,1525,mitiga Cefas DB 1525
+WAN1,TCP,*,WAN1 address,80 (HTTP),192.1.1.10,80 (HTTP),exchange http
+WAN1,TCP,*,WAN1 address,8090,192.1.1.133,80 (HTTP),Firma Digital
+WAN1,TCP,*,WAN1 address,80 (HTTP),192.1.1.70,80 (HTTP),Access to SELFSERVICE
+WAN1,TCP,*,WAN1 address,9010,192.1.1.4,9010,Access to SELFSERVICE backend
+WAN1,TCP,*,WAN1 address,9001,192.1.1.2,9001,Access to SIGOWEB Backend
+WAN1,TCP,*,WAN1 address,9210,192.1.1.7,9210,Access to TESTSIGO Backend
+WAN1,TCP,*,WAN1 address,8012,192.1.1.7,8012,Demo Self service
+WAN1,TCP,*,WAN1 address,9012,192.1.1.7,9012,Demo Self service -back
+WAN1,TCP,*,WAN1 address,12255,192.1.1.97,9080,Jira
+WAN1,TCP,*,WAN1 address,8907,192.1.1.27,8080,Selfs Service Demo Work
+WAN1,TCP/UDP,*,WAN1 address,8906,192.1.1.19,8888,esyop acceso
+WAN1,TCP,*,WAN1 address,443 (HTTPS),192.1.1.10,443 (HTTPS),owa Exchange
+WAN1,TCP/UDP,*,WAN1 address,8089,192.1.1.191,80 (HTTP),Mafisa Publicacion
+WAN1,TCP/UDP,*,WAN1 address,25 (SMTP),192.1.1.10,25 (SMTP),NAT 25 Exchange
+WAN1,TCP/UDP,*,WAN1 address,587 (SUBMISSION),192.1.1.10,587 (SUBMISSION),NAT SMTPS Exchange
+WAN1,TCP/UDP,*,WAN1 address,993 (IMAP/S),192.1.1.10,993 (IMAP/S),NAT IMAP Exchange
+WAN1,TCP,*,WAN1 address,8088,192.1.1.191,80 (HTTP),NAT DVAL
+WAN1,TCP/UDP,*,WAN1 address,1111,192.1.1.111,8080,Microstrategy
+WAN1,TCP/UDP,*,WAN1 address,8080,192.1.1.111,8080,Microstrategy
+WAN1,TCP/UDP,*,WAN1 address,666,192.1.1.11,443 (HTTPS),firewall
+WAN1,TCP/UDP,*,WAN1 address,666,192.1.1.11,443 (HTTPS),firewall
+WAN1,TCP,*,WAN1 address,667,192.1.1.29,443 (HTTPS),vcenter
+WAN1,TCP,*,WAN1 address,8069,192.1.1.6,8069,Crm Odoo
+WAN1,TCP,*,WAN1 address,4431,192.1.1.57,80 (HTTP),SS Rex Front
+WAN1,TCP,*,WAN1 address,4433,192.1.1.57,4433,SS Rex Back
+WAN1,TCP,*,WAN1 address,9011,192.1.1.17,9001,Cliente UIPBA
+WAN1,TCP,*,WAN1 address,8191,192.1.1.191,80 (HTTP),UIA Weblogic
+WAN1,TCP,*,WAN1 address,8906,192.1.1.19,8888,Weblogic TARANTO
+WAN1,TCP,*,WAN1 address,80 (HTTP),192.1.1.4,81,sigo web
+WAN1,TCP,*,200.55.243.94,80 (HTTP),192.1.1.37,80 (HTTP),Proxy Nginx Manager
+WAN1,TCP,*,WAN1 address,80 (HTTP),192.1.1.38,80 (HTTP),Proxy Nginx Manager WAN1
+WAN1,TCP,*,200.55.243.94,443 (HTTPS),192.1.1.37,443 (HTTPS),Proxy Nginx Manager
+WAN1,TCP,*,WAN1 address,443 (HTTPS),192.1.1.38,443 (HTTPS),Proxy Nginx Manager WAN1
+WAN1,TCP,ip_uia,WAN1 address,11511,192.1.1.17,1521,UIA DB 1521
+WAN1,TCP,*,WAN1 address,1155,192.1.1.39,3389 (MS RDP),REMOTO_SALUD
+WAN1,TCP/UDP,*,WAN1 address,15211,192.1.1.26,1521,TETST
+WAN1,TCP,*,WAN1 address,7000 (MMS/UDP),192.1.1.12,443 (HTTPS),NAT Remote App
+WAN1,TCP,*,WAN1 address,3389 (MS RDP),192.1.1.12,443 (HTTPS),NAT Remote App2
+WAN1,TCP,*,WAN1 address,9998,192.1.2.54,9001,test

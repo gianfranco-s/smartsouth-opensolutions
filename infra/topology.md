@@ -124,7 +124,7 @@ Solo 2 de las 15 VMs están encendidas — el resto no reporta IP en el export (
 | `OPENSHARE`, `OPENAPPS`, `COBRA`, `CLIENTESRDP` | Apagadas | Almacenamiento compartido, apps, y una VM (`COBRA`) que no coincide con ningún cliente conocido — mismo patrón por el que se encontró Argocean, sin confirmar todavía |
 | `OEM`, `OPENMONITOR10`, `OPEN_GRAFANA` | Apagadas | Monitoreo/administración del sitio |
 
-**Conectividad de red hacia el cluster principal, confirmada en vivo (18 ago 2026).** Desde la sesión de TeamViewer en `Win10-Piedras` (`192.168.100.165`), `http://192.1.1.38:81/` — el panel de Nginx Proxy Manager de `VM-DOCKER-Clientes`, en el cluster principal — respondió directamente, sin salto intermedio. Piedras no es un sitio aislado de red: alcanza al menos el segmento `192.1.1.x`, además del `10.77.254.x` ya inferido por el backup de `OPENDB_31` hacia `OPENBK`. Esto habilita mapear el ítem 1 de Tier 1 (dominio → NPM → servidor, ver `../plan_relevamiento_alta_cliente.md`) directamente desde una sesión a Piedras, sin necesitar un salto a una VM del cluster principal primero.
+**Conectividad de red hacia el cluster principal, confirmada en vivo (18 ago 2026).** Desde la sesión de TeamViewer en `Win10-Piedras` (`192.168.100.165`), `http://192.1.1.38:81/` — el panel de Nginx Proxy Manager de `VM-DOCKER-Clientes`, en el cluster principal — respondió directamente, sin salto intermedio. Piedras no es un sitio aislado de red: alcanza al menos el segmento `192.1.1.x`, además del `10.77.254.x` ya inferido por el backup de `OPENDB_31` hacia `OPENBK`. Esto habilita mapear el ítem 1 de Tier 1 (dominio → NPM → servidor, ver `../plan_relevamiento_alta_cefas.md`) directamente desde una sesión a Piedras, sin necesitar un salto a una VM del cluster principal primero.
 
 Detalle completo, notas de cada VM y hallazgos derivados en `infra/inventory.json` → `meta.piedras_site` / `vms[].site == "Piedras"` y en `infra/findings.md`.
 
@@ -179,7 +179,7 @@ flowchart TB
 
 - **Confirmado:** el edge `OPENVPNFW01` como único punto de entrada desde Internet (OpenVPN/2190 UDP, nada más expuesto); el sitio Piedras como real, con su propio host ESXi y subred `192.168.100.0/24`; la conectividad Piedras → cluster principal (`192.1.1.x`), probada en vivo llegando al panel de NPM de `VM-DOCKER-Clientes` sin salto intermedio.
 - **Inferido, no probado en vivo:** la conectividad Piedras → `OPENBK` (backup) — viene de una nota de texto en `OPENDB_31`, no de una prueba de red hecha a mano.
-- **Todavía abierto:** si el host `192.1.3.252` es un tercer sitio físico separado o una máquina standalone dentro del mismo datacenter (ver findings.md, "Todavía abierto" #2); si `OpenPiedrasFw01` es efectivamente el pfSense de Piedras (está apagada, sin confirmar por acceso directo); el mapeo dominio → NPM → firewall/NAT → servidor completo (ítem 1 de `../plan_relevamiento_alta_cliente.md`, todavía pendiente).
+- **Todavía abierto:** si el host `192.1.3.252` es un tercer sitio físico separado o una máquina standalone dentro del mismo datacenter (ver findings.md, "Todavía abierto" #2); si `OpenPiedrasFw01` es efectivamente el pfSense de Piedras (está apagada, sin confirmar por acceso directo); el mapeo dominio → NPM → firewall/NAT → servidor completo (ítem 1 de `../plan_relevamiento_alta_cefas.md`, todavía pendiente).
 
 ## Cómo regenerar estos diagramas
 

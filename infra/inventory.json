@@ -4,7 +4,8 @@
       "ExportList.csv (vCenter export, authoritative for VM existence/state)",
       "Relevamiento (sin claves) - VM Linux.csv (manually curated client mapping, may be inaccurate/incomplete)",
       "ExportList (1).csv (2026-08-18 vCenter export refresh, same 129 VMs/IPs, adds 'Tiempo de actividad' uptime and manual 'Notas' per VM -> vms[].uptime_days / vms[].notes)",
-      "ExportList-Datacenter-Full.csv (2026-08-18, mismo snapshot que ExportList.csv/ExportList (1).csv -- mismas 129 VMs, mismo estado/host/IP, columnas extra: Clúster/UUID/DNS/VMware Tools -- no aporta VMs ni hallazgos nuevos, campo Clúster vacío para las 129)"
+      "ExportList-Datacenter-Full.csv (2026-08-18, mismo snapshot que ExportList.csv/ExportList (1).csv -- mismas 129 VMs, mismo estado/host/IP, columnas extra: Clúster/UUID/DNS/VMware Tools -- no aporta VMs ni hallazgos nuevos, campo Clúster vacío para las 129)",
+      "DOCKER-DEB-NginxProxyManager/proxy_hosts.csv (19 ago 2026, transcripcion manual de 8 capturas del panel NPM de DOCKER-DEB -- 79 proxy hosts reales, primer mapeo dominio->destino confirmado)"
     ],
     "vm_count": 129,
     "esxi_host_count": 12,
@@ -646,7 +647,565 @@
           "Sarha Online (detenido ~2 años)"
         ],
         "runs_nginx_proxy_manager": true,
-        "notes": "Persistence under /home/open/docker. Validate what the proxy publishes and whether Sarha Online is still needed."
+        "notes": "Persistence under /home/open/docker. Validate what the proxy publishes and whether Sarha Online is still needed.",
+        "proxy_hosts": {
+          "source": "DOCKER-DEB-NginxProxyManager/proxy_hosts.csv -- transcripto de 8 capturas de pantalla del panel NPM en vivo (19 ago 2026), via TeamViewer. Lista completa, 79 hosts.",
+          "hosts": [
+            {
+              "domain": "abb.condorwork.com.ar",
+              "destination": "http://192.1.2.54:9001",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "19th October 2022"
+            },
+            {
+              "domain": "app.condorwork.com.ar",
+              "destination": "http://192.1.1.112:8190",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "16th January 2024"
+            },
+            {
+              "domain": "app.open.com.ar",
+              "destination": "http://192.1.1.12:80",
+              "ssl": "Let's Encrypt",
+              "status": "Disabled",
+              "created": "17th December 2021"
+            },
+            {
+              "domain": "autorizaciones.open.com.ar",
+              "destination": "http://192.1.2.77:8080",
+              "ssl": "Let's Encrypt",
+              "status": "Disabled",
+              "created": "19th October 2022"
+            },
+            {
+              "domain": "cabj.condorwork.com.ar",
+              "destination": "http://192.1.2.54:9001",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "18th March 2022"
+            },
+            {
+              "domain": "cabjjasper.condorwork.com.ar",
+              "destination": "http://192.1.1.110:8090",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "29th December 2023"
+            },
+            {
+              "domain": "cefasjasper.condorwork.com.ar",
+              "destination": "http://192.1.1.110:8095",
+              "ssl": "HTTP only",
+              "status": "Online",
+              "created": "29th December 2023"
+            },
+            {
+              "domain": "cloud.opensolutions.com.ar",
+              "destination": "http://192.1.1.33:80",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "7th March 2024"
+            },
+            {
+              "domain": "condor.com.ar",
+              "destination": "http://34.198.2.32:80",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "16th February 2023"
+            },
+            {
+              "domain": "condor.open.com.ar",
+              "destination": "http://192.1.2.54:9001",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "23rd July 2021"
+            },
+            {
+              "domain": "condor.solutions",
+              "destination": "http://192.1.1.110:8082",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "26th March 2026"
+            },
+            {
+              "domain": "condorlink.com.ar",
+              "destination": "https://condorlink.net:443",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "30th June 2024"
+            },
+            {
+              "domain": "condorsolutions.com.py",
+              "destination": "http://34.202.29.65:80",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "10th April 2023"
+            },
+            {
+              "domain": "crm.open.com.ar",
+              "destination": "http://192.1.1.6:8069",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "22nd March 2023"
+            },
+            {
+              "domain": "dcviajes.opensolutions.com.ar",
+              "destination": "http://192.1.1.191:8888",
+              "ssl": "HTTP only",
+              "status": "Online",
+              "created": "19th March 2024"
+            },
+            {
+              "domain": "demo.condorsolutions.com.py",
+              "destination": "http://192.1.1.36:9001",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "25th July 2022"
+            },
+            {
+              "domain": "dev.condorwork.com.ar",
+              "destination": "http://192.1.1.112:8195",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "28th May 2024"
+            },
+            {
+              "domain": "dwl12c.open.com.ar",
+              "destination": "http://192.1.2.54:9001",
+              "ssl": "Let's Encrypt",
+              "status": "Disabled",
+              "created": "17th May 2021"
+            },
+            {
+              "domain": "eby-prod.condorwork.com.ar",
+              "destination": "http://10.77.7.201:9001",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "1st September 2025"
+            },
+            {
+              "domain": "eby-qa.condorwork.com.ar",
+              "destination": "http://10.77.7.201:9001",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "5th February 2026"
+            },
+            {
+              "domain": "ebyprod.open.com.ar",
+              "destination": "http://10.77.8.201:9001",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "29th September 2025"
+            },
+            {
+              "domain": "enerflex.condorwork.com.ar",
+              "destination": "http://192.1.1.1:9001",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "11th December 2023"
+            },
+            {
+              "domain": "giarprod.condorenterprise.com.ar",
+              "destination": "http://200.55.243.117:80",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "31st March 2025"
+            },
+            {
+              "domain": "heinleintest.condor.solutions",
+              "destination": "http://192.1.2.195:9001",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "9th March 2026"
+            },
+            {
+              "domain": "help.open.com.ar",
+              "destination": "http://192.1.1.112:8080",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "14th July 2021"
+            },
+            {
+              "domain": "helpbk.open.com.ar",
+              "destination": "http://192.1.1.112:9001",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "22nd July 2021"
+            },
+            {
+              "domain": "it.open.com.ar",
+              "destination": "http://192.168.100.8:80",
+              "ssl": "Let's Encrypt",
+              "status": "Disabled",
+              "created": "20th July 2021"
+            },
+            {
+              "domain": "jobs.condorwork.com.ar",
+              "destination": "http://192.1.2.54:9001",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "12th April 2023"
+            },
+            {
+              "domain": "jobsjasper.condorwork.com.ar",
+              "destination": "http://192.1.1.110:8098",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "2nd January 2024"
+            },
+            {
+              "domain": "jobsprod.condorwork.com.ar",
+              "destination": "http://192.1.1.1:9001",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "19th July 2023"
+            },
+            {
+              "domain": "laholandodemo.condorenterprise.com.ar",
+              "destination": "http://192.1.1.210:9001",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "19th January 2024"
+            },
+            {
+              "domain": "laholandodemo.condorwork.com.ar",
+              "destination": "http://192.1.1.210:9001",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "15th January 2024"
+            },
+            {
+              "domain": "micro-strategy.open.com.ar",
+              "destination": "http://192.1.1.15:8080",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "13th June 2023"
+            },
+            {
+              "domain": "microstrategy.open.com.ar",
+              "destination": "http://192.1.1.111:8080",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "8th March 2023"
+            },
+            {
+              "domain": "open.com.ar",
+              "destination": "http://192.1.1.110:8081",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "16th February 2023"
+            },
+            {
+              "domain": "opensolutions.com.ar",
+              "destination": "http://192.1.1.110:8081",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "13th April 2023"
+            },
+            {
+              "domain": "ords-angular.open.com.ar",
+              "destination": "http://192.1.1.80:8088",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "19th July 2024"
+            },
+            {
+              "domain": "ords-balanz.open.com.ar",
+              "destination": "http://192.168.222.20:8080",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "29th December 2025"
+            },
+            {
+              "domain": "ords-balanztest.open.com.ar",
+              "destination": "http://192.168.222.19:8080",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "29th July 2025"
+            },
+            {
+              "domain": "ords-boca.open.com.ar",
+              "destination": "http://192.1.2.54:7005",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "23rd May 2023"
+            },
+            {
+              "domain": "ords-cefast.open.com.ar",
+              "destination": "https://192.1.2.54:7007",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "29th February 2024"
+            },
+            {
+              "domain": "ords-eby.open.com.ar",
+              "destination": "http://192.1.2.54:7010",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "4th June 2024"
+            },
+            {
+              "domain": "ords-ebyqa.open.com.ar",
+              "destination": "http://10.77.7.15:8040",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "5th February 2026"
+            },
+            {
+              "domain": "ords-jobs.open.com.ar",
+              "destination": "http://192.1.1.1:8002",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "26th August 2024"
+            },
+            {
+              "domain": "ords-jobsdev.open.com.ar",
+              "destination": "http://192.1.1.44:8080",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "22nd December 2025"
+            },
+            {
+              "domain": "ords-jobst.open.com.ar",
+              "destination": "https://192.1.2.54:7002",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "27th August 2024"
+            },
+            {
+              "domain": "ords-open.open.com.ar",
+              "destination": "http://192.1.1.1:8001",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "21st May 2023"
+            },
+            {
+              "domain": "ords-roman2.open.com.ar",
+              "destination": "http://10.77.7.12:8040",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "12th January 2028"
+            },
+            {
+              "domain": "ords-t2022dev01.open.com.ar",
+              "destination": "https://192.1.2.54:7009",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "29th February 2024"
+            },
+            {
+              "domain": "ords-tcore-dev.open.com.ar",
+              "destination": "http://192.1.1.80:8050",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "20th January 2028"
+            },
+            {
+              "domain": "ords-tcore-prod.open.com.ar",
+              "destination": "http://192.1.1.80:8040",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "20th January 2028"
+            },
+            {
+              "domain": "ords-tcore.open.com.ar",
+              "destination": "http://192.1.1.80:8090",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "6th June 2025"
+            },
+            {
+              "domain": "ords-yacy.open.com.ar",
+              "destination": "http://10.77.7.15:8080",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "14th August 2025"
+            },
+            {
+              "domain": "ordserp19.open.com.ar",
+              "destination": "https://192.1.2.54:7703",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "3rd August 2022"
+            },
+            {
+              "domain": "ordsppc.open.com.ar",
+              "destination": "http://192.1.1.24:8080",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "15th September 2022"
+            },
+            {
+              "domain": "pdct.open.com.ar",
+              "destination": "http://192.1.1.6:8185",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "19th October 2022"
+            },
+            {
+              "domain": "pietroboni.condorwork.com.ar",
+              "destination": "http://192.1.2.54:9001",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "17th January 2023"
+            },
+            {
+              "domain": "portal.open.com.ar",
+              "destination": "http://192.1.1.6:8185",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "28th October 2022"
+            },
+            {
+              "domain": "ppc.open.com.ar",
+              "destination": "http://192.1.1.6:8180",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "27th July 2022"
+            },
+            {
+              "domain": "proviadev01.condor.com.ar",
+              "destination": "http://172.171.154.190:80",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "10th July 2025"
+            },
+            {
+              "domain": "qadmportal.condor.solutions",
+              "destination": "http://10.77.10.201:8040",
+              "ssl": "Let's Encrypt",
+              "status": "Disabled",
+              "created": "3rd February 2026"
+            },
+            {
+              "domain": "repo.open.com.ar",
+              "destination": "http://192.1.1.46:80",
+              "ssl": "Let's Encrypt",
+              "status": "Disabled",
+              "created": "15th June 2021"
+            },
+            {
+              "domain": "romanprod.condor.solutions",
+              "destination": "http://10.77.7.201:9001",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "3rd March 2026"
+            },
+            {
+              "domain": "romanqa.condor.solutions",
+              "destination": "http://10.77.7.201:9001",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "3rd March 2026"
+            },
+            {
+              "domain": "serzarex-test.condor.solutions",
+              "destination": "http://192.1.2.195:9001",
+              "ssl": "Let's Encrypt",
+              "status": "Disabled",
+              "created": "26th June 2026"
+            },
+            {
+              "domain": "serzarex.condor.solutions",
+              "destination": "http://192.1.2.195:9001",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "26th June 2026"
+            },
+            {
+              "domain": "sigo.open.com.ar",
+              "destination": "http://192.1.1.191:80",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "1st December 2021"
+            },
+            {
+              "domain": "tassaroli.condorwork.com.ar",
+              "destination": "http://192.1.1.191:8888",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "26th September 2023"
+            },
+            {
+              "domain": "test.condor.local",
+              "destination": "http://192.1.1.110:8082",
+              "ssl": "HTTP only",
+              "status": "Online",
+              "created": "26th March 2026"
+            },
+            {
+              "domain": "test.condorwork.com.ar",
+              "destination": "http://192.1.1.112:8205",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "28th May 2024"
+            },
+            {
+              "domain": "testords11.open.com.ar",
+              "destination": "http://192.1.2.77:8080",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "1st February 2023"
+            },
+            {
+              "domain": "uia.condorenterprise.com.ar",
+              "destination": "http://192.1.1.191:80",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "28th February 2023"
+            },
+            {
+              "domain": "wiki.open.com.ar",
+              "destination": "http://192.1.1.6:5001",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "13th January 2022"
+            },
+            {
+              "domain": "work.open.com.ar",
+              "destination": "http://192.1.1.112:8190",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "19th May 2023"
+            },
+            {
+              "domain": "www.condorsolutions.com.py",
+              "destination": "http://34.202.29.65:80",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "10th April 2023"
+            },
+            {
+              "domain": "www.open.com.ar",
+              "destination": "http://192.1.1.110:8081",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "16th February 2023"
+            },
+            {
+              "domain": "www.opensolutions.com.ar",
+              "destination": "http://192.1.1.110:8081",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "13th April 2023"
+            },
+            {
+              "domain": "yacyreta.condorwork.com.ar",
+              "destination": "http://192.1.1.191:80",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "2nd December 2021"
+            },
+            {
+              "domain": "yacyretatest.condorwork.com.ar",
+              "destination": "http://192.1.2.54:9001",
+              "ssl": "Let's Encrypt",
+              "status": "Online",
+              "created": "9th December 2021"
+            }
+          ]
+        }
       },
       "uptime_days": 139
     },
@@ -2460,7 +3019,99 @@
           "MariaDB"
         ],
         "runs_nginx_proxy_manager": true,
-        "notes": "Local storage under /home/open + external NFS. Naming suggests an in-use client service; confirm."
+        "notes": "Local storage under /home/open + external NFS. Naming suggests an in-use client service; confirm.",
+        "containers": [
+          {
+            "name": "ss_back_cefas",
+            "image": "registry.gitlab.com/opentecnologia/self-service-backend:cefas-sfd",
+            "port": "9001",
+            "uptime": "4 years"
+          },
+          {
+            "name": "nginx_app_1",
+            "image": "jc21/nginx-proxy-manager:latest",
+            "port": "80-81,443",
+            "uptime": "4 years"
+          },
+          {
+            "name": "ss_front_cefas",
+            "image": "registry.gitlab.com/opentecnologia/self-service-angular:cefas-sfd",
+            "port": "8881",
+            "uptime": "4 years"
+          },
+          {
+            "name": "nginx_db_1",
+            "image": "jc21/mariadb-aria:latest",
+            "port": "3306 (interno)",
+            "uptime": "4 years"
+          },
+          {
+            "name": "ss_pg_cefas",
+            "image": "registry.gitlab.com/opentecnologia/self-service-database:yacyreta-sfd",
+            "port": "5532->5432",
+            "uptime": "4 years",
+            "notes": "Tag de imagen dice 'yacyreta-sfd' (EBY) pero el contenedor se llama ss_pg_cefas -- posible copia/plantilla del compose de EBY reusada para CEFAS sin actualizar el tag. Mismo patron de contaminacion/copy-paste que ya se vio en la columna Notas de ExportList.csv."
+          }
+        ],
+        "proxy_hosts": {
+          "source": "docker exec + consulta SQL directa a la tabla proxy_host de la mariadb interna de NPM, via TeamViewer (19 ago 2026). Lista completa, 9 hosts -- credenciales de la consulta excluidas a proposito (ver CLAUDE.md).",
+          "hosts": [
+            {
+              "domain": "cefas.condorlink.com.ar",
+              "destination": "http://192.1.1.38:8881",
+              "enabled": true,
+              "created": "2021-06-30"
+            },
+            {
+              "domain": "cefasbk.condorlink.com.ar",
+              "destination": "http://192.1.1.38:9001",
+              "enabled": true,
+              "created": "2021-06-30"
+            },
+            {
+              "domain": "cefas.opensol.com.ar",
+              "destination": "http://192.1.1.191:8888",
+              "enabled": true,
+              "created": "2021-06-30"
+            },
+            {
+              "domain": "roman.condorwork.com.ar",
+              "destination": "http://172.18.5.40:80",
+              "enabled": false,
+              "created": "2022-01-20"
+            },
+            {
+              "domain": "argocean.condorenterprise.com.ar",
+              "destination": "http://172.18.5.40:80",
+              "enabled": false,
+              "created": "2022-01-20"
+            },
+            {
+              "domain": "roman.condorenterprise.com.ar",
+              "destination": "http://172.18.5.40:80",
+              "enabled": false,
+              "created": "2022-01-20"
+            },
+            {
+              "domain": "cefas.condorwork.com.ar",
+              "destination": "http://192.1.1.191:80",
+              "enabled": true,
+              "created": "2023-02-28"
+            },
+            {
+              "domain": "cefasjasper.condorwork.com.ar",
+              "destination": "http://192.1.1.110:8095",
+              "enabled": true,
+              "created": "2023-12-29"
+            },
+            {
+              "domain": "cloud.opensolutions.com.ar",
+              "destination": "http://192.1.1.33:80",
+              "enabled": true,
+              "created": "2024-03-07"
+            }
+          ]
+        }
       },
       "uptime_days": 138,
       "notes": "192.1.1.38 \nvm-docker \nNG Proxy Manager - Clientes \nArgocean\nRoman"
@@ -3960,7 +4611,16 @@
         "guest_os_relevamiento": "",
         "wl_version": "",
         "esxi_host_relevamiento": "",
-        "resolved": []
+        "resolved": [
+          {
+            "claimed_name": null,
+            "resolved_vm": "WL-CLIENTES",
+            "ip": "172.18.5.40",
+            "resolved_by": "npm_proxy_host",
+            "match": true,
+            "notes": "Resuelto via tabla proxy_host de NPM en VM-DOCKER-Clientes (19 ago 2026): dominio 'argocean.condorenterprise.com.ar' -> 172.18.5.40:80, enabled=0 (deshabilitado). Compartido con ROMAN (mismo destino, ver clients[ROMAN])."
+          }
+        ]
       },
       "database": {
         "claimed_name": "DB-ARGOCEAN",
@@ -3980,7 +4640,7 @@
         "Matriz_servicios_por_cliente_Hosting_V2.xlsx (Discrepancias sheet)",
         "ExportList.csv"
       ],
-      "notes": "Discovered via the Discrepancias sheet, not the main client table. VM is currently powered off ('Apagado') in ExportList.csv. No WebLogic server identified yet."
+      "notes": "Discovered via the Discrepancias sheet, not the main client table. VM is currently powered off ('Apagado') in ExportList.csv. No WebLogic server identified yet. WebLogic identificado 19 ago 2026: WL-CLIENTES (172.18.5.40), via config de NPM -- ver arriba. El proxy host esta deshabilitado, no se confirmo si esta realmente en uso."
     }
   ],
   "infra_notes_rows": [

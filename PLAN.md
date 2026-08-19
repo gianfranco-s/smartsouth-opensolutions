@@ -53,6 +53,8 @@
 
 **WL:** `10.77.7.201` es literalmente `OPENWLPROD01` — el mismo WL de GIAR. Entrar a la consola ahí y ver si hay un dominio/aplicación desplegada para EBY. Después entrar a `WL12C-Desarrollo.2.54` (`192.1.2.54`) y ver si el deployment de EBY sigue activo ahí también. El que tenga sesiones/logs recientes de usuarios de EBY es el real.
 
+**Actualización (19 ago 2026):** el panel NPM de `DOCKER-DEB` (`DOCKER-DEB-NginxProxyManager/proxy_hosts.csv`) muestra que en realidad hay **tres** endpoints con dominio real para EBY, no dos: `eby-prod.condorwork.com.ar`/`eby-qa.condorwork.com.ar` → `10.77.7.201:9001`, `ebyprod.open.com.ar` → `10.77.8.201:9001`, y `yacyreta.condorwork.com.ar` → `192.1.1.191:80` (`WebLogic.191`, la VM que se pensaba dedicada a CEFAS). Ninguno de los dos candidatos originales de la hoja Discrepancias queda descartado por esto — hace falta revisar cuál de los tres tiene tráfico/sesiones reales antes de cerrar el ítem. Detalle completo en `infra/findings.md`.
+
 ### Detalle paso a paso — Tier 1, ítem 4 (ABB)
 
 Camino más directo: en la consola de WebLogic de `WL12C-Desarrollo.2.54` (`192.1.2.54`), ir a Services → Data Sources, buscar el datasource de ABB, y leer su URL JDBC — ahí dice a cuál de las dos IPs apunta realmente. Como segundo chequeo, conectarse a cada una de las dos DBs y correr `SELECT sid, serial#, username, program FROM v$session WHERE username IS NOT NULL;` — la que tenga sesiones activas de la app es la productiva.

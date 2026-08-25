@@ -11,7 +11,7 @@ Vistazo conjunto de los dos trazados punta a punta. Detalle completo, evidencia 
 | Firewall / NAT | ✅ Resuelto | ✅ Resuelto |
 | App — motor clásico (WebLogic) | ✅ Resuelto | 🔍 Relevando |
 | App — capa Docker / reportes | ✅ Resuelto | 🔍 Relevando |
-| Base de datos | 🔍 Relevando | 🔍 Relevando |
+| Base de datos | ✅ Resuelto | 🔍 Relevando |
 | Almacenamiento / object store | ✅ Resuelto | *(sin evidencia todavía de que aplique)* |
 
 Las tres primeras capas de los dos clientes se resolvieron sin sesión nueva, solo cruzando NPM + reglas NAT ya relevadas. Lo que falta en ambos necesita acceso de adentro (consola WebLogic, Portainer/SSH, `sqlplus`) — ninguna de las dos capas de aplicación/DB se puede cerrar solo con documentación.
@@ -26,9 +26,9 @@ Las tres primeras capas de los dos clientes se resolvieron sin sesión nueva, so
 - **App — capa Docker (Self Service)** — `ss_back_cefas` solo tiene configurado `jdbc:postgresql://postgres:5432/selfservice` (su propio `ss_pg_cefas`); no habla con el Oracle del motor clásico. Las dos tecnologías conviven pero no comparten datos.
 - **Base de datos — cuál usa hoy** — `netstat` en vivo en `WebLogic.191` confirma conexión activa a `192.1.1.32:1525` (`CLIENTES-DB`, la actual) y cero tráfico hacia `OPENDBPROD001` (destino de migración) — la migración de CEFAS todavía no cortó tráfico productivo.
 - **Almacenamiento** — `VM-DOCKER-Clientes` monta por NFSv4 `192.1.1.191:/clientes/cefas/cdr2/condorlink` (el `uploadPath` de Self Service) — el servidor NFS es el mismo `WebLogic.191`, no un storage separado.
+- **Base de datos — SID confirmado** — acceso logrado a `CLIENTES-DB` (`192.1.1.32`), `SELECT name FROM v$database;` devolvió **`CEFAS`** (no `CEFASPDB`). Trazado completo, las 7 capas resueltas.
 
-**Falta:**
-- **Capa 5 (Base de datos) — SID exacto** — 🔒 **bloqueado por credencial.** Ni SSH ni consola VMware/Veeam a `CLIENTES-DB` (`192.1.1.32`) aceptan acceso, ni la credencial que funciona en las otras VMs. Pendiente para la reunión con el equipo saliente (ver `infra/findings.md`).
+**Falta:** nada — trazado de CEFAS completo.
 
 ## JOBS
 

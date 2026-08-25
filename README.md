@@ -43,4 +43,12 @@ Este es un repo **privado** — contiene nombres de clientes, IPs internas y (en
 Para conectarse por ssh a servers más viejos como WebLogic.191
 ```
 ssh -oHostKeyAlgorithms=+ssh-rsa soportesmart@192.1.1.191
-´´´
+```
+
+Conexión a DB Oracle (CLIENTES-DB, 192.1.1.32 — no confundir con VM-DOCKER-Clientes, 192.1.1.38)
+```
+ssh root@192.1.1.32
+su - oracle
+export ORACLE_SID=<SID>   # ver instancias corriendo con: ps -ef | grep pmon
+sqlplus / as sysdba
+```

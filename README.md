@@ -37,3 +37,10 @@ A medida que sesiones de TeamViewer confirmen o corrijan algo, editar `inventory
 ## Seguridad
 
 Este es un repo **privado** — contiene nombres de clientes, IPs internas y (en `source-files/`) correspondencia interna real. Mantenerlo privado, y nunca commitear credenciales de ningún tipo — la planilla original de Relevamiento tenía una contraseña de admin en texto plano que se quitó antes de versionarla acá.
+
+
+## Notas adicionales
+Para conectarse por ssh a servers más viejos como WebLogic.191
+```
+ssh -oHostKeyAlgorithms=+ssh-rsa soportesmart@192.1.1.191
+´´´

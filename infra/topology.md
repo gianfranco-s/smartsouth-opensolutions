@@ -87,16 +87,16 @@ Solo los totales — ver `inventory.json` → `vms[].category` para la lista de 
 
 | Categoría | Cantidad | Confianza |
 |---|---|---|
-| database | 30 | Mixta — varias confirmadas vía el mapeo de clientes, el resto inferidas solo por nombre |
-| weblogic_app | 18 | Mixta — varias confirmadas vía el mapeo de clientes, el resto inferidas solo por nombre |
+| database | 33 | Mixta — varias confirmadas vía el mapeo de clientes, el resto inferidas solo por nombre |
 | workstation_or_jumphost | 20 | Inferida (SO invitado Windows 7/10 + nombre) |
+| weblogic_app | 18 | Mixta — varias confirmadas vía el mapeo de clientes, el resto inferidas solo por nombre |
+| unclear | 14 | Sin señal en el nombre, o una conjetura previa (candidato a nginx) que resultó incorrecta |
 | infra_generic_unclear | 12 | Desconocida — el nombre genérico `OPENINFRxx` no dice nada sobre el rol |
-| docker_host_confirmed / docker_host_confirmed_nginx_proxy_manager | 9 | **Confirmada** — detalle a nivel contenedor del relevamiento de Docker, incl. cuáles 4 corren Nginx Proxy Manager |
-| firewall_confirmed_pfsense | 1 (`OPENVPNFW01`) | **Confirmada** vía coincidencia de IP con el peer de VPN de Azure |
-| firewall_candidate_pfsense | 8 | Inferida (SO invitado FreeBSD + nombre con fw/vpn), todavía sin confirmar |
-| unclear | 17 | Sin señal en el nombre, o una conjetura previa (candidato a nginx) que resultó incorrecta |
+| firewall_confirmed_pfsense | 7 (`OPENVPNFW01` por IP del peer VPN de Azure; `CliProFw01`, `DMFW01`, `FW`, `FWOPEN`, `OPENFWCLI001`, `OPENFWCLI10` por el relevamiento manual de pfSense) | **Confirmada** |
+| docker_host_confirmed / docker_host_confirmed_nginx_proxy_manager | 9 (5 + 4) | **Confirmada** — detalle a nivel contenedor del relevamiento de Docker, incl. cuáles 4 corren Nginx Proxy Manager |
 | bi_reporting | 4 | Inferida (Jasper/MicroStrategy en el nombre) |
-| backup | 2 | Inferida (Veeam en el nombre) |
+| backup | 2 | Inferida (Veeam en el nombre) — incluye `VEEAM-PIEDRAS`, en el sitio principal pese al nombre, rol sin confirmar |
+| firewall_candidate_pfsense | 2 (`OPENFWCLI02`, `VM_FW`) | Inferida (SO invitado FreeBSD + nombre con fw/vpn), todavía sin confirmar |
 | source_repo | 2 | Inferida (SVN en el nombre) |
 | domain_controller, file_server, monitoring, mail, storage_nas, virtualization_mgmt | 1 cada una | Inferida por nombre/SO |
 

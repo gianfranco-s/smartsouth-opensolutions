@@ -5,11 +5,10 @@ Este documento resume el estado del relevamiento de infraestructura on-premise: 
 ## Relevamiento general  TI
 
 - **Tres sitios distintos**:
-  * el cluster principal (11 hosts ESXi, ~129 VMs, rango `192.1.1.x`)
-  * el sitio físico "Piedras" (oficina separada, subred `192.168.100.x`, 15 VMs propias).
-  * un host standalone sin identificar (`192.1.3.252`, aloja GIAR y ROMAN — visto en el campo "host ESXi" de export de vSphere)
+  * sitio principal (129 VMs), a su vez dividido en el cluster ESXi de 11 hosts (113 VMs, rango `192.1.1.x`) y un host standalone sin identificar (`192.1.3.252`, 16 VMs — aloja GIAR y ROMAN, visto en el campo "host ESXi" de export de vSphere)
+  * el sitio físico "Piedras" (oficina separada, subred `192.168.100.x`, 15 VMs propias, host ESXi también separado).
 
-- **15 clientes activos identificados**: Varios comparten la misma VM de aplicación o de base de datos. Por ejemplo `WebLogic.191` sirve a **8 clientes distintos**. Cualquier cambio sobre una VM compartida tiene radio de impacto multi-cliente.
+- **15 clientes identificados**: Varios comparten la misma VM de aplicación o de base de datos. Por ejemplo `WebLogic.191` sirve a **8 clientes distintos**. Cualquier cambio sobre una VM compartida tiene radio de impacto multi-cliente.
   * ABB S.A. (ABB) — *dada de baja?*
   * Arris de Argentina S.A. (GIAR) — *dada de baja?*
   * Cefas S.A. (CEFAS)
@@ -32,9 +31,9 @@ Este documento resume el estado del relevamiento de infraestructura on-premise: 
 
 ## Tecnologías
 
-- **Sistemas operativos**: mix de Windows (estaciones/jumphosts) y Linux (Oracle Linux 7 en motores WebLogic/Forms & Reports, Ubuntu 22.04 en hosts Docker) y FreeBSD (firewalls pfSense).
-- **Dispositivos de red**: 9 firewalls pfSense (7 confirmados activos) y 4 instancias de Nginx Proxy Manager, corriendo como contenedor sobre hosts Docker — no es hardware dedicado.
-- **Ruteo**: Internet → pfSense de borde (solo OpenVPN expuesto) → pfSense interno (NAT hacia los NPM) → NPM (ruteo por dominio/Host header) → motor de aplicación (WebLogic / Oracle Forms & Reports, o contenedores Docker) → base de datos Oracle.
+- **Sistemas operativos**: mix de Windows (estaciones/jumphosts) y Linux — motores WebLogic/Forms & Reports mayormente en Oracle Linux 7, con versiones sueltas de OL4 a OL8 y RHEL 5/6/7; hosts Docker en su mayoría Ubuntu genérico (versión "22.04" solo confirmada puntualmente en `OPENDOCKER03`), con 2 en CentOS 7 y 2 en Debian 10 — y FreeBSD en los firewalls pfSense.
+- **Dispositivos de red**: 10 VMs con categoría pfSense en total (7 confirmadas y activas; de las 3 restantes, 2 están apagadas, una de ellas en Piedras) y 4 instancias de Nginx Proxy Manager, corriendo como contenedor sobre hosts Docker — no es hardware dedicado.
+- **Ruteo**: Internet → pfSense de borde (solo OpenVPN expuesto) → pfSense interno (NAT hacia los NPM) → NPM (ruteo por dominio/Host header) → motor de aplicación (WebLogic / Oracle Forms & Reports, o contenedores Docker) → base de datos (Oracle para el motor clásico, Postgres propio para Self Service).
 
 ## Una aplicación "tipo" — caso CEFAS
 Ciclo de vida de la información:
@@ -54,10 +53,10 @@ Ciclo de vida de la información:
 
 ## Recursos que se podrían migrar
 
-- **JOBS**: motor WebLogic (`WL12C-PROD`) y base de datos (`CLIENTES-DB2`) son dedicados a este cliente, sin compartir instancia con otros — Parecería el caso más limpio para migrar sin afectar a terceros.
-- **Sistemas autocontenidos**: en general basados en docker (ver sección de preguntas).
-- **Ambientes de test/dev ya mapeados** (ej. `Database .44` de JOBS) — bajo riesgo, sirven para validar el proceso de migración antes de tocar producción.
-- **Backups Veeam** (`OPENBK`, repositorio único que también recibe el backup de Piedras) — es un solo destino centralizado, más simple de reapuntar que migrar cada VM productiva por separado.
+- **JOBS**: motor WebLogic (`WL12C-PROD`) y base de datos (`CLIENTES-DB2`) resuelven como dedicados a este cliente, sin compartir instancia con otros — parecería el caso más limpio para migrar sin afectar a terceros, pero todavía no se confirmó si el tráfico real de producción pasa por ahí o por el dominio alternativo (`jobs.condorwork.com.ar`) que cae en el WebLogic compartido con ABB/Boca.
+- **Capas Self Service (Docker)**: cada cliente que las usa tiene su propio set de contenedores con Postgres propio (ej. `ss_front_cefas`/`ss_back_cefas`/`ss_pg_cefas` de CEFAS), sin compartir datos con el motor clásico — se pueden mover como bloque, cliente por cliente.
+- **Ambientes de test/dev ya mapeados** (ej. `Database .44` de JOBS) — para validar el proceso de migración antes de tocar producción.
+- **Backups Veeam**: `OPENBK` recibe, según una nota de backup, también el respaldo de Piedras — más simple de reapuntar que migrar cada VM productiva por separado. Existe un segundo servidor Veeam (`VEEAM-PIEDRAS`, pese al nombre está en el sitio principal) cuyo rol no está confirmado.
 
 ## Dificultades de la migración
 

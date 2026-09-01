@@ -3647,6 +3647,31 @@
           "client": "Dominique Val S.A.",
           "code": "DVAL",
           "role": "weblogic"
+        },
+        {
+          "client": "Entidad Binacional Yacyretá",
+          "code": "EBY",
+          "role": "weblogic"
+        },
+        {
+          "client": "UIA",
+          "code": "",
+          "role": "weblogic"
+        },
+        {
+          "client": "Mafisa",
+          "code": "",
+          "role": "weblogic"
+        },
+        {
+          "client": "SIGO",
+          "code": "",
+          "role": "weblogic"
+        },
+        {
+          "client": "Tassaroli",
+          "code": "",
+          "role": "weblogic"
         }
       ],
       "uptime_days": 383,

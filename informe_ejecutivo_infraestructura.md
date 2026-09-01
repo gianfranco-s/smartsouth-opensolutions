@@ -9,8 +9,8 @@ Este documento resume el estado del relevamiento de infraestructura on-premise: 
   * el sitio físico "Piedras" (oficina separada, subred `192.168.100.x`, 15 VMs propias, host ESXi también separado).
 
 - **15 clientes identificados**: Varios comparten la misma VM de aplicación o de base de datos. Por ejemplo `WebLogic.191` sirve a **8 clientes distintos**. Cualquier cambio sobre una VM compartida tiene radio de impacto multi-cliente.
-  * ABB S.A. (ABB) — *dada de baja?*
-  * Arris de Argentina S.A. (GIAR) — *dada de baja?*
+  * ABB S.A. (ABB) — *nota de baja en disputa, evidencia técnica sugiere activo*
+  * Arris de Argentina S.A. (GIAR) — *nota de baja en disputa, evidencia técnica sugiere activo*
   * Cefas S.A. (CEFAS)
   * Club Atlético Boca Juniors (BOCA)
   * CSM Ciencia al Servicio del Movimiento S.A. (ROMAN)
@@ -73,7 +73,7 @@ Problemas puntuales:
 - **OpenRepo**: nota en vSphere confirma que no se usa (reemplazado por git) — bajo riesgo, siempre que se confirme que el código relevante ya está en el repositorio git actual.
 - **OPENWLCLI01**: clon apagado de `OPENWLPROD01`, dejado así a propósito según su propia nota — bajo riesgo, el original sigue en pie y en uso.
 - **`PiedrasWL01`**: su propia nota lo marca como WebLogic de prueba/licencia, no productivo — candidato de bajo riesgo dentro del sitio Piedras.
-- **ABB y GIAR**: marcados "de baja" en una nota de la matriz, pero el campo formal de esa misma planilla dice "mantenimiento solamente" y ambas bases siguen retenidas — **alto riesgo de pérdida de información si se dan de baja sin resolver antes esa contradicción.**
+- **ABB y GIAR — probablemente activos, no candidatos a baja**: una nota suelta de la matriz los marca "de baja", pero la evidencia técnica directa apunta en sentido contrario: el dominio de ABB (`abb.condorwork.com.ar`) figura `status: "Online"` en el NPM real de `DOCKER-DEB`, con SSL vigente y creado en 2022 (no un resabio reciente); la consola WebLogic de GIAR (`OPENWLPROD01`) respondió en vivo al acceder por TeamViewer, confirmando el proceso corriendo. Ambas bases siguen retenidas. No dar de baja ninguno sin confirmar antes con el negocio — pero la nota aislada pesa menos que el tráfico/proceso real observado.
 - **12 VMs sin rol identificado** (`infra_generic_unclear`) y el resto del sitio Piedras (13 de 15 VMs apagadas): no dar de baja ninguna sin auditar primero — al no conocerse su función, no se puede descartar que retengan datos o cumplan un rol operativo no documentado.
 - **33 VMs apagadas en el sitio principal** según `ExportList.csv`, de las cuales solo `OpenRepo` y `OPENWLCLI01` (arriba) tienen contexto suficiente para explicar por qué — el resto únicamente se muestran como apagadas en vSphere, sin auditar todavía. Detalle completo en [`vms_apagadas.md`](vms_apagadas.md).
 

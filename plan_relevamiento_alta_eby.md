@@ -2,7 +2,9 @@
 
 **Objetivo:** el mismo que [`plan_relevamiento_alta_cefas.md`](plan_relevamiento_alta_cefas.md) y [`plan_relevamiento_alta_jobs.md`](plan_relevamiento_alta_jobs.md) — entender capa por capa qué infraestructura usa un cliente (dominio → NPM → firewall/NAT → app → DB → storage) recorriéndolo de punta a punta. Pero **EBY se eligió por impacto, no por ser un caso limpio**: es el cliente que más infraestructura compartida toca de los 15, así que trazarlo obliga a abrir sesión en los servidores WebLogic multi‑inquilino del parque y deja mapeados de paso ~9 clientes más. Ya estaba como ítem 3 de Tier 1 en `PLAN.md` y tiene dos filas abiertas en la hoja Discrepancias de la matriz.
 
-**Uno de tres trazados en paralelo.** CEFAS = WL compartido + una migración de DB a medio hacer + capa Docker (Self Service). JOBS = cadena dedicada, de contraste. EBY = **máximo enredo**: cuatro ubicaciones WL candidatas a la vez y BD/WL "migrados" pero sin cierre. La receta generalizada se convalida contra los tres, no contra uno.
+**Uno de tres trazados en paralelo.** CEFAS = WL compartido + una migración de DB a medio hacer + capa Docker (Self Service). JOBS = cadena dedicada, de contraste. EBY = **máximo enredo**: arrancó con cuatro ubicaciones WL candidatas; al 1 sep 2026 los logs de NPM confirmaron que corre en producción sobre **dos motores a la vez** (`192.1.1.191` + `10.77.7.201`), el tercero (`10.77.8.201`) es un clon apagado y el cuarto (`192.1.2.54`) solo sirve ORDS. La receta generalizada se convalida contra los tres, no contra uno.
+
+**Estado al 1 sep 2026:** capas 1–3 cerradas (rutas de entrada, NPM y firewall/NAT — mismo nivel de evidencia que CEFAS/JOBS). Capas 4–7 abiertas y todas dependen de **una sola sesión SSH pendiente** a `192.1.1.191` + `10.77.7.201` + `sqlplus` a las dos DBs — ninguna sesión de este trazado tocó todavía un WebLogic (fueron todas a NPM/`DOCKER-DEB`).
 
 ## Por qué EBY (impacto sobre el resto del relevamiento)
 
@@ -36,9 +38,9 @@ De `infra/inventory.json` → `clients[EBY]`, `infra/findings.md` y `infra/topol
 
 | # | Capa | Estado (1 sep 2026) | Próximo paso |
 |---|---|---|---|
-| 1 | Dominio de entrada | **Casi resuelto (1 sep 2026).** `DOCKER-DEB` tiene **9 proxy hosts** EBY/Yacyretá (no 3‑4), leídos de la tabla `proxy_host` real + confirmados contra los access logs de NPM. Dos rutas Forms **en producción viva y concurrente**: `yacyreta.condorwork.com.ar` → `192.1.1.191:80` (WebLogic.191) y `eby-prod.condorwork.com.ar` → `10.77.7.201:9001` (OPENWLPROD01), ambas con ~1.5M req 200 y tráfico del mismo día. `ords-eby.open.com.ar` → `192.1.2.54:7010` en uso real. `ebyprod.open.com.ar` → `10.77.8.201` muerto (solo 502 + scanners). `eby-qa` y `ords-ebyqa` → 0 tráfico. Detalle y tabla completa abajo (§ *Capa 1 — rutas de entrada*). | (a) Revisar `OPENDOCKER04` y `VM-DOCKER-Clientes (1)` — los 2 NPM sin transcribir. (b) Re-dump completo de `proxy_host` de `DOCKER-DEB` (`count(*) = 101`, la transcripción tiene 79). (c) Cargar bloque `entry_points` en `inventory.json` → `clients[EBY]`. |
-| 2 | Nginx Proxy Manager | **Parcial.** Los 4 dominios salen del NPM de `DOCKER-DEB` (`192.1.1.37:81`), ya transcripto entero. `VM-DOCKER-Clientes` (`192.1.1.38:81`, 9 proxy hosts ya transcriptos) no muestra entrada EBY — reconfirmar. | Verificar en `OPENDOCKER04` y el 4º NPM que no haya otra ruta EBY. |
-| 3 | Firewall / NAT | **Parcial.** Web entra por el NAT genérico de los NPM (`200.55.243.94:80/443` → `192.1.1.37`, ruteo por Host header — mismo patrón que CEFAS/JOBS). Oracle: regla `acceso YACYRETA` → `192.1.1.22:1521`, restringida por origen. | Confirmar que no hay regla NAT dedicada hacia ninguno de los 4 WL candidatos. Anotar el alias de origen de `acceso YACYRETA`. |
+| 1 | Dominio de entrada | ✅ **Resuelto (1 sep 2026).** 10 proxy hosts EBY/Yacyretá leídos de la tabla `proxy_host` real de `DOCKER-DEB` + clasificados contra los access logs (viva / muerta / test) — tabla completa abajo (§ *Capa 1 — rutas de entrada*). Dos rutas Forms en producción viva concurrente (`yacyreta.condorwork.com.ar` → `192.1.1.191:80`; `eby-prod.condorwork.com.ar` → `10.77.7.201:9001`), ORDS en `192.1.2.54:7010` y en `10.77.7.15` (`OPENDBPROD005`), `ebyprod.open.com.ar` → `10.77.8.201` muerto (VM apagada). | Ninguno bloqueante. *Completeness* (ver *Al terminar*): transcribir `OPENDOCKER04` + `VM-DOCKER-Clientes (1)`, reconciliar `proxy_hosts.csv` a 101, cargar `entry_points` en `inventory.json`. |
+| 2 | Nginx Proxy Manager | ✅ **Resuelto (1 sep 2026).** El NPM de EBY es `DOCKER-DEB` (`192.1.1.37:81`) — las 10 rutas están en su MariaDB interna. `VM-DOCKER-Clientes` (`192.1.1.38`, 9 proxy hosts ya transcriptos para CEFAS) no tiene ninguna entrada EBY. | *Completeness*: confirmar que `OPENDOCKER04` / `VM-DOCKER-Clientes (1)` tampoco tienen rutas EBY (ambos responden en `:81` desde `DOCKER-DEB`). |
+| 3 | Firewall / NAT | ✅ **Resuelto, sin regla dedicada (1 sep 2026).** Mismo patrón que CEFAS/JOBS: la web de EBY entra por el NAT genérico de `DOCKER-DEB` (`200.55.243.94:80/443` → `192.1.1.37`), ruteo por Host header dentro del NPM. `FWOPEN` (46 reglas, tabla completa en `inventory.json`) no tiene NAT web hacia ningún WL. Única regla EBY-específica: `acceso YACYRETA` → `192.1.1.22:1521` (Oracle, restringida por origen). | Ninguno. |
 | 4 | App — motor clásico | **Parcial (1 sep 2026) — media pregunta ya respondida por los logs de NPM.** EBY corre Forms en producción **en dos motores a la vez**: `192.1.1.191` (WebLogic.191, F&R 11g compartido) y `10.77.7.201` (OPENWLPROD01, compartido con GIAR). No es "uno productivo / otro legado". `192.1.2.54` solo sirve ORDS (`:7010`) + tests, no el Forms principal. Falta: entrar a los dos motores vivos y ver qué módulos `.fmx` hay desplegados en cada uno y a qué DB pega cada uno. | Sesión en `192.1.1.191` y `10.77.7.201` (orden abajo). En cada uno: `formsweb.cfg` / config de EBY, managed server, y `netstat` a `:1521/:1525` para la DB. `192.1.2.54` sigue valiendo la visita pero por ABB/BOCA, no por EBY. |
 | 5 | App — capa Docker / reportes | **Abierto.** Matriz: Jasper `Sí`, Discoverer `Sí`, Self Service en blanco. | Buscar instancia Jasper de EBY (patrón `*jasper.condorwork.com.ar` → `OPENDOCKER01`, como `cefasjasper`/`jobsjasper`). Buscar contenedores `ss_*_yacyreta` en los hosts Docker por si el compose `yacyreta-sfd` sigue vivo (probable legado). |
 | 6 | Base de datos | **Parcial — origen y destino ya identificados como VMs reales.** Origen: `OPENDBPROD006` (`192.1.1.22`), SID actual `MBA` sin confirmar. **Destino: `10.77.7.15` = `OPENDBPROD005`** — VM encendida, ya en `inventory.json`, nota literal `"ebyprod"` (= SID `EBYPROD` de la matriz), con dos ORDS habilitados apuntándole (`ords-yacy` :8080, `ords-ebyqa` :8040). Falta: SID/charset exactos de ambas y si la migración ya movió tráfico. | `sqlplus` contra `192.1.1.22` **y** `10.77.7.15` (acceso interno): `SELECT name FROM v$database;`, `ps -ef \| grep pmon`, `cat /etc/oratab`. En `OPENWLPROD01` (`10.77.7.201`), `netstat -tn \| grep 1521` para ver a cuál de las dos pega hoy el Forms de EBY. |
@@ -107,20 +109,19 @@ Los logs de NPM confirman que `eby-prod.condorwork.com.ar` sirve Forms de EBY de
 - `netstat -tn | grep -E ':1521|:1525'` — a qué DB pega el Forms de EBY desde este box.
 - Mismo box que GIAR — de paso, confirmar el estado real de GIAR (¿de baja o solo mantenimiento? — Tier 1 #1).
 
-### 4. `10.77.8.201` — IP sin VM conocida (ruta NPM muerta, backend arriba)
+### 4. `10.77.8.201` = `OPENWLCLI01` — cerrado, no hace falta sesión
 
-Responde `404` en `:9001` (no refused) — hay un WLS/OHS vivo ahí, pero `ebyprod.open.com.ar` no lo usa nadie (solo 502 + scanners en el log). Baja prioridad, es un blind spot a cerrar.
+Resuelto por cruce con inventario (1 sep 2026): es el clon apagado a propósito de `OPENWLPROD01` (`state: Apagado`, nota "dejar apagada"). Por eso `ebyprod.open.com.ar` da 502. No requiere acción — la ruta NPM se puede deshabilitar cuando se limpie el NPM.
 
-- `curl -sv http://10.77.8.201:9001/forms/frmservlet` y `ssh <cuenta>@10.77.8.201` desde una VM del cluster — determinar qué es. Cruzar contra `ExportList.csv` (no está) y contra las IPs de host ESXi. Candidato: NIC secundaria de `OPENWLPROD01` (`10.77.7.201`) o VM apagada al momento del export.
+### 5. DB — origen `OPENDBPROD006` (`192.1.1.22`) y destino `OPENDBPROD005` (`10.77.7.15`)
 
-### 5. DB — `OPENDBPROD006` (`192.1.1.22`)
+Las dos son VMs reales del inventario. Falta el `sqlplus` a cada una.
 
-- Desde adentro (la regla NAT `acceso YACYRETA` está restringida por origen):
+- Desde adentro (la regla NAT `acceso YACYRETA` está restringida por origen), en **ambos** hosts:
   `sqlplus / as sysdba` → `SELECT name, open_mode FROM v$database;`
   `SELECT value FROM nls_database_parameters WHERE parameter='NLS_CHARACTERSET';` (esperado `WE8ISO8859P1`)
-- `ps -ef | grep pmon` — cuántas instancias corren y con qué SID (`MBA`? `EBYPROD`? ambas?).
-- `SELECT username, program, machine, count(*) FROM v$session WHERE username IS NOT NULL GROUP BY username, program, machine;` — si hay sesiones de la app EBY, esta es la DB productiva; cruzar `machine` con cuál de los 4 WL candidatos.
-- `nslookup 10.77.7.15` / `ping 10.77.7.15` — ¿la VM de DB destino ya existe?
+- `ps -ef | grep pmon` — SID(s) corriendo (`MBA` en el origen, `EBYPROD`/`ebyprod` en el destino).
+- En `OPENWLPROD01` (`10.77.7.201`) y `WebLogic.191` (`192.1.1.191`): `netstat -tn | grep 1521` — a cuál de las dos DBs pega hoy el Forms de EBY. Si todo va a `192.1.1.22` y nada a `10.77.7.15`, la migración no cortó (mismo patrón que CEFAS/JOBS).
 
 ## Al terminar
 

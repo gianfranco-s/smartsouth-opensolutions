@@ -68,6 +68,50 @@ vCenter no expone fecha de creación de VM en el export que tenemos, y no hay ac
 
 **`WebLogic.191` — connection refused en el puerto de consola (18 ago 2026).** A diferencia de `OPENWLPROD01`/GIAR (mismo truco de mirar la pantalla de login sin credencial, que sí respondió), `http://192.1.1.191:7001/console` no respondió nada — ni la pantalla de login. Sin diagnóstico todavía: puede ser el firewall (falta revisar la regla NAT en `FWOPEN`, ahora accesible), el proceso de WebLogic caído, o que se haya movido de IP durante la migración que la matriz menciona ("BD y WL migrados", sin decir a qué IP). No asumir que el servidor está muerto sin revisar la regla NAT primero.
 
+**JOBS — versión de WebLogic confirmada, y `WL12C-PROD` es Forms & Reports, no JavaEE puro (1 sep 2026).** Acceso SSH real a `WL12C-PROD` (`192.1.1.1`). `http://192.1.1.1:7001/console/login/LoginForm.jsp` muestra "Versión de WebLogic Server: **12.2.1.4.0**" — cierra la fila JOBS de la tabla de Discrepancias: la fuente funcional (WL 12) tenía razón, el inventario técnico (11) estaba desactualizado, mismo patrón que ya se vio con GIAR. `sudo ss -tlnp` mapeó 4 puertos ya conocidos por NPM más dos sin identificar (`8003`, `9002`), y procesos `frmweb`/`rwserver` — misma firma que `WebLogic.191` (CEFAS). `ps -fp <pids>` + `ps -ef | grep java | grep -o -- '-Dweblogic.Name=[^ ]*'` cerró la duda: dominio **`base_domain`** (distinto nombre del `ClassicDomain` de CEFAS, pero mismo tipo de producto — Oracle Forms & Reports 12c, confirmado también por los paths `config/fmwconfig/`, `reports_12.2.1/`, `jps-config.xml` propios de un dominio FMW/JRF). Managed servers identificados uno por uno:
+
+| Puerto | Managed server | Rol |
+|---|---|---|
+| `7001` | `AdminServer` | Consola de administración |
+| `9001` | `WLS_FORMS1` | Motor Forms — sirve `enerflex.condorwork.com.ar` y `jobsprod.condorwork.com.ar` |
+| `9002` | `WLS_REPORTS1` | Motor Reports (antes sin identificar) |
+| `8003` | `ORDS-Enerflex` | ORDS dedicado a Enerflex (antes sin identificar) |
+| `8002` | `ORDS-Jobs` | ORDS dedicado a JOBS — ya conocido (`ords-jobs.open.com.ar`) |
+| `8001` | `ORDS-Open` | ORDS — ya conocido (`ords-open.open.com.ar`), sin cliente específico |
+| `7574` | (Node Manager) | Proceso liviano (`-Xmx200m`, `coherence.home`), sin `-Dweblogic.Name` propio |
+
+Cierra los dos puertos que habían quedado sin mapear. `netstat -tn | grep -E ':1521|:1525'` mostró conexiones `ESTABLISHED` **simultáneas a tres DBs**: mayoría a `192.1.1.51:1521` (`CLIENTES-DB2`, lo que dice la matriz), varias a `192.1.1.32:1521`/`1525` (coincide con la nota cruda "db de WL en 1.32" y con `ora_pmon_wl12prod` ya visto ahí), y algunas a `192.1.1.24:1521`/`1525` (`Database-24`, hostname `opendb`, con un schema `OPEN:Y` activo en sus notas de vCenter — encaja con que sea el destino de `ORDS-Open`). No es "una DB u otra": el dominio entero usa las tres, aparentemente una por rol. `sudo netstat -tnp | grep -E ':1521|:1525'` (1 sep 2026) cerró la asignación exacta por PID:
+
+| Managed server | PID | DB(s) |
+|---|---|---|
+| `AdminServer` | 2034 | `.51` y `.32` |
+| `WLS_FORMS1` | 2331 | `.51` y `.32` |
+| `WLS_REPORTS1` | 2344 | `.51` y `.32` |
+| `ORDS-Jobs` | 2209 | solo `.51` |
+| `ORDS-Enerflex` | 2146 | `.51`, `.32` y `.24` |
+| `ORDS-Open` | 2398 | `.51` y `.24` |
+| `frmweb`/`rwserver` (workers de sesión Forms/Reports) | varios | mayoría `.51`, algunos `.32`; `rwserver` → `.24` |
+
+Confirma el patrón: **`192.1.1.51` (`CLIENTES-DB2`) es la DB de datos de negocio real** de Enerflex/JOBS — la usan todos los procesos, `ORDS-Jobs` en exclusiva. Coincide con lo que decía la matriz. **`192.1.1.32` (`CLIENTES-DB`) es el schema propio del dominio** (`AdminServer` + los dos motores clásicos) — coincide con la nota cruda "db de WL en 1.32" y con `ora_pmon_wl12prod`. **`192.1.1.24` (schema `OPEN`)** la tocan `ORDS-Open` y `ORDS-Enerflex` — consistente con ser infraestructura compartida, no datos de un cliente puntual. Cierra capa 4 y 6 de `plan_relevamiento_alta_jobs.md` — sin pasos pendientes en esa VM.
+
+**JOBS — las dos rutas de entrada están vivas a la vez, ninguna es legacy (1 sep 2026).** `jobsprod.condorwork.com.ar` (dedicado, `192.1.1.1:9001`) y `jobs.condorwork.com.ar` (compartido con ABB/Boca, `192.1.2.54:9001`) tenían sesión Forms activa **en simultáneo** al momento de revisar, cada una con un cliente/IP distinto (`jobsprod`: `181.94.246.158`; `jobs`: `181.91.85.168`) — no es dedicado-real/compartido-legacy como se sospechaba. Confirmado por los access logs de NPM en `DOCKER-DEB` (contenedor `ssl-app-1`). **Gotcha de esta VM:** usa MariaDB como backend (contenedor `ssl-db-1`, credenciales `npm`/`npm`, hay que forzar `-h127.0.0.1` porque por socket/`localhost` da `Access denied`) en vez del `sqlite` que usan otras instancias de NPM del proyecto — y el nombre de archivo `proxy_host-<N>.log` **no coincide** con el `id` de la tabla `proxy_host` (probablemente por hosts borrados/recreados en algún momento). Para ubicar el log real de un dominio hay que buscarlo por contenido, no asumir el número: `find /data/logs -name "proxy_host-*.log" -exec grep -l "<dominio>" {} \;`. Abre una pregunta nueva, sin resolver: **quiénes son los dos usuarios/clientes reales detrás de cada ruta** — no necesariamente los mismos.
+
+Evidencia concreta (verificada, 1 sep 2026, ~17:28 UTC):
+
+```
+# jobsprod.condorwork.com.ar -> 192.1.1.1:9001 (proxy_host-51.log)
+[01/Sep/2026:17:28:08 +0000] - 200 200 - POST http jobsprod.condorwork.com.ar "/forms/lservlet;jsessionid=Mj9dFwOFJbSQ8chhU0u2OG6DXXZA1RMDgvbgz2CVqtqOor7hWLbI!-1231080922" [Client 181.94.246.158] [Sent-to 192.1.1.1] "Mozilla/4.0 (Windows 11 10.0)/1.8.0_471"
+
+# jobs.condorwork.com.ar -> 192.1.2.54:9001 (proxy_host-42.log)
+[01/Sep/2026:17:24:12 +0000] - 200 200 - POST http jobs.condorwork.com.ar "/forms/lservlet;jsessionid=RQ1FynM9jQBpyjHH7VyJsg1pr_nnaUe1a1JvsdFOOYnNBBXSS8-r!2090724003" [Client 181.91.85.168] [Sent-to 192.1.2.54] "Java/1.8.0_121"
+```
+
+Dos IPs cliente distintas (`181.94.246.158` vs `181.91.85.168`), dos `jsessionid` distintos, dos backends distintos, con actividad a minutos de diferencia entre sí en la misma ventana de revisión — descarta que sea el mismo usuario probando las dos rutas.
+
+**JOBS — capa Docker/reportes confirmada, patrón distinto de CEFAS (1 sep 2026).** `sudo docker ps` en `OPENDOCKER01` (`192.1.1.110`): JOBS solo tiene `jasper-jobs-jasperreports-1` (`:8098`, coincide con `jobsjasper.condorwork.com.ar`) más su propia `jasper-jobs-mariadb-1` — sin contenedores frontend/backend dedicados. Confirma la hipótesis de `plan_relevamiento_alta_jobs.md`: el patrón de JOBS es "motor clásico (Forms) + reportes", sin capa web/Docker propia, a diferencia de CEFAS (que sí tiene `ss_front_cefas`/`ss_back_cefas` para Self Service). El resto de los 7 contenedores del host es infraestructura genérica de "Open" (`jasper-open-release-*`, `cont_condor_new`, `cont_open_com_ar2`), sin cliente específico identificado todavía. Cierra capa 5 — JOBS queda con las 7 capas del trazado completas, igual que CEFAS.
+
+**JOBS/Enerflex — SIDs reales confirmados vía `tnsnames.ora` (1 sep 2026).** Como Forms no usa datasources de WebLogic (ver hallazgo anterior), el SID real vive en `/u01/app/oracle/product/12.2.1/network/admin/tnsnames.ora` de `WL12C-PROD`, no en `config/jdbc/`. Cuatro entradas TNS: `JOBS` → `192.1.1.51:1521`, `SERVICE_NAME=JOBS` (coincide exacto con `matrix_detail.sid_actual` de JOBS); `ENERFLEX` → `192.1.1.51:1521`, `SERVICE_NAME=enerflex` (coincide con `matrix_detail.sid_actual="ENERFLEX"` de Enerflex, salvo mayúscula/minúscula — Oracle no distingue ahí, no es una discrepancia real); `OPEN` → `192.1.1.24:1521`, `SERVICE_NAME=OPEN` (cierra la identidad de `Database-24`/`opendb`); y **`ENERFLEX_TEST`** → mismo host `.51` — un ambiente de test de Enerflex sin documentar hasta ahora en ningún material fuente. Cierra por completo el trazado punta a punta de JOBS (las 7 capas) y deja a Enerflex con su DB también confirmada de punta a punta.
+
 **Otra confirmación de que la columna `Notas` mezcla contenido entre VMs (18 ago 2026).** `OPENWLPROD01` tiene, entre sus notas, el mismo fragmento "CEFAS... test weblogix simple licence. 12.2.1.19 y db 23ia" que ya habíamos marcado como sospechoso en `OPENWLCLI01` (ítem 4 de "Todavía abierto", más abajo) y en `PiedrasWL01` — ahora aparece en un **tercer** VM no relacionado. Refuerza que estos tres fragmentos de nota son contaminación entre celdas, no datos propios de cada VM — no leer "CEFAS" en la nota de `OPENWLPROD01` como evidencia de que el WL de CEFAS vive ahí.
 
 **"Piedras" — confirmado como sitio real (18 ago 2026).** Dos vías independientes el mismo día: una sesión de TeamViewer activa dentro de un host Windows en `192.168.100.165/24` (gateway `192.168.100.254`) — exactamente el subnet del dashboard pfSense "Open - Piedras" (`192.168.100.1`) que había quedado como "no responde" en el relevamiento manual de firewalls — y un export de vCenter propio del sitio, `ExportList-Piedras-Full.csv`, que confirma un tercer host ESXi (`192.168.100.4`, distinto tanto del cluster principal `192.1.1.x` como del segundo host `192.1.3.252`) con 15 VMs propias. El host Windows resultó ser una de esas 15 VMs (`Win10-Piedras`, IP y hostname `DESKTOP-RK7PGB6` coinciden exacto con el export). Detalle completo en `infra/inventory.json` → `meta.piedras_site` / `vms[].site == "Piedras"`, y tabla resumen en `infra/topology.md` §3.
@@ -132,7 +176,6 @@ La hoja "Discrepancias" de la matriz es el propio equipo de Open detectando conf
 | Cliente | Tema | Dice la fuente funcional | Dice el inventario técnico |
 |---|---|---|---|
 | ROMAN (CSM) | Versión de WebLogic | WL 11 | 10 |
-| JOBS | Versión de WebLogic | WL 12 | 11 |
 | ABB | DB actual | `192.1.1.31` / SID ABB | `192.1.1.31` y `192.1.1.190` (dos IPs) |
 | CEFAS | SID | CEFASPDB | CEFAS |
 | BOCA | SID | BOCAPDB | BOCA |
@@ -140,6 +183,8 @@ La hoja "Discrepancias" de la matriz es el propio equipo de Open detectando conf
 | Enerflex | Charset | `WE8ISO8859P15` | sin verificar — marcado como posible error de tipeo |
 
 El documento explícitamente **no** eligió un valor por sobre el otro cuando las fuentes no coincidían — la misma política que debería seguir este proyecto. Ver `clients[].matrix_detail` en inventory.json para el detalle completo por cliente (SID, versión/edición/tamaño/charset de DB, destino de migración, qué productos Condor usa cada cliente).
+
+**JOBS resuelto (1 sep 2026):** la versión real es **12.2.1.4.0**, confirmada en la pantalla de login de la consola WebLogic — la fuente funcional (WL 12) tenía razón, mismo patrón que GIAR. Ver "Resueltos / confirmados" arriba.
 
 ## Todavía abierto
 

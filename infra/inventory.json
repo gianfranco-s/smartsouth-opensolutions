@@ -2420,7 +2420,13 @@
         "172.18.0.1"
       ],
       "category": "docker_host_confirmed",
-      "used_by_clients": [],
+      "used_by_clients": [
+        {
+          "client": "Jobs Servicios de Recursos Humanos SRL",
+          "code": "JOBS",
+          "role": "jasper"
+        }
+      ],
       "docker_detail": {
         "portainer_status": "Sí (self-managed via Portainer at :9000)",
         "containers_total": 16,
@@ -2433,7 +2439,17 @@
           "Portainer"
         ],
         "runs_nginx_proxy_manager": false,
-        "notes": "High docker storage utilization. Confirm which instances are still in use before touching."
+        "notes": "High docker storage utilization. Confirm which instances are still in use before touching.",
+        "containers_confirmed_live": [
+          {"name": "jasper-jobs-jasperreports-1", "port": "8098->8080", "note": "JOBS -- coincide con jobsjasper.condorwork.com.ar"},
+          {"name": "jasper-jobs-mariadb-1", "port": "3306 (interno)", "note": "DB propia del Jasper de JOBS, no CLIENTES-DB2"},
+          {"name": "jasper-open-release-jasperreports-1", "port": "8099->8080", "note": "instancia Jasper separada, sin cliente especifico -- 'open' generico"},
+          {"name": "jasper-open-release-mariadb-1", "port": "3306 (interno)", "note": "DB propia del Jasper 'open'"},
+          {"name": "cont_condor_new", "port": "8082->80", "note": "nginx, sin identificar a que dominio sirve"},
+          {"name": "cont_open_com_ar2", "port": "sin publicar", "note": "img_open_com_ar2, sin identificar"},
+          {"name": "portainer (jovial_nobel)", "port": "sin publicar en este listado", "note": "portainer-ce"}
+        ],
+        "containers_confirmed_live_date": "1 sep 2026 -- sudo docker ps, confirma capa 5 de plan_relevamiento_alta_jobs.md: JOBS solo tiene Jasper + su propia MariaDB en este host, sin frontend/backend dedicado (a diferencia de CEFAS)."
       },
       "uptime_days": 1053
     },
@@ -3910,7 +3926,7 @@
         }
       ],
       "uptime_days": 198,
-      "notes": "Maquina: Encendida\n192.1.1.1  prod enerflex jobs, db de WL en 1.32"
+      "notes": "Maquina: Encendida\n192.1.1.1  prod enerflex jobs, db de WL en 1.32\n\nConfirmado por SSH (1 sep 2026): dominio Oracle Forms & Reports 12c 'base_domain' (no 'ClassicDomain' como WebLogic.191/CEFAS, pero misma familia de producto). Managed servers: AdminServer (7001), WLS_FORMS1 (9001, Forms -- sirve enerflex.condorwork.com.ar y jobsprod.condorwork.com.ar), WLS_REPORTS1 (9002, Reports), ORDS-Enerflex (8003), ORDS-Jobs (8002, = ords-jobs.open.com.ar), ORDS-Open (8001, = ords-open.open.com.ar). Node Manager en 7574. netstat -tn muestra conexiones ESTABLISHED a tres DBs simultáneas: 192.1.1.51:1521 (mayoría), 192.1.1.32:1521/1525, 192.1.1.24:1521/1525 -- sin mapear todavía cuál managed server habla con cuál DB (falta 'sudo netstat -tnp')."
     },
     {
       "name": "OPENSHARE",
@@ -4636,7 +4652,8 @@
             "resolved_by": "name",
             "match": true
           }
-        ]
+        ],
+        "service_name_confirmed": "enerflex (confirmado en tnsnames.ora de WL12C-PROD, 1 sep 2026 -- 192.1.1.51:1521, minuscula pero equivalente al 'ENERFLEX' de matrix_detail.sid_actual, Oracle no distingue mayus/minus ahi). Tambien existe un TNS 'ENERFLEX_TEST' -> mismo host -- ambiente de test sin documentar hasta ahora."
       },
       "admin_user": "soportesmart",
       "matrix_detail": {
@@ -4797,6 +4814,7 @@
         "claimed_name": "WL12C-PROD",
         "guest_os_relevamiento": "Oracle Linux 7",
         "wl_version": "11",
+        "wl_version_resolved": "12.2.1.4.0 (confirmado en pantalla de login de consola WebLogic, http://192.1.1.1:7001/console, 1 sep 2026 -- la fuente funcional (WL 12) tenía razón, el valor técnico (11) estaba desactualizado)",
         "esxi_host_relevamiento": "192.1.1.223",
         "resolved": [
           {
@@ -4819,7 +4837,8 @@
             "resolved_by": "name",
             "match": true
           }
-        ]
+        ],
+        "service_name_confirmed": "JOBS (confirmado en tnsnames.ora de WL12C-PROD, 1 sep 2026 -- 192.1.1.51:1521, coincide con matrix_detail.sid_actual)"
       },
       "admin_user": "soportesmart",
       "matrix_detail": {

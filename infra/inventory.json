@@ -4454,7 +4454,16 @@
             "resolved_vm": "WL-CLIENTES",
             "ip": "172.18.5.40",
             "resolved_by": "name",
-            "match": true
+            "match": true,
+            "notes": "Dominios roman.condorwork.com.ar/roman.condorenterprise.com.ar -> este IP, pero DESHABILITADOS en el NPM de VM-DOCKER-Clientes (visto 19 ago 2026). Candidato a legado -- ver el otro resolved de abajo."
+          },
+          {
+            "claimed_name": null,
+            "resolved_vm": "OPENWLPROD01",
+            "ip": "10.77.7.201",
+            "resolved_by": "teamviewer",
+            "match": null,
+            "notes": "romanprod.condor.solutions / romanqa.condor.solutions -> 10.77.7.201:9001, ambos HABILITADOS en el NPM de DOCKER-DEB (re-dump 1 sep 2026) -- indica que ROMAN migro al WL compartido de OPENWLPROD01 (mismo host que EBY/GIAR). No verificado en vivo todavia (sin netstat/sesion propia de ROMAN, solo el estado enabled/disabled del NPM) -- ver findings.md 1 sep 2026."
           }
         ]
       },
@@ -4471,6 +4480,15 @@
           }
         ]
       },
+      "entry_points": [
+        {"domain": "romanprod.condor.solutions", "npm_host": "DOCKER-DEB", "forward": "10.77.7.201:9001", "enabled": true, "status": "sin_verificar", "notes": "OPENWLPROD01, habilitado -- probable ruta actual"},
+        {"domain": "romanqa.condor.solutions", "npm_host": "DOCKER-DEB", "forward": "10.77.7.201:9001", "enabled": true, "status": "sin_verificar"},
+        {"domain": "ords-roman2.open.com.ar", "npm_host": "DOCKER-DEB", "forward": "10.77.7.12:8040", "enabled": true, "status": "sin_verificar", "notes": "10.77.7.12 sin VM conocida en el inventario"},
+        {"domain": "ords-romans.open.com.ar", "npm_host": "DOCKER-DEB", "forward": "200.55.243.116:2235", "enabled": false, "status": "deshabilitado"},
+        {"domain": "roman.condorwork.com.ar", "npm_host": "VM-DOCKER-Clientes", "forward": "172.18.5.40:80", "enabled": false, "status": "deshabilitado", "notes": "ruta legada, WL-CLIENTES"},
+        {"domain": "roman.condorenterprise.com.ar", "npm_host": "VM-DOCKER-Clientes", "forward": "172.18.5.40:80", "enabled": false, "status": "deshabilitado"}
+      ],
+      "entry_points_note": "Fuente: re-dump proxy_host de DOCKER-DEB (1 sep 2026) + transcripcion previa de VM-DOCKER-Clientes. Patron enabled/disabled sugiere migracion a OPENWLPROD01, sin confirmar en vivo (sesion pendiente).",
       "admin_user": "soportesmart",
       "matrix_detail": {
         "sid_actual": "TEST / romanstest",
@@ -4760,7 +4778,24 @@
             "resolved_vm": "WL12C-Desarrollo.2.54",
             "ip": "192.1.2.54",
             "resolved_by": "name",
-            "match": true
+            "match": true,
+            "notes": "Solo sirve ORDS (ords-eby.open.com.ar :7010) y entornos test para EBY -- no el motor Forms principal (ver los dos resolved_by:teamviewer de abajo)."
+          },
+          {
+            "claimed_name": null,
+            "resolved_vm": "WebLogic.191",
+            "ip": "192.1.1.191",
+            "resolved_by": "teamviewer",
+            "match": null,
+            "notes": "Motor Forms productivo confirmado 1 sep 2026 via access log de NPM (DOCKER-DEB) -- yacyreta.condorwork.com.ar, ~1.60M req 200, trafico del mismo dia. Compartido con CEFAS/DVAL/UIA/Mafisa/SIGO/DCViajes/Tassaroli."
+          },
+          {
+            "claimed_name": null,
+            "resolved_vm": "OPENWLPROD01",
+            "ip": "10.77.7.201",
+            "resolved_by": "teamviewer",
+            "match": null,
+            "notes": "Segundo motor Forms productivo confirmado 1 sep 2026 via access log de NPM -- eby-prod.condorwork.com.ar, ~1.45M req 200, concurrente con WebLogic.191 (no dedicado-vivo/compartido-legacy). Compartido con GIAR y ROMAN. [2 sep 2026] SSH+sudo(ALL) confirmados: dominio base_domain, Forms & Reports 12.2.1, /u01/app/oracle/product/12.2.1/user_projects/domains/base_domain (mismo estilo que WL12C-PROD/JOBS). netstat: 3/3 conexiones Oracle reales van a 10.77.7.15 (OPENDBPROD005), cero a .22/.90. 3 archivos de ambiente dedicados encontrados: ebyprod.env, ebyqa.env, ebyaudit.env bajo formsapp_12.2.1/config -- deployment real confirmado, pendiente leer ORACLE_SID/TWO_TASK."
           }
         ]
       },
@@ -4773,10 +4808,40 @@
             "resolved_vm": "OPENDBPROD006",
             "ip": "192.1.1.22",
             "resolved_by": "ip",
-            "match": false
+            "match": false,
+            "notes": "DB 'reclamada' segun CSV de Relevamiento. netstat en vivo desde WebLogic.191 (1 sep 2026) mostro 0 conexiones activas hacia esta IP. Acceso SSH bloqueado por credencial (soportesmart rechazada) -- sin confirmar directamente, ver QUESTIONS.md."
+          },
+          {
+            "claimed_name": null,
+            "resolved_vm": "Database .90",
+            "ip": "192.1.1.90",
+            "resolved_by": "teamviewer",
+            "match": null,
+            "notes": "Candidata mas fuerte a DB real de EBY: 14/18 (78%) de las conexiones Oracle activas de WebLogic.191 van aca (netstat 1 sep 2026), contra 0 a OPENDBPROD006. Sin cliente asignado previamente en el inventario. Acceso SSH bloqueado por credencial -- sin confirmar por sqlplus, ver QUESTIONS.md."
+          },
+          {
+            "claimed_name": null,
+            "resolved_vm": "OPENDBPROD005",
+            "ip": "10.77.7.15",
+            "resolved_by": "teamviewer",
+            "match": null,
+            "notes": "Destino de migracion (matriz: ip_db_destino=10.77.7.15, sid_nuevo=EBYPROD). VM encendida, nota de vCenter literal 'ebyprod'. Dos ORDS de NPM habilitados apuntandole (ords-yacy.open.com.ar :8080, ords-ebyqa.open.com.ar :8040) pero 0 trafico en sus access logs. Acceso SSH directo a esta VM bloqueado por credencial, sin confirmar por sqlplus. [2 sep 2026] Evidencia de red desde OPENWLPROD01 (netstat, 3/3 conexiones reales) confirma trafico Oracle activo y sostenido hacia esta IP -- la migracion parece ya cortada para el stack eby-prod/OPENWLPROD01, contradice la lectura anterior basada solo en logs de NPM. Confirmacion final pendiente de leer ORACLE_SID/TWO_TASK en ebyprod.env (ver weblogic.resolved de OPENWLPROD01)."
           }
         ]
       },
+      "entry_points": [
+        {"domain": "yacyreta.condorwork.com.ar", "npm_host": "DOCKER-DEB", "forward": "192.1.1.191:80", "enabled": true, "status": "produccion_viva", "notes": "1.60M req 200, ultima req 1 sep 2026 17:32, Forms /forms/lservlet"},
+        {"domain": "eby-prod.condorwork.com.ar", "npm_host": "DOCKER-DEB", "forward": "10.77.7.201:9001", "enabled": true, "status": "produccion_viva", "notes": "1.45M req 200, ultima req 1 sep 2026 17:48, Forms, concurrente con yacyreta"},
+        {"domain": "ords-eby.open.com.ar", "npm_host": "DOCKER-DEB", "forward": "192.1.2.54:7010", "enabled": true, "status": "en_uso", "notes": "44.5k req 200, IPs de cliente coinciden con las de EBY"},
+        {"domain": "ords-yacy.open.com.ar", "npm_host": "DOCKER-DEB", "forward": "10.77.7.15:8080", "enabled": true, "status": "sin_verificar", "notes": "apunta a OPENDBPROD005 (destino de migracion)"},
+        {"domain": "ords-ebyqa.open.com.ar", "npm_host": "DOCKER-DEB", "forward": "10.77.7.15:8040", "enabled": true, "status": "sin_trafico", "notes": "apunta a OPENDBPROD005, sin archivo de log"},
+        {"domain": "ebyprod.open.com.ar", "npm_host": "DOCKER-DEB", "forward": "10.77.8.201:9001", "enabled": true, "status": "muerto", "notes": "apunta a OPENWLCLI01, clon apagado a proposito de OPENWLPROD01"},
+        {"domain": "eby-qa.condorwork.com.ar", "npm_host": "DOCKER-DEB", "forward": "10.77.7.201:9001", "enabled": true, "status": "sin_trafico", "notes": "sin archivo de log"},
+        {"domain": "yacyretatest.condorwork.com.ar", "npm_host": "DOCKER-DEB", "forward": "192.1.2.54:9002", "enabled": true, "status": "test"},
+        {"domain": "yacyretatest.condorwork.com.ar:9002", "npm_host": "DOCKER-DEB", "forward": "192.1.2.54:9002", "enabled": true, "status": "test"},
+        {"domain": "yacyretatest.condor.com.ar", "npm_host": "DOCKER-DEB", "forward": "200.55.243.91:443", "enabled": true, "status": "test"}
+      ],
+      "entry_points_note": "Fuente: proxy_host real de DOCKER-DEB (1 sep 2026, DOCKER-DEB-NginxProxyManager/dockerdeb_proxy_host_2026-09-01.tsv) + access logs de NPM. Pendiente confirmar que OPENDOCKER04 y VM-DOCKER-Clientes (1) (los 2 NPM sin transcribir) no tengan rutas EBY adicionales.",
       "admin_user": "soportesmart",
       "matrix_detail": {
         "sid_actual": "MBA",
@@ -4799,7 +4864,7 @@
           "MicroStrategy": ""
         },
         "observaciones": "BD y WL migrados; falta actualizar la base mediante import, configurar VPN del cliente y revisar FSAL.",
-        "validacion_pendiente": "Confirmar si el WL actual es realmente de desarrollo y validar la nueva VM DB ya creada."
+        "validacion_pendiente": "Confirmar si el WL actual es realmente de desarrollo y validar la nueva VM DB ya creada. [1 sep 2026] Capas 1-3 y 7 del trazado punta a punta cerradas (ver plan_relevamiento_alta_eby.md); capa 4 (motor clasico) parcial -- corre en paralelo en WebLogic.191 y OPENWLPROD01; capa 6 (DB) bloqueada por credencial SSH en los 3 hosts de DB candidatos (Database .90, OPENDBPROD006, OPENDBPROD005) -- ver QUESTIONS.md."
       },
       "source": [
         "Relevamiento (sin claves) - VM Linux.csv",

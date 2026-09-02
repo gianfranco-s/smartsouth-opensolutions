@@ -41,10 +41,10 @@ De `infra/inventory.json` → `clients[EBY]`, `infra/findings.md` y `infra/topol
 | 1 | Dominio de entrada | ✅ **Resuelto (1 sep 2026).** 10 proxy hosts EBY/Yacyretá leídos de la tabla `proxy_host` real de `DOCKER-DEB` + clasificados contra los access logs (viva / muerta / test) — tabla completa abajo (§ *Capa 1 — rutas de entrada*). Dos rutas Forms en producción viva concurrente (`yacyreta.condorwork.com.ar` → `192.1.1.191:80`; `eby-prod.condorwork.com.ar` → `10.77.7.201:9001`), ORDS en `192.1.2.54:7010` y en `10.77.7.15` (`OPENDBPROD005`), `ebyprod.open.com.ar` → `10.77.8.201` muerto (VM apagada). | Ninguno bloqueante. *Completeness* (ver *Al terminar*): transcribir `OPENDOCKER04` + `VM-DOCKER-Clientes (1)`, reconciliar `proxy_hosts.csv` a 101, cargar `entry_points` en `inventory.json`. |
 | 2 | Nginx Proxy Manager | ✅ **Resuelto (1 sep 2026).** El NPM de EBY es `DOCKER-DEB` (`192.1.1.37:81`) — las 10 rutas están en su MariaDB interna. `VM-DOCKER-Clientes` (`192.1.1.38`, 9 proxy hosts ya transcriptos para CEFAS) no tiene ninguna entrada EBY. | *Completeness*: confirmar que `OPENDOCKER04` / `VM-DOCKER-Clientes (1)` tampoco tienen rutas EBY (ambos responden en `:81` desde `DOCKER-DEB`). |
 | 3 | Firewall / NAT | ✅ **Resuelto, sin regla dedicada (1 sep 2026).** Mismo patrón que CEFAS/JOBS: la web de EBY entra por el NAT genérico de `DOCKER-DEB` (`200.55.243.94:80/443` → `192.1.1.37`), ruteo por Host header dentro del NPM. `FWOPEN` (46 reglas, tabla completa en `inventory.json`) no tiene NAT web hacia ningún WL. Única regla EBY-específica: `acceso YACYRETA` → `192.1.1.22:1521` (Oracle, restringida por origen). | Ninguno. |
-| 4 | App — motor clásico | **Parcial (1 sep 2026) — media pregunta ya respondida por los logs de NPM.** EBY corre Forms en producción **en dos motores a la vez**: `192.1.1.191` (WebLogic.191, F&R 11g compartido) y `10.77.7.201` (OPENWLPROD01, compartido con GIAR). No es "uno productivo / otro legado". `192.1.2.54` solo sirve ORDS (`:7010`) + tests, no el Forms principal. Falta: entrar a los dos motores vivos y ver qué módulos `.fmx` hay desplegados en cada uno y a qué DB pega cada uno. | Sesión en `192.1.1.191` y `10.77.7.201` (orden abajo). En cada uno: `formsweb.cfg` / config de EBY, managed server, y `netstat` a `:1521/:1525` para la DB. `192.1.2.54` sigue valiendo la visita pero por ABB/BOCA, no por EBY. |
-| 5 | App — capa Docker / reportes | **Abierto.** Matriz: Jasper `Sí`, Discoverer `Sí`, Self Service en blanco. | Buscar instancia Jasper de EBY (patrón `*jasper.condorwork.com.ar` → `OPENDOCKER01`, como `cefasjasper`/`jobsjasper`). Buscar contenedores `ss_*_yacyreta` en los hosts Docker por si el compose `yacyreta-sfd` sigue vivo (probable legado). |
-| 6 | Base de datos | **Parcial — origen y destino ya identificados como VMs reales.** Origen: `OPENDBPROD006` (`192.1.1.22`), SID actual `MBA` sin confirmar. **Destino: `10.77.7.15` = `OPENDBPROD005`** — VM encendida, ya en `inventory.json`, nota literal `"ebyprod"` (= SID `EBYPROD` de la matriz), con dos ORDS habilitados apuntándole (`ords-yacy` :8080, `ords-ebyqa` :8040). Falta: SID/charset exactos de ambas y si la migración ya movió tráfico. | `sqlplus` contra `192.1.1.22` **y** `10.77.7.15` (acceso interno): `SELECT name FROM v$database;`, `ps -ef \| grep pmon`, `cat /etc/oratab`. En `OPENWLPROD01` (`10.77.7.201`), `netstat -tn \| grep 1521` para ver a cuál de las dos pega hoy el Forms de EBY. |
-| 7 | Almacenamiento / object store | **Abierto / probablemente no aplica.** Solo relevante si aparece un `ss_back_yacyreta` con `uploadPath` (capa 5). | Si aparece: leer su `uploadPath` y cruzar con `mount` / `/etc/fstab` del host — mismo patrón que el NFS `192.1.1.191:/clientes/cefas/cdr2/condorlink` de CEFAS. Buscar un `/clientes/yacyreta/...` en `WebLogic.191`. |
+| 4 | App — motor clásico | **Parcial (2 sep 2026), avanzando fuerte.** EBY corre Forms en producción **en dos motores a la vez**: `192.1.1.191` (WebLogic.191, F&R 11g, dominio `ClassicDomain`) y `10.77.7.201` (OPENWLPROD01, F&R **12.2.1**, dominio **`base_domain`** en `/u01/app/oracle/product/12.2.1/user_projects/domains/base_domain` — mismo estilo de instalación que `WL12C-PROD`/JOBS, distinto del `ClassicDomain` de `.191`). En `OPENWLPROD01`, a diferencia de `.191`, **`soportesmart` tiene `sudo (ALL) ALL`** — sin el permission wall que bloqueó capa 4 ahí. `sudo grep -ril eby/yacyret` encontró **tres archivos de ambiente dedicados a EBY**: `ebyprod.env`, `ebyqa.env`, `ebyaudit.env` bajo `.../formsapp_12.2.1/config/` — confirma un deployment real y deliberado (prod/qa/audit), no una mención de paso. Falta leer su `ORACLE_SID`/`TWO_TASK` y las secciones de `formsweb.cfg`/`tnsnames.ora`. | Leer `ebyprod.env`/`ebyqa.env`/`ebyaudit.env` (`ORACLE_SID`/`TWO_TASK` — puede cerrar capa 4 y 6 de un saque) y las secciones EBY de `formsweb.cfg`/`tnsnames.ora` (comandos ya dados). |
+| 5 | App — capa Docker / reportes | **Abierto, pero baja probabilidad.** Matriz: Jasper `Sí`, Discoverer `Sí`, Self Service en blanco. El `ls -la /clientes/` de capa 7 (abajo) no mostró ninguna carpeta EBY/Yacyretá — refuerza que EBY no tiene la capa Docker/Self Service que sí tiene CEFAS. | Buscar instancia Jasper de EBY (patrón `*jasper.condorwork.com.ar` → `OPENDOCKER01`, como `cefasjasper`/`jobsjasper`) — es lo único que queda por confirmar. Contenedores `ss_*_yacyreta`: baja prioridad tras el resultado de capa 7. |
+| 6 | Base de datos | **Parcial — bloqueada por credencial para verificación directa, pero con evidencia de red fuerte y limpia (2 sep 2026).** `sqlplus` sigue bloqueado: `soportesmart` rechazada por SSH en los tres hosts de DB probados (`192.1.1.90`, `192.1.1.22`/`OPENDBPROD006`, `10.77.7.15`/`OPENDBPROD005`) — anotado en `QUESTIONS.md`. Pero el `netstat` da una lectura limpia por motor: **`192.1.1.191` → mayoría a `192.1.1.90`** (`Database .90`, 14/18, sin cliente asignado); **`10.77.7.201` → el 100% (3/3 conexiones reales) a `10.77.7.15`** (`OPENDBPROD005`, nota vCenter `"ebyprod"`, SID nuevo `EBYPROD` de la matriz) — cero a `.22`/`.90` desde ahí. **Hipótesis reforzada: son dos stacks completos en paralelo**, no un motor con DB ambigua — `WebLogic.191`+`Database .90` (ruta `yacyreta`) vs `OPENWLPROD01`+`OPENDBPROD005` (ruta `eby-prod`, con archivos `.env` dedicados — ver capa 4). Coincide con la propia observación de la matriz ("BD y WL migrados; falta actualizar la base mediante import...") — la migración a `OPENWLPROD01`/`OPENDBPROD005` parece ya hecha y con tráfico real, no pendiente. | Leer `ORACLE_SID`/`TWO_TASK` en los `.env` de capa 4 — es la confirmación más fuerte posible sin necesitar la credencial de `sqlplus` bloqueada. Si coincide con `10.77.7.15`, cierra capa 6 para la ruta `eby-prod` sin más. La identidad de `Database .90` (ruta `yacyreta`) queda como pendiente aparte. |
+| 7 | Almacenamiento / object store | ✅ **Resuelto — no aplica (1 sep 2026).** `ls -la /clientes/` en `WebLogic.191` no muestra ninguna carpeta de EBY/Yacyretá (solo las de otros clientes ya conocidos, ej. `cefas`, `boca`). Sin mount NFS dedicado para EBY. Coincide con la matriz (`Self Service` en blanco para EBY) y con el resultado de capa 5. | Ninguno. Reabrir solo si capa 5 encuentra un `ss_*_yacyreta` vivo en otro host. |
 
 ## Capa 1 — rutas de entrada (detalle, 1 sep 2026)
 
@@ -95,33 +95,56 @@ Ordenado por información marginal: primero el box de cero cobertura.
 
 Los logs de NPM confirman que `yacyreta.condorwork.com.ar` sirve Forms de EBY desde acá, en producción viva. Objetivo de la sesión: qué módulos `.fmx` de EBY hay y a qué DB pegan.
 
-- `ssh -oHostKeyAlgorithms=+ssh-rsa <cuenta>@192.1.1.191`
-- `netstat -tn` agrupado por IP de origen — sesiones activas hacia EBY y hacia el resto de inquilinos (DVAL, UIA, Mafisa, SIGO, DCViajes, Tassaroli). Cada IP de cliente con conexiones = evidencia de que ese cliente está vivo acá **ahora**.
-- Si se consigue `sudo` (la vez de CEFAS no había): `formsweb.cfg` y `tnsnames.ora` bajo `Oracle_FRHome1` — mapea cada `config` de Forms a su cliente y su TNS de DB. Esto cierra capas 4 y 6 para **6 clientes de un saque**.
-- `ls -la /clientes/` — ver si hay un `/clientes/yacyreta/...` además del `/clientes/cefas/...` ya conocido (capa 7).
+- ~~`ssh -oHostKeyAlgorithms=+ssh-rsa <cuenta>@192.1.1.191`~~ ✅ hecho.
+- ~~`netstat -tn` agrupado por IP de origen~~ ✅ hecho — ver capa 6: **78% de las conexiones Oracle van a `192.1.1.90`, ninguna a `192.1.1.22`**. Hallazgo principal de esta sesión.
+- ~~`sudo` / `formsweb.cfg` / `tnsnames.ora`~~ ❌ **bloqueado sin sudo** — `soportesmart` no está en sudoers, y el árbol `/app/oracle/...` no es legible sin él (`oracle:oinstall`, sin permiso de "otros"). No reintentar sin credencial nueva.
+- ~~`ls -la /clientes/`~~ ✅ hecho — sin carpeta EBY/Yacyretá. Cierra capa 7 (no aplica).
 
-### 3. `10.77.7.201` (`OPENWLPROD01`) — **segundo motor Forms productivo de EBY confirmado**
+### 2.5. `192.1.1.90` (`Database .90`) — ❌ **bloqueada por credencial (1 sep 2026)**
 
-Los logs de NPM confirman que `eby-prod.condorwork.com.ar` sirve Forms de EBY desde acá, en producción viva y concurrente con `192.1.1.191` (§2). Ya no es "el destino de migración a validar" — está en uso.
+Domina el tráfico Oracle en vivo de `WebLogic.191` (14/18 conexiones) — sigue siendo la candidata más fuerte a DB real de EBY. Pero **`soportesmart` fue rechazada por SSH** en los tres hosts de DB probados hoy: `192.1.1.90`, `192.1.1.22` (`OPENDBPROD006`) y `10.77.7.15` (`OPENDBPROD005`). Contraste notable: la misma cuenta **sí** funciona en los hosts de aplicación/middleware (`WebLogic.191`, `OPENWLPROD01`, `192.1.2.54`, `docker-deb`) — los hosts de DB (al menos estos tres) parecen tener otro esquema de acceso, no resuelto por probar más flags de SSH. Ya no es un problema técnico — es una credencial que hay que pedir. Ver `QUESTIONS.md`.
 
-- Versión ya confirmada (`12.2.1.4.0`, ver `findings.md`); reintentar la consola.
-- **Deployments / `formsweb.cfg`** → qué app/módulos EBY hay `Active` acá, y en qué se diferencian de los de `192.1.1.191` (¿misma app en dos sitios? ¿módulos distintos? ¿migración a medias?).
-- `netstat -tn | grep -E ':1521|:1525'` — a qué DB pega el Forms de EBY desde este box.
-- Mismo box que GIAR — de paso, confirmar el estado real de GIAR (¿de baja o solo mantenimiento? — Tier 1 #1).
+```bash
+# reintentar solo si aparece una credencial nueva (SSH o Oracle):
+ssh -oHostKeyAlgorithms=+ssh-rsa <cuenta-nueva>@192.1.1.90
+ps -ef | grep pmon
+sqlplus / as sysdba
+SELECT name FROM v$database;
+SELECT username, machine, program, count(*) FROM v$session
+  WHERE username IS NOT NULL GROUP BY username, machine, program;
+```
+
+Si el SID o las sesiones dicen `EBY`/`MBA`/`YACYRETA`, o `machine=192.1.1.191`, confirma la DB real y cierra capa 6.
+
+### 3. `10.77.7.201` (`OPENWLPROD01`) — **segundo motor Forms productivo de EBY, en progreso (2 sep 2026)**
+
+Los logs de NPM confirman que `eby-prod.condorwork.com.ar` sirve Forms de EBY desde acá, en producción viva y concurrente con `192.1.1.191` (§2).
+
+- ~~Versión ya confirmada (`12.2.1.4.0`)~~ ✅. Dominio identificado: **`base_domain`**, F&R 12.2.1, `/u01/app/oracle/product/12.2.1/user_projects/domains/base_domain` (mismo estilo que `WL12C-PROD`/JOBS). Managed servers: `AdminServer`, `WLS_FORMS`, `WLS_REPORTS`.
+- ~~`netstat -tn | grep -E ':1521|:1525'`~~ ✅ — **3/3 conexiones reales van a `10.77.7.15`** (`OPENDBPROD005`), cero a `.22`/`.90`. Ver capa 6.
+- ~~`sudo`~~ ✅ funciona acá (`ALL) ALL`) — a diferencia de `192.1.1.191`. `sudo grep -ril eby/yacyret` encontró `ebyprod.env`, `ebyqa.env`, `ebyaudit.env` bajo `.../formsapp_12.2.1/config/` — deployment dedicado confirmado.
+- **Pendiente:** leer `ORACLE_SID`/`TWO_TASK` de los 3 `.env` + secciones EBY de `formsweb.cfg`/`tnsnames.ora` (comandos ya dados, en curso).
+- Mismo box que GIAR — de paso, confirmar el estado real de GIAR (¿de baja o solo mantenimiento? — Tier 1 #1). Todavía sin hacer.
 
 ### 4. `10.77.8.201` = `OPENWLCLI01` — cerrado, no hace falta sesión
 
 Resuelto por cruce con inventario (1 sep 2026): es el clon apagado a propósito de `OPENWLPROD01` (`state: Apagado`, nota "dejar apagada"). Por eso `ebyprod.open.com.ar` da 502. No requiere acción — la ruta NPM se puede deshabilitar cuando se limpie el NPM.
 
-### 5. DB — origen `OPENDBPROD006` (`192.1.1.22`) y destino `OPENDBPROD005` (`10.77.7.15`)
+### 5. DB — ❌ bloqueada por credencial (1 sep 2026)
 
-Las dos son VMs reales del inventario. Falta el `sqlplus` a cada una.
+`soportesmart` por SSH fue rechazada en los tres hosts de DB probados: `192.1.1.90` (`Database .90`), `192.1.1.22` (`OPENDBPROD006`, origen reclamado) y `10.77.7.15` (`OPENDBPROD005`, destino). No es un problema de flags/negociación SSH — la cuenta compartida no tiene acceso a estos hosts, a diferencia de los de app/middleware. Anotado en `QUESTIONS.md` como pendiente de credencial. Comandos abajo, para retomar cuando llegue una:
 
-- Desde adentro (la regla NAT `acceso YACYRETA` está restringida por origen), en **ambos** hosts:
-  `sqlplus / as sysdba` → `SELECT name, open_mode FROM v$database;`
-  `SELECT value FROM nls_database_parameters WHERE parameter='NLS_CHARACTERSET';` (esperado `WE8ISO8859P1`)
-- `ps -ef | grep pmon` — SID(s) corriendo (`MBA` en el origen, `EBYPROD`/`ebyprod` en el destino).
-- En `OPENWLPROD01` (`10.77.7.201`) y `WebLogic.191` (`192.1.1.191`): `netstat -tn | grep 1521` — a cuál de las dos DBs pega hoy el Forms de EBY. Si todo va a `192.1.1.22` y nada a `10.77.7.15`, la migración no cortó (mismo patrón que CEFAS/JOBS).
+```bash
+# en cualquiera de los 3, con credencial nueva:
+ssh -oHostKeyAlgorithms=+ssh-rsa <cuenta-nueva>@<ip>
+ps -ef | grep pmon
+sqlplus / as sysdba
+SELECT name, open_mode FROM v$database;
+SELECT value FROM nls_database_parameters WHERE parameter='NLS_CHARACTERSET';   -- esperado WE8ISO8859P1 en el origen
+SELECT username, machine, program, count(*) FROM v$session WHERE username IS NOT NULL GROUP BY username, machine, program;
+```
+
+**Mientras tanto, una lectura indirecta sin login a la DB:** `netstat -tn | grep 1521` en `10.77.7.201` (§3, capa 4) — si repite el patrón de `192.1.1.191` (mayoría a `.90`, nada a `.22`), refuerza `Database .90` como la real sin necesitar acceso a la DB misma.
 
 ## Al terminar
 

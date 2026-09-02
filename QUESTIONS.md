@@ -6,8 +6,8 @@
 
 - **¿Cuál es el proceso real para dar de alta a un cliente nuevo?** No encontramos nada que lo documente, y no hay forma de reconstruirlo entrando a un host — es puramente institucional.
 - **Confirmar el estado real de ABB y Arris/GIAR, y si hay un cronograma de retención/eliminación de sus datos.** La fuente es contradictoria: una nota informal en la matriz dice que están "de baja", pero el campo formal de estado en la misma planilla dice "Mantenimiento solamente" para ambos. Es una decisión de negocio, no algo que podamos resolver mirando un servidor.
-- **¿Qué es "Piedras"?** Ya no es solo un comentario verbal: el relevamiento de firewalls tiene una fila etiquetada "Open - Piedras" apuntando a `192.168.100.1` (un rango de IP que no aparece en ningún otro lado), pero ese dashboard no respondió durante el relevamiento. Vamos a intentar de nuevo por TeamViewer y revisar los destinos de replicación de `VEEAM-PIEDRAS` primero; preguntar solo si eso no aclara nada.
+- **Credencial para los hosts de base de datos Oracle (distinta de la de aplicación/middleware).** La cuenta compartida `soportesmart` entra por SSH a los hosts de app/middleware (`WebLogic.191`, `OPENWLPROD01`, `WL12C-Desarrollo`, `docker-deb`) pero fue **rechazada en los tres hosts de DB probados** durante el trazado de EBY (2 sep 2026): `192.1.1.90` (`Database .90`), `192.1.1.22` (`OPENDBPROD006`) y `10.77.7.15` (`OPENDBPROD005`). No parece un problema de configuración SSH (mismos ajustes de host key/KEX que sí funcionaron en otros hosts viejos) — es una cuenta distinta o un acceso no otorgado. Bloquea la capa 6 (base de datos) de `plan_relevamiento_alta_eby.md` y probablemente de cualquier cliente cuya DB no sea `CLIENTES-DB`/`CLIENTES-DB2` (las únicas dos a las que sí se pudo entrar, sin que quede documentado con qué cuenta).
 
 ## Resueltas
 
-_(ninguna todavía)_
+- **¿Qué es "Piedras"?** (18 ago 2026) Confirmado como sitio real con host ESXi propio (`192.168.100.4`) y subred `192.168.100.0/24`, vía sesión de TeamViewer activa ahí + `ExportList-Piedras-Full.csv` (15 VMs). Detalle en `infra/findings.md` y `infra/topology.md` §3.

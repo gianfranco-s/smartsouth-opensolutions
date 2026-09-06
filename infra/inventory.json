@@ -4304,7 +4304,7 @@
             "ip": "10.77.7.11",
             "resolved_by": "teamviewer",
             "match": null,
-            "notes": "[2 sep 2026] Encontrado en tnsnames.ora de OPENWLPROD01: alias PRODGIAR/QAGIAR, HOST=10.77.7.11 PORT=1521, SERVICE_NAME=prodgiar/QAGIAR. Mismo host consolidado que ya sirve a Heinlein (DB) y CEFAS (destino de migracion) -- ahora GIAR (prod+qa) y Rex Argentina (prod) tambien. Sin verificar en vivo."
+            "notes": "[2 sep 2026] Encontrado en tnsnames.ora de OPENWLPROD01: alias PRODGIAR/QAGIAR, HOST=10.77.7.11 PORT=1521, SERVICE_NAME=prodgiar/QAGIAR. Mismo host consolidado que ya sirve a Heinlein (DB) y CEFAS (destino de migracion) -- ahora GIAR (prod+qa) y Rex Argentina (prod) tambien. [6 sep 2026] v$pdbs en CDBOPEN03 (OPENDBPROD001) confirma PRODGIAR como PDB real y activa (READ WRITE). QAGIAR, en cambio, NO existe como PDB provisionada -- la QA de GIAR probablemente nunca se armo. v$session sobre PRODGIAR al momento de la consulta solo mostro sesiones SYS internas (oracle/OFSD, sqlplus) -- sin trafico de aplicacion visible en ese instante, no es evidencia de que este inactiva, solo que no se capturo una sesion de usuario en la ventana consultada. Sigue sin verificar en vivo con trafico real."
           }
         ]
       },
@@ -5109,8 +5109,8 @@
             "resolved_vm": "OL8LABWL01",
             "ip": "192.1.2.195",
             "resolved_by": "teamviewer",
-            "match": null,
-            "notes": "[1 sep 2026] Candidato sin confirmar: serzarex.condor.solutions -> 192.1.2.195:9001 (OL8LABWL01, el WL de Heinlein), HABILITADO en NPM de DOCKER-DEB. Nombre 'serzarex' sugiere Rex pero no esta confirmado -- podria ser otro cliente/app. Self Service de Rex ya conocido por separado en 192.1.1.57 (OPENDOCKER.57, SelfRex via NAT FWOPEN)."
+            "match": true,
+            "notes": "[1 sep 2026] Candidato: serzarex.condor.solutions -> 192.1.2.195:9001 (OL8LABWL01, el WL de Heinlein), HABILITADO en NPM de DOCKER-DEB. Nombre 'serzarex' sugiere Rex. Self Service de Rex ya conocido por separado en 192.1.1.57 (OPENDOCKER.57, SelfRex via NAT FWOPEN). [6 sep 2026] CONFIRMADO EN VIVO: v$session en PRODREX01 (OPENDBPROD001/CDBOPEN03) muestra sesiones frmweb reales desde ol8labwl01.localdomain con usuarios nominales (MAIETA x4, CDELISE x8, MCORREA x1) mas una sesion java@ol8labwl01.localdomain (JBRICEÑO) -- trafico real de Forms llegando desde OL8LABWL01 a esta DB. match: true de facto, cierra WL+DB de Rex Argentina como un stack confirmado (no solo candidato)."
           }
         ]
       },
@@ -5123,8 +5123,8 @@
             "resolved_vm": "OPENDBPROD001",
             "ip": "10.77.7.11",
             "resolved_by": "teamviewer",
-            "match": null,
-            "notes": "[2 sep 2026] Primer dato de DB para Rex Argentina, jamas mapeado antes. Encontrado en tnsnames.ora de OPENWLPROD01: alias PROD_REX, HOST=10.77.7.11 PORT=1521, SERVICE_NAME=PRODREX01. Mismo host consolidado que sirve a Heinlein/CEFAS(destino)/GIAR. Ver tambien el segundo candidato (PDBREXPROD) abajo -- dos alias distintos, sin confirmar cual esta realmente en uso."
+            "match": true,
+            "notes": "[2 sep 2026] Primer dato de DB para Rex Argentina, jamas mapeado antes. Encontrado en tnsnames.ora de OPENWLPROD01: alias PROD_REX, HOST=10.77.7.11 PORT=1521, SERVICE_NAME=PRODREX01. Mismo host consolidado que sirve a Heinlein/CEFAS(destino)/GIAR. Ver tambien el segundo candidato (PDBREXPROD) abajo -- dos alias distintos, sin confirmar cual esta realmente en uso. [6 sep 2026] CONFIRMADO EN VIVO: v$session sobre PRODREX01 en CDBOPEN03 muestra sesiones frmweb/java reales desde ol8labwl01.localdomain (usuarios MAIETA, CDELISE, MCORREA, JBRICEÑO) -- este es el candidato real en uso, no PDBREXPROD. match: true de facto. Ademas se encontro un segundo ambiente nuevo, QAREX01 (misma CDB), sin trafico visto en la consulta (solo sesiones SYS)."
           },
           {
             "claimed_name": null,
@@ -5132,7 +5132,15 @@
             "ip": "192.1.3.34",
             "resolved_by": "teamviewer",
             "match": null,
-            "notes": "[2 sep 2026] Segundo candidato de DB para Rex: alias PDBREXPROD en tnsnames.ora de OPENWLPROD01, HOST=192.1.3.34 PORT=1521, SERVICE_NAME=pdbrexprod ('PDB' sugiere pluggable database). Esta IP NO aparece en ExportList.csv ni en ningun export de vCenter -- VM sin identificar, en el segmento aislado 192.1.3.x (mismo rango que WL-CLIENTES/DB-GIAR/DB-ROMAN). Agregado a blind_spots."
+            "notes": "[2 sep 2026] Segundo candidato de DB para Rex: alias PDBREXPROD en tnsnames.ora de OPENWLPROD01, HOST=192.1.3.34 PORT=1521, SERVICE_NAME=pdbrexprod ('PDB' sugiere pluggable database). Esta IP NO aparece en ExportList.csv ni en ningun export de vCenter -- VM sin identificar, en el segmento aislado 192.1.3.x (mismo rango que WL-CLIENTES/DB-GIAR/DB-ROMAN). Agregado a blind_spots. [6 sep 2026] Con OPENDBPROD001/PRODREX01 ya confirmado en vivo como el destino real del trafico Forms de Rex, este candidato queda como secundario/no descartado del todo -- podria ser un ambiente aparte (backup, otro modulo) en una VM que sigue sin identificar, pero ya no es 'el candidato ambiguo', es el candidato sin trafico visto."
+          },
+          {
+            "claimed_name": null,
+            "resolved_vm": "OPENDBPROD001",
+            "ip": "10.77.7.11",
+            "resolved_by": "teamviewer",
+            "match": null,
+            "notes": "[6 sep 2026] Segundo ambiente de Rex descubierto en la misma CDB (CDBOPEN03): PDB QAREX01, confirmada real via v$pdbs (junto a PRODREX01, PRODGIAR, HEINLEIN_TEST, HEINLEIN_PROD). v$session sobre QAREX01 al momento de la consulta solo mostro sesiones SYS internas -- sin trafico de aplicacion visible en esa ventana, probable ambiente de QA con uso esporadico. No confundir con PDBREXPROD (candidato aparte, sin VM identificada, ver arriba)."
           }
         ]
       },
@@ -5147,7 +5155,7 @@
           "Enterprise": "No"
         }
       },
-      "notes": "Not present in Relevamiento CSV or ExportList.csv by name. [2 sep 2026] Primeros candidatos de WL (OL8LABWL01, sin confirmar) y DB (dos alias TNS distintos: PROD_REX/OPENDBPROD001 y PDBREXPROD/192.1.3.34 sin VM conocida) encontrados via tnsnames.ora de OPENWLPROD01 y el re-dump de NPM de DOCKER-DEB -- ninguno verificado en vivo todavia."
+      "notes": "Not present in Relevamiento CSV or ExportList.csv by name. [2 sep 2026] Primeros candidatos de WL (OL8LABWL01, sin confirmar) y DB (dos alias TNS distintos: PROD_REX/OPENDBPROD001 y PDBREXPROD/192.1.3.34 sin VM conocida) encontrados via tnsnames.ora de OPENWLPROD01 y el re-dump de NPM de DOCKER-DEB -- ninguno verificado en vivo todavia. [6 sep 2026] CONFIRMADO EN VIVO: v$session en PRODREX01 (OPENDBPROD001) muestra trafico Forms real desde OL8LABWL01 con usuarios nominales -- cierra WL+DB de Rex Argentina como stack verificado (no solo candidato por nombre/config). Bonus: segundo ambiente QAREX01 encontrado, sin trafico visto todavia. status podria pasar de 'Hosting reciente / no migrado' a confirmado activo -- a revisar con el equipo saliente."
     },
     {
       "name": "Argocean",

@@ -217,7 +217,11 @@ La hoja "Discrepancias" de la matriz es el propio equipo de Open detectando conf
 
 El documento explícitamente **no** eligió un valor por sobre el otro cuando las fuentes no coincidían — la misma política que debería seguir este proyecto. Ver `clients[].matrix_detail` en inventory.json para el detalle completo por cliente (SID, versión/edición/tamaño/charset de DB, destino de migración, qué productos Condor usa cada cliente).
 
+**CEFAS resuelto (25 ago 2026):** el SID real es **`CEFAS`**, no `CEFASPDB` — confirmado por `sqlplus`/`v$database` en `CLIENTES-DB`. Ver "Resueltos / confirmados" arriba.
+
 **JOBS resuelto (1 sep 2026):** la versión real es **12.2.1.4.0**, confirmada en la pantalla de login de la consola WebLogic — la fuente funcional (WL 12) tenía razón, mismo patrón que GIAR. Ver "Resueltos / confirmados" arriba.
+
+**EBY resuelto (2 sep 2026):** ninguna de las dos fuentes tenía la foto completa — **EBY corre en los dos motores a la vez**, no en uno solo. `WebLogic.191` (ruta `yacyreta.condorwork.com.ar`, DB compartida `Database .90`/`CDRADM`) y `OPENWLPROD01`/`10.77.7.201` (ruta `eby-prod.condorwork.com.ar`, DB `OPENDBPROD005` confirmada por `tnsnames.ora` real — alias `EBYPROD`/`EBYQA`/`EBYAUDIT`) están ambos en producción viva y concurrente. El "destino" que la fuente funcional señalaba (`10.77.7.201`) sí es real, pero no reemplazó al compartido — conviven. Ver "Resueltos / confirmados" arriba.
 
 ## Todavía abierto
 

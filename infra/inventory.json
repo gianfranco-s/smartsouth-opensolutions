@@ -4822,7 +4822,7 @@
             "ip": "192.1.1.191",
             "resolved_by": "teamviewer",
             "match": null,
-            "notes": "Motor Forms productivo confirmado 1 sep 2026 via access log de NPM (DOCKER-DEB) -- yacyreta.condorwork.com.ar, ~1.60M req 200, trafico del mismo dia. Compartido con CEFAS/DVAL/UIA/Mafisa/SIGO/DCViajes/Tassaroli."
+            "notes": "Motor Forms productivo confirmado 1 sep 2026 via access log de NPM (DOCKER-DEB) -- yacyreta.condorwork.com.ar, ~1.60M req 200, trafico del mismo dia. Compartido con CEFAS/DVAL/UIA/Mafisa/SIGO/DCViajes/Tassaroli. Oracle Forms & Reports 11g, dominio ClassicDomain (/app/oracle/mid/user_projects/domains/ClassicDomain) -- distinto del base_domain 12.2.1 de OPENWLPROD01. Sin sudo para soportesmart en este host -- no se pudo leer formsweb.cfg/tnsnames.ora especificos de EBY aca (permission wall en /app/oracle, oracle:oinstall); la DB real de esta ruta (Database .90/CDRADM, compartida) se confirmo por otra via -- ver database.resolved."
           },
           {
             "claimed_name": null,
@@ -4830,7 +4830,7 @@
             "ip": "10.77.7.201",
             "resolved_by": "teamviewer",
             "match": null,
-            "notes": "Segundo motor Forms productivo confirmado 1 sep 2026 via access log de NPM -- eby-prod.condorwork.com.ar, ~1.45M req 200, concurrente con WebLogic.191 (no dedicado-vivo/compartido-legacy). Compartido con GIAR y ROMAN. [2 sep 2026] SSH+sudo(ALL) confirmados: dominio base_domain, Forms & Reports 12.2.1, /u01/app/oracle/product/12.2.1/user_projects/domains/base_domain (mismo estilo que WL12C-PROD/JOBS). netstat: 3/3 conexiones Oracle reales van a 10.77.7.15 (OPENDBPROD005), cero a .22/.90. 3 archivos de ambiente dedicados encontrados: ebyprod.env, ebyqa.env, ebyaudit.env bajo formsapp_12.2.1/config -- deployment real confirmado, pendiente leer ORACLE_SID/TWO_TASK."
+            "notes": "Segundo motor Forms productivo confirmado 1 sep 2026 via access log de NPM -- eby-prod.condorwork.com.ar, ~1.45M req 200, concurrente con WebLogic.191 (no dedicado-vivo/compartido-legacy). Compartido con GIAR y ROMAN. [2 sep 2026] SSH+sudo(ALL) confirmados: dominio base_domain, Forms & Reports 12.2.1, /u01/app/oracle/product/12.2.1/user_projects/domains/base_domain (mismo estilo que WL12C-PROD/JOBS). netstat: 3/3 conexiones Oracle reales van a 10.77.7.15 (OPENDBPROD005), cero a .22/.90. 3 archivos de ambiente dedicados encontrados: ebyprod.env, ebyqa.env, ebyaudit.env bajo formsapp_12.2.1/config -- deployment real confirmado. [2 sep 2026] CERRADO: los .env solo setean TNS_ADMIN (sin ORACLE_SID/TWO_TASK); formsweb.cfg confirma 3 secciones reales -- [ebyprod]->/u02/clientes/ebyprod/cdr2/menues/cdr2w.fmx, [ebyqa]->.../ebyqa/..., [ebyaudit]->.../ebyaudit/... (sin userid preconfigurado, login lo tipea el usuario). tnsnames.ora del mismo dominio confirma los alias EBYPROD/EBYQA/EBYAUDIT -> 10.77.7.15:1521 -- ver database.resolved para el detalle completo."
           }
         ]
       },
@@ -4899,7 +4899,7 @@
           "MicroStrategy": ""
         },
         "observaciones": "BD y WL migrados; falta actualizar la base mediante import, configurar VPN del cliente y revisar FSAL.",
-        "validacion_pendiente": "Confirmar si el WL actual es realmente de desarrollo y validar la nueva VM DB ya creada. [1 sep 2026] Capas 1-3 y 7 del trazado punta a punta cerradas (ver plan_relevamiento_alta_eby.md); capa 4 (motor clasico) parcial -- corre en paralelo en WebLogic.191 y OPENWLPROD01; capa 6 (DB) bloqueada por credencial SSH en los 3 hosts de DB candidatos (Database .90, OPENDBPROD006, OPENDBPROD005) -- ver QUESTIONS.md."
+        "validacion_pendiente": "[2 sep 2026] RESUELTO -- trazado punta a punta completo (6 de 7 capas, ver plan_relevamiento_alta_eby.md). El 'WL actual' no es uno solo: EBY corre en produccion sobre DOS motores en paralelo -- WebLogic.191 (11g, ruta yacyreta.condorwork.com.ar) y OPENWLPROD01 (12.2.1, ruta eby-prod.condorwork.com.ar). La 'nueva VM DB' (destino de migracion) esta validada: OPENDBPROD005 (10.77.7.15), confirmada por tnsnames.ora real (alias EBYPROD/EBYQA/EBYAUDIT, coincide con sid_nuevo). Unica nota abierta, no bloqueante: a que cliente corresponde cada sesion en Database .90/CDRADM (la DB de la ruta yacyreta, compartida con otros tenants de WebLogic.191)."
       },
       "source": [
         "Relevamiento (sin claves) - VM Linux.csv",

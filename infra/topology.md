@@ -14,70 +14,88 @@ Prestar atención a las instancias compartidas: varios clientes están en la *mi
 flowchart LR
   n_ABB["ABB S.A.<br/>(ABB)<br/><i>DADA DE BAJA</i>"]
   n_WL12C_Desarrollo_2_54["WL: WL12C-Desarrollo.2.54"]
-  n_ABB --> n_WL12C_Desarrollo_2_54
   n_DBClientes_12C_31[("DB: DBClientes-12C.31")]
-  n_WL12C_Desarrollo_2_54 --> n_DBClientes_12C_31
   n_DBClientes_190[("DB: DBClientes.190")]
-  n_WL12C_Desarrollo_2_54 --> n_DBClientes_190
   n_GIAR["Arris de Argentina S.A.<br/>(GIAR)<br/><i>DADA DE BAJA</i>"]
   n_OPENWLPROD01["WL: OPENWLPROD01"]
-  n_GIAR --> n_OPENWLPROD01
   n_DB_GIAR[("DB: DB-GIAR")]
-  n_OPENWLPROD01 --> n_DB_GIAR
+  n_OPENDBPROD001[("DB: OPENDBPROD001")]
   n_CEFAS["Cefas S.A.<br/>(CEFAS)"]
   n_WebLogic_191["WL: WebLogic.191"]
-  n_CEFAS --> n_WebLogic_191
   n_CLIENTES_DB[("DB: CLIENTES-DB")]
-  n_WebLogic_191 --> n_CLIENTES_DB
   n_BOCA["Club Atlético Boca Juniors<br/>(BOCA)"]
-  n_BOCA --> n_WL12C_Desarrollo_2_54
-  n_WL12C_Desarrollo_2_54 --> n_CLIENTES_DB
   n_ROMAN["CSM Ciencia al Servicio del Movimiento S.A.<br/>(ROMAN)"]
   n_WL_CLIENTES["WL: WL-CLIENTES"]
-  n_ROMAN --> n_WL_CLIENTES
   n_DB_ROMAN[("DB: DB-ROMAN")]
-  n_WL_CLIENTES --> n_DB_ROMAN
+  n_OPENDBPROD03[("DB: OPENDBPROD03")]
   n_DCVIAJES["DC Viajes y Turismo S.A.<br/>(DCVIAJES)"]
-  n_DCVIAJES --> n_WebLogic_191
-  n_WebLogic_191 --> n_DBClientes_190
   n_DVAL["Dominique Val S.A.<br/>(DVAL)"]
-  n_DVAL --> n_WebLogic_191
   n_DBClientes_238[("DB: DBClientes.238")]
-  n_WebLogic_191 --> n_DBClientes_238
   n_ENERFLEX["Enerflex Solutions Argentina SRL<br/>(ENERFLEX)"]
   n_WL12C_PROD["WL: WL12C-PROD"]
-  n_ENERFLEX --> n_WL12C_PROD
   n_CLIENTES_DB2[("DB: CLIENTES-DB2")]
-  n_WL12C_PROD --> n_CLIENTES_DB2
   n_ESYOP["Ente Servicios y Obras Públicas (ESYOP)<br/>(ESYOP)"]
   n_WebLogic_19["WL: WebLogic.19"]
-  n_ESYOP --> n_WebLogic_19
-  n_WebLogic_19 --> n_DBClientes_12C_31
   n_EBY["Entidad Binacional Yacyretá<br/>(EBY)"]
-  n_EBY --> n_WL12C_Desarrollo_2_54
+  n_Database__90[("DB: Database .90")]
+  n_OPENDBPROD005[("DB: OPENDBPROD005")]
   n_OPENDBPROD006[("DB: OPENDBPROD006")]
-  n_WL12C_Desarrollo_2_54 --> n_OPENDBPROD006
   n_JOBS["Jobs Servicios de Recursos Humanos SRL<br/>(JOBS)"]
-  n_JOBS --> n_WL12C_PROD
-  n_WL12C_PROD --> n_CLIENTES_DB2
   n_HEINLEIN["Heinlein<br/>(HEINLEIN)"]
   n_OL8LABWL01["WL: OL8LABWL01"]
-  n_HEINLEIN --> n_OL8LABWL01
-  n_OPENDBPROD001[("DB: OPENDBPROD001")]
-  n_OL8LABWL01 --> n_OPENDBPROD001
   n_MAIPU["Maipú<br/>(MAIPU)"]
   n_DMWL01["WL: DMWL01"]
-  n_MAIPU --> n_DMWL01
   n_DASADBPROD01[("DB: DASADBPROD01")]
-  n_DMWL01 --> n_DASADBPROD01
   n_279["Rex Argentina<br/>(279)"]
-  n_279 -.->|"servidor todavía sin identificar"| unknown_n_279((?))
+  n_192_1_3_34[("DB: VM sin identificar (192.1.3.34)")]
   n_Argocean["Argocean<br/>(Argocean)"]
   n_DB_ARGOCEAN[("DB: DB-ARGOCEAN")]
-  n_Argocean --> n_DB_ARGOCEAN
+  n_ABB --> n_WL12C_Desarrollo_2_54
+  n_WL12C_Desarrollo_2_54 --> n_DBClientes_12C_31
+  n_WL12C_Desarrollo_2_54 --> n_DBClientes_190
+  n_GIAR --> n_OPENWLPROD01
+  n_OPENWLPROD01 --> n_DB_GIAR
+  n_OPENWLPROD01 --> n_OPENDBPROD001
+  n_CEFAS --> n_WebLogic_191
+  n_WebLogic_191 --> n_CLIENTES_DB
+  n_BOCA --> n_WL12C_Desarrollo_2_54
+  n_WL12C_Desarrollo_2_54 --> n_CLIENTES_DB
+  n_ROMAN --> n_WL_CLIENTES
+  n_WL_CLIENTES --> n_DB_ROMAN
+  n_ROMAN --> n_OPENWLPROD01
+  n_OPENWLPROD01 --> n_OPENDBPROD03
+  n_DCVIAJES --> n_WebLogic_191
+  n_WebLogic_191 --> n_DBClientes_190
+  n_DVAL --> n_WebLogic_191
+  n_WebLogic_191 --> n_DBClientes_238
+  n_ENERFLEX --> n_WL12C_PROD
+  n_WL12C_PROD --> n_CLIENTES_DB2
+  n_ESYOP --> n_WebLogic_19
+  n_WebLogic_19 --> n_DBClientes_12C_31
+  n_EBY --> n_WL12C_Desarrollo_2_54
+  n_EBY --> n_WebLogic_191
+  n_WebLogic_191 --> n_Database__90
+  n_EBY --> n_OPENWLPROD01
+  n_OPENWLPROD01 --> n_OPENDBPROD005
+  n_EBY --> n_OPENDBPROD006
+  n_JOBS --> n_WL12C_PROD
+  n_HEINLEIN --> n_OL8LABWL01
+  n_OL8LABWL01 --> n_OPENDBPROD001
+  n_MAIPU --> n_DMWL01
+  n_DMWL01 --> n_DASADBPROD01
+  n_279 --> n_OPENDBPROD001
+  n_279 --> n_192_1_3_34
+  n_279 --> n_OL8LABWL01
+  n_Argocean --> n_WL_CLIENTES
+  n_WL_CLIENTES --> n_DB_ARGOCEAN
 ```
 
-**Leer este diagrama con cuidado — un nodo es engañoso:** `WL12C-Desarrollo.2.54 → DBClientes.190` y `WebLogic.191 → DBClientes.190` aparecen ambos porque ABB y DCVIAJES se resolvieron cada uno por separado; no significa que ABB y DCVIAJES compartan una instancia de WebLogic. Verificar contra `clients[].database.resolved` en el JSON antes de asumir que una flecha implica un WL compartido.
+**Leer este diagrama con cuidado — varios nodos son engañosos:**
+
+- `WL12C-Desarrollo.2.54 → DBClientes.190` y `WebLogic.191 → DBClientes.190` aparecen ambos porque ABB y DCVIAJES se resolvieron cada uno por separado; no significa que ABB y DCVIAJES compartan una instancia de WebLogic. Verificar contra `clients[].database.resolved` en el JSON antes de asumir que una flecha implica un WL compartido.
+- **`EBY`, `ROMAN`, `GIAR` y `Rex Argentina` (`279`) tienen más de un nodo WL y/o DB** — a diferencia del resto, no es "un cliente, un servidor": son candidatos en paralelo (stack legado vs. nuevo, o candidatos sin confirmar todavía). El emparejamiento WL→DB que muestra el diagrama para estos cuatro está curado a mano con la evidencia real de cada trazado (`plan_relevamiento_alta_eby.md`, `infra/findings.md`), no generado mecánicamente — antes de tocar cualquiera de estos nodos, leer el detalle en `clients[].weblogic.resolved`/`.database.resolved` (campo `notes`), no asumir por la flecha.
+- **`OPENWLPROD01` y `OPENDBPROD001` son ahora los hosts más compartidos del segundo nivel** (después de `WebLogic.191`/8 clientes y `CLIENTES-DB`/3 instancias): `OPENWLPROD01` sirve a EBY, GIAR y ROMAN; `OPENDBPROD001` a Heinlein, CEFAS (destino), GIAR y Rex Argentina — ninguno de estos últimos tres verificado en vivo todavía, solo por `tnsnames.ora`/NPM.
+- **Rex Argentina (`279`) tiene 2 candidatos de DB y 1 de WL, ninguno confirmado** — primera vez que aparece algo de infraestructura de Rex en este diagrama (antes no tenía ningún nodo resuelto).
 
 > La topología Azure/AKS que estaba acá se movió a [`../cloud-infra/topology-cloud.md`](../cloud-infra/topology-cloud.md) — infraestructura cloud fuera de alcance por ahora, ver [`../cloud-infra/README.md`](../cloud-infra/README.md).
 

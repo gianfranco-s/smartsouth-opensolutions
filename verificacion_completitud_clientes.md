@@ -1,16 +1,17 @@
 # Verificación de completitud del relevamiento — por cliente
 
-**Fecha:** 2 sep 2026. Re-cálculo de la verificación general hecha al principio del proyecto, con los datos producidos en esta sesión (trazado de EBY capas 1-3/7 cerradas y 4/6 muy avanzadas vía `OPENWLPROD01`, corrección del cierre de JOBS/Enerflex, hallazgos del re-dump de NPM de `DOCKER-DEB` sobre ROMAN/GIAR/MAIPU/HEINLEIN/Rex).
+**Fecha:** 6 sep 2026 (sesión de BOCA; base 2 sep, cierre de EBY). **BOCA pasó a trazado formal: 6 de 7 capas cerradas** — se accedió `192.1.2.54` (`WL12C-Desarrollo`) por primera vez, corre el Forms productivo de BOCA (`WLS_FORMS`, confirmado por access log) pese al nombre "Desarrollo"; capas 1-5 y 7 cerradas, solo falta capa 6 (`sqlplus` a `CLIENTES-DB`, espera al lunes por la nota "no domingos"). `192.1.2.54` no tiene consola ni sudo → el rédito planeado de cerrar **ABB** de paso no salió; ABB sigue en ~33%, ahora con próximo paso claro (`sqlplus`/`v$session` directo en `192.1.1.31` y `192.1.1.190`). Base previa: EBY con **6 de 7 capas cerradas** (1-3 y 7 ya estaban; 4 y 6 se cerraron para la ruta `eby-prod` vía `formsweb.cfg` + `tnsnames.ora` reales de `OPENWLPROD01`; 5 cerrada como «no aplica» por desk-check), corrección del cierre de JOBS/Enerflex, hallazgos del re-dump de NPM de `DOCKER-DEB` sobre ROMAN/GIAR/MAIPU/HEINLEIN/Rex, y el mismo `tnsnames.ora` de `OPENWLPROD01` destrabando alias de DB para GIAR, ROMAN, Rex Argentina y Heinlein de un saque. De paso: credencial `root` conseguida para `192.1.1.90` (`Database .90` = `CDRADM`, Oracle 11g, DB compartida entre varios tenants de `WebLogic.191` — no exclusiva de EBY); `VINST`/`VINST2025`/`T2022` descartados como clientes (el último es `CONDORERP`, un ERP interno) — el universo sigue siendo 15 clientes.
 
 ## Método (igual que la primera vuelta, ahora con la regla explícita)
 
-Se mide cada uno de los 15 clientes contra el mismo modelo de 7 capas que usan `plan_relevamiento_alta_cefas.md` / `plan_relevamiento_alta_jobs.md` / `plan_relevamiento_alta_eby.md`: dominio de entrada → NPM → firewall/NAT → app motor clásico → app Docker/reportes → base de datos → almacenamiento. Solo CEFAS, JOBS y EBY tienen ese trazado formal; el resto es una extrapolación con la misma vara.
+Se mide cada uno de los 15 clientes contra el mismo modelo de 7 capas que usan `plan_relevamiento_alta_cefas.md` / `plan_relevamiento_alta_jobs.md` / `plan_relevamiento_alta_eby.md` / `plan_relevamiento_alta_boca.md`: dominio de entrada → NPM → firewall/NAT → app motor clásico → app Docker/reportes → base de datos → almacenamiento. Solo CEFAS, JOBS, EBY y BOCA tienen ese trazado formal; el resto es una extrapolación con la misma vara.
 
 Puntaje por capa:
 
 | Puntaje | Significa |
 |---|---|
 | **1.0** | Verificado en vivo — sesión SSH/consola/`sqlplus`, o evidencia de red directa (`netstat` con tráfico real) |
+| **0.9** | Confirmado por configuración oficial del sistema (`formsweb.cfg`/`tnsnames.ora` leídos con `sudo` en el propio WL) pero sin la sesión/`sqlplus` final |
 | **0.6** | Evidencia de red fuerte pero sin verificación directa (ej. `netstat` confirma destino, `sqlplus` bloqueado por credencial) |
 | **0.5** | Identificado por nombre/IP/dominio (CSV, matriz, o entrada de NPM) pero sin sesión que lo confirme |
 | **0.3** | Señal débil, parcial o en disputa (dos fuentes no coinciden, dominio deshabilitado, IP sin VM) |
@@ -18,7 +19,7 @@ Puntaje por capa:
 
 ## Headline
 
-**Global ponderado: ~49%** (subió de ~43% en la medición anterior). El salto viene sobre todo de tres cosas: EBY pasó de conjetura a trazado real (capas 1-3 y 7 cerradas, 4 y 6 muy avanzadas), y una corrección de scoring en JOBS/Enerflex — ya estaban resueltos antes de esta sesión, la medición anterior los había subestimado.
+**Global ponderado: ~54%** (subió de ~43% → ~49% → ~51% → ~54%). El último salto es **BOCA**, que pasó de ~43% (extrapolación) a **~90%** (trazado formal, 6/7 capas) en una sola sesión: `192.1.2.54` accedido por primera vez, Forms productivo confirmado ahí por access log, capas Docker y storage cerradas como «no aplica». Antes: EBY a **6 de 7 capas** (capa 4 por `formsweb.cfg`, capa 6 por `tnsnames.ora` oficial), corrección de scoring en JOBS/Enerflex, y el `tnsnames.ora` de `OPENWLPROD01` destrabando alias de DB para ROMAN, Rex, GIAR y Heinlein sin sesión en cada box.
 
 ## Por cliente
 
@@ -27,15 +28,15 @@ Puntaje por capa:
 | **CEFAS** | 100 | **100** | Sin cambios — trazado completo, verificado en vivo. |
 | **JOBS** | ~90 | **100** *(corrección)* | Ya estaba cerrado (capas 4-7 confirmadas por PID/`netstat`/`tnsnames.ora` el 1 sep) antes de que arrancara esta sesión — la medición anterior lo calificó de "relevando" por error. |
 | **ENERFLEX** | ~57 | **~73** *(corrección)* | Comparte `WL12C-PROD`/`CLIENTES-DB2` con JOBS — el mismo cierre de JOBS ya lo verificaba en vivo (`WLS_FORMS1` sirve `enerflex.condorwork.com.ar`, `ORDS-Enerflex` mapeado por PID a `.51`/`.32`/`.24`). Falta el charset propio (fila abierta en Discrepancias) y su capa 5, por eso no llega a 100. |
-| **EBY** | ~36 | **~81** | El salto grande de la sesión. Capas 1, 2, 3 y 7 cerradas (rutas de entrada, NPM, firewall, sin storage dedicado). Capa 4: dos motores Forms productivos identificados y uno (`OPENWLPROD01`) con dominio/managed servers confirmados por sudo. Capa 6: evidencia de red limpia (100% del tráfico real a `OPENDBPROD005`) pero `sqlplus` bloqueado por credencial — no llega a verificación completa. Capa 5 sigue abierta pero con evidencia indirecta de que no aplica. |
-| **GIAR** | ~50 | **~55** | Dominio propio nuevo, habilitado: `giarprod.condorenterprise.com.ar` → `200.55.243.117` (IP pública). Sigue "de baja" según la matriz — sin confirmar en vivo. |
-| **ROMAN** | ~36 | **~38** | Candidato nuevo a WL real: `romanprod`/`romanqa.condor.solutions` → `OPENWLPROD01`, habilitados (el viejo `roman.condorwork.com.ar` quedó deshabilitado). Identificado por patrón de NPM, no verificado en vivo — nadie entró a `OPENWLPROD01` a confirmar sesiones/DB de ROMAN específicamente. |
+| **EBY** | ~36 | **~90** | El salto grande de la sesión, ahora cerrado. Capas 1, 2, 3 y 7 cerradas (rutas de entrada, NPM, firewall, sin storage dedicado). **Capa 4 cerrada para la ruta `eby-prod`:** `formsweb.cfg` de `OPENWLPROD01` confirma 3 ambientes reales (`[ebyprod]`/`[ebyqa]`/`[ebyaudit]` → `/u02/clientes/*/cdr2/menues/cdr2w.fmx`). **Capa 6 cerrada para la misma ruta:** `tnsnames.ora` del dominio confirma alias `EBYPROD`/`EBYQA`/`EBYAUDIT` → `10.77.7.15` (`OPENDBPROD005`), `SERVICE_NAME` letra por letra igual a `sid_nuevo` de la matriz — config oficial, no solo `netstat`. **Capa 5 cerrada como «no aplica»** (ningún `*jasper*` de EBY en las 101 rutas de `DOCKER-DEB`). No llega a 100 porque la ruta paralela `yacyreta`/`WebLogic.191` no se pudo trazar hasta la DB (permission wall sin sudo) y no hubo `sqlplus` directo a `OPENDBPROD005`; cabo suelto no bloqueante: a qué cliente pertenece cada sesión en `Database .90`/`CDRADM` (DB compartida de esa ruta). |
+| **GIAR** | ~50 | **~58** | Dominio propio nuevo, habilitado: `giarprod.condorenterprise.com.ar` → `200.55.243.117` (IP pública). Segunda DB candidata del `tnsnames.ora` de `OPENWLPROD01`: `PRODGIAR`/`QAGIAR` → `10.77.7.11` (`OPENDBPROD001`), junto al candidato legado `DB-GIAR`/`10.10.1.9` — mismo patrón legado-vs-consolidado que EBY/CEFAS, sin resolver cuál está en uso. Sigue "de baja" según la matriz — sin confirmar en vivo. |
+| **ROMAN** | ~36 | **~48** | WL real ahora confirmado por dos fuentes independientes: NPM (`romanprod`/`romanqa.condor.solutions` → `OPENWLPROD01`, habilitados; el viejo `roman.condorwork.com.ar` deshabilitado) **y** el `tnsnames.ora` de ese mismo box. **Primera DB real encontrada:** alias `PRODCSM`/`QACSM` (CSM = nombre oficial de ROMAN) → `OPENDBPROD03` (`10.77.7.30`, puerto `1525`). Falta la sesión en vivo que confirme procesos/tráfico de ROMAN en `OPENWLPROD01` y `OPENDBPROD03`. |
 | **MAIPU** | ~14 | **~20** | Primeros dominios conocidos: `qadmportal.condor.solutions` → `DASADBPROD01` (deshabilitado) y una redirección hacia `dmportal.condor.solutions` (no resuelto todavía). Sigue "solo infraestructura". |
-| **HEINLEIN** | ~14 | **~20** | Primer dominio conocido: `heinleintest.condor.solutions` → `OL8LABWL01` — pero es un ambiente de test, no confirma producción. |
-| **Rex Argentina (279)** | ~29 | **~33** | Candidato nuevo, sin confirmar identidad: `serzarex.condor.solutions` → `OL8LABWL01` (el WL de Heinlein), habilitado. Podría ser Rex (además de su Self Service ya conocido en `192.1.1.57`) o un nombre no relacionado — no asumir sin verificar. |
+| **HEINLEIN** | ~14 | **~23** | Primer dominio conocido: `heinleintest.condor.solutions` → `OL8LABWL01`, y el `tnsnames.ora` de `OPENWLPROD01` confirma el alias `HEINLEIN_TEST` → `OPENDBPROD001` — pero todo lo conocido de HEINLEIN es ambiente de test, nada de producción. |
+| **Rex Argentina (279)** | ~29 | **~40** | Sigue sin confirmar identidad del motor clásico (`serzarex.condor.solutions` → `OL8LABWL01`, habilitado — podría ser Rex, además de su Self Service ya conocido en `192.1.1.57`, o un nombre no relacionado). Pero el `tnsnames.ora` de `OPENWLPROD01` trajo la **primera DB jamás mapeada** para Rex: dos alias, `PROD_REX` → `10.77.7.11` (`OPENDBPROD001`, `SERVICE_NAME=PRODREX01`) y `PDBREXPROD` → `192.1.3.34` (`SERVICE_NAME=pdbrexprod`, **VM sin ningún rastro en `ExportList.csv`** — nuevo blind spot, segmento aislado `192.1.3.x`). Avanza de "cero recursos" a "dos candidatos por verificar". |
+| **BOCA** | ~43 | **~90** | Trazado formal en la sesión del 6 sep. Capas 1-3 cerradas (`cabj.condorwork.com.ar` → `192.1.2.54:9001` es Forms prod vivo por access log; NPM `DOCKER-DEB`; NAT genérico + hallazgo de exposición `:9998`). **Capa 4:** `192.1.2.54` accedido — dominio `base_domain`, Forms & Reports `12.2.1.4.0`, `WLS_FORMS` sirve BOCA en prod (el nombre "Desarrollo" engaña). Sin sudo/consola → no se leyó la DB desde ahí. **Capa 5:** no aplica (`cabjjasper` ruta muerta, sin contenedor). **Capa 7:** no aplica (sin `/clientes/boca`). Falta solo capa 6: `sqlplus` a `CLIENTES-DB` (`192.1.1.32`, ya accesible) → SID `BOCA` vs `BOCAPDB` + charset. Espera al lunes (nota "no domingos"). |
 | DVAL | ~43 | 43 | Sin cambios esta sesión. |
-| BOCA | ~43 | 43 | Sin cambios esta sesión — comparte `WL12C-Desarrollo`/`CLIENTES-DB` con ABB/EBY, ninguno de los tres verificado en vivo todavía en ese box. |
-| ABB | ~33 | 33 | Sin cambios esta sesión. |
+| ABB | ~33 | **33** | Sin cambios de score, pero **próximo paso claro:** el plan contaba con leer su datasource en la consola de `192.1.2.54` (co-inquilino de BOCA) — ese box no tiene consola ni sudo. Tier 1 #4 se resuelve por `sqlplus`/`v$session` directo en `192.1.1.31` (`DBClientes-12C.31`, compartida con ESYOP) y `192.1.1.190` (`DBClientes.190`, compartida con DCVIAJES). |
 | DCVIAJES | ~36 | 36 | Sin cambios esta sesión. |
 | ESYOP | ~29 | 29 | Sin cambios esta sesión. |
 | Argocean | ~29 | 29 | Sin cambios esta sesión. |
@@ -44,26 +45,30 @@ Puntaje por capa:
 
 | Capa | Antes | Ahora | Por qué se movió |
 |---|---|---|---|
-| 1 · Dominio de entrada | ~70% | **~78%** | EBY (10 rutas), ROMAN, GIAR, MAIPU, HEINLEIN y Rex ganaron dominios nuevos del re-dump de `DOCKER-DEB` (101 proxy hosts). |
-| 2 · Nginx Proxy Manager | ~35% | **~42%** | Mismo re-dump — EBY y ROMAN identificados con más confianza. Sigue faltando transcribir `OPENDOCKER04` y la réplica `VM-DOCKER-Clientes (1)`. |
-| 3 · Firewall / NAT | ~55% | ~55% | Sin cambios — el único NAT nuevo revisado (EBY) confirmó el mismo patrón genérico ya conocido. |
-| 4 · App (motor clásico) | ~55% | **~65%** | JOBS/Enerflex re-contados como verificados; EBY con dos motores identificados (uno con dominio/sudo confirmados). |
-| 5 · App Docker / reportes | ~20% | ~22% | Casi sin cambio — EBY sumó evidencia indirecta de que no aplica, no una confirmación positiva de otro cliente. |
-| 6 · Base de datos | ~50% | **~60%** | JOBS/Enerflex verificados por PID; EBY con evidencia de red fuerte (100% del tráfico real a una VM identificada) aunque sin `sqlplus`. |
-| 7 · Almacenamiento | ~10% | **~17%** | EBY se suma a CEFAS como capa cerrada — en este caso confirmando que **no aplica** (sin mount NFS dedicado), no que exista. *Nota: la "capa 7" de JOBS no es storage sino "ambientes no productivos" — no son directamente comparables, ver los planes fuente.* |
+| 1 · Dominio de entrada | ~70% | **~80%** | EBY (10 rutas), ROMAN, GIAR, MAIPU, HEINLEIN y Rex ganaron dominios nuevos del re-dump de `DOCKER-DEB`; BOCA cerrada (`cabj.condorwork.com.ar` confirmado prod vivo por access log). |
+| 2 · Nginx Proxy Manager | ~35% | **~44%** | Mismo re-dump — EBY, ROMAN y BOCA identificados con confianza. Sigue faltando transcribir `OPENDOCKER04` y la réplica `VM-DOCKER-Clientes (1)`. |
+| 3 · Firewall / NAT | ~55% | **~57%** | EBY y BOCA confirmaron el patrón genérico (sin regla dedicada). BOCA sumó un hallazgo de exposición: `FWOPEN` regla `test` → WAN `9998` → `192.1.2.54:9001`. |
+| 4 · App (motor clásico) | ~55% | **~72%** | JOBS/Enerflex re-contados como verificados; EBY capa 4 cerrada para `eby-prod`; **BOCA capa 4 cerrada** (`192.1.2.54` accedido, `WLS_FORMS` sirve prod, dominio `base_domain` F&R 12.2.1); ROMAN con WL confirmado por `tnsnames.ora`. |
+| 5 · App Docker / reportes | ~20% | **~33%** | EBY y BOCA cerradas como «no aplica» — BOCA por `docker ps -a` negativo en `OPENDOCKER01` (`cabjjasper` ruta muerta). Resolución positiva de capa, no señal indirecta. |
+| 6 · Base de datos | ~50% | **~67%** | JOBS/Enerflex verificados por PID; EBY (`eby-prod`) cerrada por `tnsnames.ora` oficial; ROMAN/Rex/GIAR con alias de DB identificados. BOCA con DB identificada (`CLIENTES-DB`, `ora_pmon_BOCA` visto ahí) pero sin `sqlplus` todavía. Credencial `root` para `192.1.1.90` sumó `sqlplus` directo (`CDRADM`). |
+| 7 · Almacenamiento | ~10% | **~22%** | EBY y BOCA se suman a CEFAS — ambos confirmando que **no aplica** (sin mount NFS dedicado). *Nota: la "capa 7" de JOBS no es storage sino "ambientes no productivos" — no comparables, ver los planes fuente.* |
 
 ## Caveats (se mantienen los de la primera vuelta)
 
-- Solo CEFAS, JOBS y EBY tienen trazado formal de 7 capas — el resto es extrapolación con la misma vara, no medición directa.
-- La diferencia de **confianza** sigue importando: EBY tiene capas cerradas por evidencia de red fuerte pero no siempre por `sqlplus`/consola directa (bloqueo de credencial activo, ver `QUESTIONS.md`). Si se cuenta solo lo verificado con acceso directo a la DB, EBY baja de ~81% a ~65%.
-- Los clientes "planos" (ABB, DVAL, BOCA, DCVIAJES, ESYOP, Argocean) no tuvieron sesión nueva esta ronda — su score sigue siendo la extrapolación original, no una remedición.
-- ROMAN, GIAR, MAIPU, HEINLEIN y Rex ganaron *evidencia de dominio*, no verificación en vivo — no tratar el dominio nuevo como "capa resuelta" sin más, es el mismo tipo de salto que ya corrigió el caso EBY (dominio conocido ≠ motor/DB confirmados).
+- Solo CEFAS, JOBS, EBY y BOCA tienen trazado formal de 7 capas — el resto es extrapolación con la misma vara, no medición directa.
+- BOCA quedó a ~90% (6/7) pero sin `sqlplus` a su DB todavía — la capa 6 está identificada (`CLIENTES-DB`, `ora_pmon_BOCA` ya visto ahí) pero no verificada. Si se cuenta solo lo verificado con acceso directo a la DB, BOCA baja a ~72%.
+- La diferencia de **confianza** sigue importando: EBY tiene capa 6 cerrada por `tnsnames.ora` oficial del dominio (config, no `netstat`) pero sin `sqlplus`/`v$database` directo a `OPENDBPROD005`, y la ruta paralela `yacyreta`/`WebLogic.191` no se trazó hasta la DB. Si se cuenta solo lo verificado con acceso directo a la DB, EBY baja de ~90% a ~72%. El bloqueo de credencial de DB dejó de ser total: se consiguió `root` para `192.1.1.90` (ver `QUESTIONS.md`, movido a Resueltas parcialmente); falta la misma credencial para `.22`/`10.77.7.15` si en algún momento hace falta verificación directa ahí.
+- Los clientes "planos" (DVAL, DCVIAJES, ESYOP, Argocean) no tuvieron sesión nueva esta ronda — su score sigue siendo la extrapolación original, no una remedición. (ABB tampoco, pero su próximo paso quedó acotado — ver tabla.)
+- ROMAN, GIAR, HEINLEIN y Rex ganaron *evidencia de dominio y de alias de DB en un `tnsnames.ora` oficial*, no verificación en vivo — es config declarada en el WL, un escalón más fuerte que "dominio conocido", pero todavía nadie confirmó procesos/tráfico/sesiones de esos clientes en los boxes. No tratar el alias TNS como "capa 6 resuelta" sin más: es el mismo tipo de salto que ya corrigió el caso EBY para la ruta `yacyreta` (config ≠ sesión verificada). MAIPU sigue solo con evidencia de dominio (deshabilitado).
 
 ## Próxima verificación sugerida
 
 Por orden de impacto, siguiendo la misma lógica de "elegir el cliente que más destraba":
 
-1. **Cerrar capa 4/6 de EBY** (los `.env`/`formsweb.cfg`/`tnsnames.ora` de `OPENWLPROD01`, en curso) — sube a EBY a ~90%+ y probablemente confirma/descarta a `Database .90` sin necesitar la credencial bloqueada.
-2. **Sesión en `192.1.2.54` (`WL12C-Desarrollo`)** — nunca accedida, resuelve de un saque ABB (Tier 1 #4), BOCA y la porción de EBY que queda ahí (ORDS/tests).
-3. **Confirmar si `serzarex` es Rex Argentina** — de serlo, cierra el ítem 2 de Tier 1 (Rex sin DB mapeada) casi gratis, aprovechando que `OL8LABWL01` ya está identificada.
-4. **Verificar en vivo si ROMAN realmente migró a `OPENWLPROD01`** — mismo box donde ya hay sesión abierta para EBY, bajo costo marginal.
+1. ~~**Cerrar capa 4/6 de EBY**~~ **Hecho (2 sep 2026)** — `formsweb.cfg` + `tnsnames.ora` de `OPENWLPROD01` cerraron ambas para la ruta `eby-prod`. EBY a ~90%.
+2. ~~**Sesión en `192.1.2.54` (`WL12C-Desarrollo`)**~~ **Hecho (6 sep 2026)** — accedido por SSH. Corre el Forms prod de BOCA (`WLS_FORMS`); sin consola ni sudo. Cerró BOCA a ~90% (falta solo su capa 6). **No** cerró ABB — ese box no expone datasources sin sudo.
+3. **Capa 6 de BOCA** — `sqlplus` a `CLIENTES-DB` (`192.1.1.32`, ya accesible): `ORACLE_SID=BOCA` → `SELECT name FROM v$database` (dirime `BOCA` vs `BOCAPDB`) + charset `WE8MSWIN1252` + `v$session WHERE machine='192.1.2.54'`. Lunes (no domingos). Sube BOCA a 100%.
+4. **ABB (Tier 1 #4) directo a las DBs** — `sqlplus`/`v$session` en `192.1.1.31` (`DBClientes-12C.31`, compartida con ESYOP) y `192.1.1.190` (`DBClientes.190`, compartida con DCVIAJES) para ver cuál tiene sesiones activas de la app. Da evidencia en vivo de paso para ESYOP o DCVIAJES.
+5. **Verificar en vivo ROMAN en `OPENWLPROD01` + su DB `PRODCSM` → `OPENDBPROD03:1525`** — dos fuentes ya coinciden (NPM + `tnsnames.ora`), solo falta la sesión; mismo box donde ya hubo acceso para EBY, costo marginal bajo.
+6. **Confirmar si `serzarex` es Rex Argentina y cuál de sus dos alias de DB está en uso** (`PROD_REX` → `OPENDBPROD001` vs `PDBREXPROD` → `192.1.3.34`) — cierra parcialmente el ítem 2 de Tier 1, aprovechando que `OL8LABWL01` ya está identificada.
+7. **Identificar `192.1.3.34` (`PDBREXPROD`)** — VM sin rastro en `ExportList.csv`, segmento aislado `192.1.3.x`, blind spot nuevo abierto por este mismo `tnsnames.ora`.

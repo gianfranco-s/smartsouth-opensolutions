@@ -6,15 +6,15 @@ Vistazo conjunto de los cuatro trazados punta a punta. Detalle completo, evidenc
 
 | Capa | CEFAS | JOBS | EBY | BOCA |
 |---|---|---|---|---|
-| Dominio de entrada | ✅ Resuelto | ✅ Resuelto | ✅ Resuelto | 🟡 Casi cerrado sin sesión |
+| Dominio de entrada | ✅ Resuelto | ✅ Resuelto | ✅ Resuelto | ✅ Resuelto |
 | Nginx Proxy Manager | ✅ Resuelto | ✅ Resuelto | ✅ Resuelto | ✅ Resuelto |
-| Firewall / NAT | ✅ Resuelto | ✅ Resuelto | ✅ Resuelto | 🟡 Sin regla dedicada aparente |
-| App — motor clásico (WebLogic) | ✅ Resuelto | ✅ Resuelto | ✅ Resuelto (ruta `eby-prod`) | 🔴 Abierto — nunca accedido |
-| App — capa Docker / reportes | ✅ Resuelto | ✅ Resuelto | ✅ Resuelto — no aplica | 🟡 Identificada, sin verificar |
-| Base de datos | ✅ Resuelto | ✅ Resuelto | ✅ Resuelto (ruta `eby-prod`) | 🟢 Cierre barato, host ya accesible |
-| Almacenamiento / object store | ✅ Resuelto | *(no aplica a este cliente)* | ✅ Resuelto — no aplica | 🟡 Señal contradictoria a revisar |
+| Firewall / NAT | ✅ Resuelto | ✅ Resuelto | ✅ Resuelto | ✅ Resuelto (+ hallazgo: `:9998` expone `.2.54:9001` a Internet) |
+| App — motor clásico (WebLogic) | ✅ Resuelto | ✅ Resuelto | ✅ Resuelto (ruta `eby-prod`) | ✅ Resuelto — `WLS_FORMS` en `192.1.2.54` |
+| App — capa Docker / reportes | ✅ Resuelto | ✅ Resuelto | ✅ Resuelto — no aplica | ✅ Resuelto — sin capa propia (`cabjjasper` ruta muerta) |
+| Base de datos | ✅ Resuelto | ✅ Resuelto | ✅ Resuelto (ruta `eby-prod`) | 🟢 Único paso que queda — `sqlplus` en `192.1.1.32` (lunes, toca prod) |
+| Almacenamiento / object store | ✅ Resuelto | *(no aplica a este cliente)* | ✅ Resuelto — no aplica | ✅ Resuelto — no aplica |
 
-**CEFAS y JOBS: trazados completos, 7/7.** **EBY: 6/7** — la única nota abierta es a qué cliente corresponde cada sesión en `Database .90`/`CDRADM`, la DB compartida de la ruta paralela `yacyreta` (no bloqueante, la ruta productiva real ya está confirmada de punta a punta). **BOCA: recién arrancado** (plan escrito, sin sesión nueva todavía) — elegido porque `WL12C-Desarrollo.2.54` es el último WebLogic multi-inquilino del parque sin acceder nunca, y una sola sesión ahí cierra de paso a ABB, y da evidencia para ESYOP/DCVIAJES según a qué DB apunte ABB.
+**CEFAS y JOBS: trazados completos, 7/7.** **EBY: 6/7** — la única nota abierta es a qué cliente corresponde cada sesión en `Database .90`/`CDRADM`, la DB compartida de la ruta paralela `yacyreta` (no bloqueante, la ruta productiva real ya está confirmada de punta a punta). **BOCA: 6/7** (sesión del 6 sep 2026) — capas 1-5 y 7 cerradas; solo falta la capa 6 (`sqlplus` a `CLIENTES-DB` para dirimir SID `BOCA` vs `BOCAPDB`), que espera al lunes por la nota "no realizar tareas los domingos". El rédito planeado "una pantalla de consola cierra ABB de paso" **no salió**: `192.1.2.54` no tiene consola ni sudo — ABB (Tier 1 #4) sigue abierto, a resolver por `sqlplus` directo en `192.1.1.31`/`192.1.1.190`.
 
 ## CEFAS
 
@@ -59,6 +59,12 @@ Vistazo conjunto de los cuatro trazados punta a punta. Detalle completo, evidenc
 
 **Cuarto trazado, elegido por impacto — no por ser complejo (al contrario).** Cadena más simple que queda (un WL, una DB, ya resueltos por nombre), pero tracearlo obliga a entrar por primera vez a `192.1.2.54` (`WL12C-Desarrollo`), el último WebLogic multi-inquilino sin acceder nunca — cierra de paso a **ABB** (Tier 1 #4) y da evidencia para **ESYOP**/**DCVIAJES** según a qué DB apunte ABB.
 
-**Estado de partida:** dominio (4 proxy hosts en `DOCKER-DEB`) y NPM ya identificados sin sesión nueva. DB (`CLIENTES-DB`, `192.1.1.32`) ya es accesible — mismo host de CEFAS, con `ora_pmon_BOCA` ya visto corriendo ahí desde el 25 ago. Jasper (`cabjjasper`) ya localizado en `OPENDOCKER01`. Lo único genuinamente nuevo es el box `192.1.2.54`.
+**Descubierto (sesión 6 sep 2026):**
+- **Dominio / NPM / firewall** — `cabj.condorwork.com.ar` → `192.1.2.54:9001` es la ruta Forms **productiva viva** (access log de `DOCKER-DEB`: 3.84M `POST /forms/lservlet` `200`, últimos hoy, IPs residenciales AR). Los alias `boca.condorwork.com.ar` e id 17 están muertos desde 2022. Sin regla NAT dedicada; **hallazgo aparte:** `FWOPEN` regla `test` → WAN `9998` → `192.1.2.54:9001` (`source *`) expone ese Forms a Internet sin pasar por NPM.
+- **App — motor clásico** — se accedió `192.1.2.54` por primera vez (SSH `soportesmart` vía ProxyJump por `DOCKER-DEB`; el puerto 22 no responde directo). Dominio `base_domain`, Oracle Forms & Reports **12.2.1.4.0**, mismo molde que JOBS/`OPENWLPROD01`. El nombre "Desarrollo" engaña: `WLS_FORMS` sirve prod real de BOCA; el box es un hub compartido Forms(prod)+ORDS(varios de test). Sin sudo / sin consola / árbol `oracle:oinstall` cerrado → no se pudo leer `tnsnames.ora` ni datasources.
+- **Capa Docker / reportes** — no aplica: no hay contenedor `cabj`/`boca` en `OPENDOCKER01`, nada escucha en `:8090`, `cabjjasper` es ruta muerta. Mismo patrón que JOBS.
+- **Almacenamiento** — no aplica: no hay `/clientes/boca` en `WebLogic.191` (la mención previa era un error de transcripción).
 
-**Falta:** todo lo que depende de la sesión en `192.1.2.54` (capa 4, y de paso la clasificación fina de capas 1/3/5/7) y reconectar a `CLIENTES-DB` para el `SELECT` que cierra el SID (`BOCA` vs `BOCAPDB`) — ver `plan_relevamiento_alta_boca.md` para el detalle paso a paso.
+**Falta:** solo la capa 6 — reconectar a `CLIENTES-DB` (`192.1.1.32`, ya accesible) y correr el `SELECT` que cierra el SID (`BOCA` vs `BOCAPDB`) + charset `WE8MSWIN1252`. Toca la DB productiva → espera al lunes por la nota "no realizar tareas los domingos". Ver `plan_relevamiento_alta_boca.md`.
+
+**Rédito que no salió:** ABB. El plan contaba con leer su datasource en la consola de `192.1.2.54`, pero ese box no tiene consola ni sudo. ABB (Tier 1 #4) queda abierto, a resolver por `sqlplus`/`v$session` directo en `192.1.1.31` y `192.1.1.190`.

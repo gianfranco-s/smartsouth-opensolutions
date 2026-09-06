@@ -2168,7 +2168,8 @@
       "category": "database",
       "used_by_clients": [],
       "uptime_days": 169,
-      "notes": "2.240\nLast backup: [3/21/2026 2:16:42 AM]; Veeam server: [openbk]; Job: [Job_002_Backup_quincenal]; Repository: [openbk]"
+      "notes": "2.240\nLast backup: [3/21/2026 2:16:42 AM]; Veeam server: [openbk]; Job: [Job_002_Backup_quincenal]; Repository: [openbk]",
+      "confirmation": "Identificada el 6 sep 2026 durante la sesion en WL12C-Desarrollo.2.54: es una de las bases de desarrollo a la que ese WebLogic mantiene ~10 conexiones ESTABLISHED (Oracle 19c dev, por el nombre). Antes solo figuraba por IP sin rol. Sin sesion propia todavia."
     },
     {
       "name": "OPENDBDES011",
@@ -3913,7 +3914,8 @@
         }
       ],
       "uptime_days": 432,
-      "notes": "2.54"
+      "notes": "2.54",
+      "confirmation": "Accedido por SSH (soportesmart, vía ProxyJump por DOCKER-DEB/192.1.1.37 — el puerto 22 no responde directo desde la estacion de TeamViewer) el 6 sep 2026. WebLogic 12.2.1.4.0. Dominio 'base_domain', Oracle Forms & Reports 12.2.1 (/u01/app/oracle/product/12.2.1/user_projects/domains/base_domain) — mismo molde que WL12C-PROD/OPENWLPROD01. Managed servers: AdminServer, WLS_FORMS, WLS_REPORTS, Ords-Bocat, ORDS-CEFAST, ORDS-EBY, ORDS-JOBS, ORDS-T2022DEV01, Server-Ords, Server-ordsERP19 (hub compartido Forms prod + ORDS varios de test). DB local ora_pmon_fmwdb = repositorio RCU del dominio, no cliente. El nombre 'Desarrollo' de la VM engaña: WLS_FORMS sirve el Forms PRODUCTIVO de BOCA — cabj.condorwork.com.ar -> 192.1.2.54:9001, 3.84M POST /forms/lservlet 200 en proxy_host-18.log de DOCKER-DEB, ultimos hoy, IPs residenciales AR. Sin sudo (soportesmart solo en su grupo, sin oinstall/dba/sudoers), sin credencial de consola WebLogic, arbol oracle:oinstall sin lectura -> no se pudo leer tnsnames.ora ni datasources. netstat -tn sin PID: destinos Oracle a 192.1.1.44 (Database .44 TEST, dominante), 192.1.2.240 (OPENDB19DEV01), 192.1.1.25 (Database.25/ERP T2022), 192.1.1.32:1525 (CLIENTES-DB, pocas conexiones), 192.1.1.22 (solo CLOSE_WAIT/SYN_SENT). FWOPEN expone :9001 a Internet vía WAN 9998 (regla 'test', source *). Ver plan_relevamiento_alta_boca.md y findings.md."
     },
     {
       "name": "WL12C-PROD",

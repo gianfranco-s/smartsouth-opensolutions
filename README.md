@@ -42,13 +42,32 @@ Este es un repo **privado** — contiene nombres de clientes, IPs internas y (en
 ## Notas adicionales
 Para conectarse por ssh a servers más viejos como WebLogic.191
 ```
-ssh -oHostKeyAlgorithms=+ssh-rsa soportesmart@192.1.1.191
+ssh -oHostKeyAlgorithms=+ssh-rsa soportesmart@192.1.1.191  # WebLogic.191
 ```
 
-Conexión a DB Oracle (CLIENTES-DB, 192.1.1.32 — no confundir con VM-DOCKER-Clientes, 192.1.1.38)
+### Conexion con jump host
 ```
-ssh root@192.1.1.32
+ssh -J soportesmart@192.1.1.37 -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa soportesmart@192.1.2.54
+```
+
+## Conexión a DB Oracle
+### CLIENTES-DB
+```sh
+ssh root@192.1.1.32  # CLIENTES-DB
 su - oracle
 export ORACLE_SID=<SID>   # ver instancias corriendo con: ps -ef | grep pmon
 sqlplus / as sysdba
 ```
+
+### Database.90
+```sh
+ssh -o "KexAlgorithms=+diffie-hellman-group-exchange-sha1,diffie-hellman-group14-sha1,diffie-hellman-group1-sha1" -o "HostKeyAlgorithms=+ssh-rsa" root@192.1.1.90  # Database .90
+```
+
+
+
+### Credenciales incorrectas (20260901)
+
+
+ssh -oHostKeyAlgorithms=+ssh-rsa soportesmart@192.1.1.22  # OPENDBPROD006
+ssh -oHostKeyAlgorithms=+ssh-rsa soportesmart@10.77.7.15  # OPENDBPROD005

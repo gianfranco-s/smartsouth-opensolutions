@@ -2227,16 +2227,26 @@
         {
           "client": "Heinlein",
           "code": "HEINLEIN",
-          "role": "database"
+          "role": "database (test -- alias HEINLEIN_TEST)"
         },
         {
           "client": "Cefas S.A.",
           "code": "CEFAS",
-          "role": "database (destino de migración)"
+          "role": "database (destino de migración -- alias PRODCEFAS/prodcefas)"
+        },
+        {
+          "client": "Arris de Argentina S.A.",
+          "code": "GIAR",
+          "role": "database (alias PRODGIAR/QAGIAR, sin verificar en vivo -- 2 sep 2026)"
+        },
+        {
+          "client": "Rex Argentina",
+          "code": "279",
+          "role": "database (candidato, alias PROD_REX/PRODREX01, sin verificar -- 2 sep 2026, ver segundo candidato en 192.1.3.34)"
         }
       ],
       "uptime_days": 198,
-      "notes": "7.11"
+      "notes": "7.11 -- host consolidado con tnsnames.ora que sirve al menos 4 clientes (2 sep 2026), via el dominio base_domain de OPENWLPROD01."
     },
     {
       "name": "OPENDBPROD005",
@@ -2317,8 +2327,15 @@
         "fe80::250:56ff:fe99:b29"
       ],
       "category": "database",
-      "used_by_clients": [],
-      "uptime_days": 61
+      "used_by_clients": [
+        {
+          "client": "CSM Ciencia al Servicio del Movimiento S.A.",
+          "code": "ROMAN",
+          "role": "database (candidato, alias PRODCSM/QACSM en tnsnames.ora de OPENWLPROD01, puerto 1525 -- sin verificar en vivo, 2 sep 2026)"
+        }
+      ],
+      "uptime_days": 61,
+      "notes": "Uptime bajo (61 dias) -- reinicio o provisionamiento reciente, mismo tipo de señal que se uso para detectar altas/migraciones recientes en otros VMs (ver findings.md)."
     },
     {
       "name": "OPENDBQA01",
@@ -4276,7 +4293,16 @@
             "resolved_vm": "DB-GIAR",
             "ip": "10.10.1.9",
             "resolved_by": "name",
-            "match": true
+            "match": true,
+            "notes": "Candidato original. Ver el resolved de abajo, encontrado via tnsnames.ora real -- mismo patron de dos candidatos (legado vs consolidado) que EBY/CEFAS."
+          },
+          {
+            "claimed_name": null,
+            "resolved_vm": "OPENDBPROD001",
+            "ip": "10.77.7.11",
+            "resolved_by": "teamviewer",
+            "match": null,
+            "notes": "[2 sep 2026] Encontrado en tnsnames.ora de OPENWLPROD01: alias PRODGIAR/QAGIAR, HOST=10.77.7.11 PORT=1521, SERVICE_NAME=prodgiar/QAGIAR. Mismo host consolidado que ya sirve a Heinlein (DB) y CEFAS (destino de migracion) -- ahora GIAR (prod+qa) y Rex Argentina (prod) tambien. Sin verificar en vivo."
           }
         ]
       },
@@ -4476,7 +4502,16 @@
             "resolved_vm": "DB-ROMAN",
             "ip": "172.18.5.43",
             "resolved_by": "ip",
-            "match": false
+            "match": false,
+            "notes": "Candidato legado, segmento aislado (172.18.5.x) -- ver el resolved de abajo, encontrado via tnsnames.ora real."
+          },
+          {
+            "claimed_name": null,
+            "resolved_vm": "OPENDBPROD03",
+            "ip": "10.77.7.30",
+            "resolved_by": "teamviewer",
+            "match": null,
+            "notes": "[2 sep 2026] Encontrado en tnsnames.ora de OPENWLPROD01 (mismo dominio que sirve a EBY): alias PRODCSM/QACSM, HOST=10.77.7.30 PORT=1525 (no 1521), SERVICE_NAME=PRODCSM/QACSM. 'CSM' = nombre oficial de ROMAN (CSM Ciencia al Servicio del Movimiento S.A.). Coincide con el WL nuevo (OPENWLPROD01) hallado el 1 sep -- candidato fuerte a stack completo migrado (WL+DB), mismo patron que EBY. Sin verificar en vivo (sin sqlplus ni sesion de ROMAN especifica)."
           }
         ]
       },
@@ -4824,8 +4859,8 @@
             "resolved_vm": "OPENDBPROD005",
             "ip": "10.77.7.15",
             "resolved_by": "teamviewer",
-            "match": null,
-            "notes": "Destino de migracion (matriz: ip_db_destino=10.77.7.15, sid_nuevo=EBYPROD). VM encendida, nota de vCenter literal 'ebyprod'. Dos ORDS de NPM habilitados apuntandole (ords-yacy.open.com.ar :8080, ords-ebyqa.open.com.ar :8040) pero 0 trafico en sus access logs. Acceso SSH directo a esta VM bloqueado por credencial, sin confirmar por sqlplus. [2 sep 2026] Evidencia de red desde OPENWLPROD01 (netstat, 3/3 conexiones reales) confirma trafico Oracle activo y sostenido hacia esta IP -- la migracion parece ya cortada para el stack eby-prod/OPENWLPROD01, contradice la lectura anterior basada solo en logs de NPM. Confirmacion final pendiente de leer ORACLE_SID/TWO_TASK en ebyprod.env (ver weblogic.resolved de OPENWLPROD01)."
+            "match": true,
+            "notes": "Destino de migracion (matriz: ip_db_destino=10.77.7.15, sid_nuevo=EBYPROD). VM encendida, nota de vCenter literal 'ebyprod'. Dos ORDS de NPM habilitados apuntandole (ords-yacy.open.com.ar :8080, ords-ebyqa.open.com.ar :8040). [2 sep 2026] CONFIRMADO por tnsnames.ora real de OPENWLPROD01 (/u01/app/oracle/product/12.2.1/user_projects/domains/base_domain/config/fmwconfig/tnsnames.ora): alias EBYPROD/EBYQA/EBYAUDIT, los tres HOST=10.77.7.15 PORT=1521, SERVICE_NAME=EBYPROD/EBYQA/EBYAUDIT respectivamente -- coincide letra por letra con sid_nuevo de la matriz. Es config oficial del dominio, no solo trafico de red. Cierra capa 6 de plan_relevamiento_alta_eby.md para la ruta eby-prod. sqlplus directo sigue bloqueado por credencial pero ya no hace falta para esta confirmacion."
           }
         ]
       },
@@ -4962,7 +4997,8 @@
             "resolved_vm": "OPENDBPROD001",
             "ip": "10.77.7.11",
             "resolved_by": "name",
-            "match": true
+            "match": true,
+            "notes": "[2 sep 2026] Confirmado por tnsnames.ora de OPENWLPROD01: alias HEINLEIN_TEST, HOST=10.77.7.11 PORT=1521, SERVICE_NAME=HEINLEIN_TEST -- coincide con el dominio heinleintest.condor.solutions (NPM, 1 sep 2026). Es ambiente de test, no confirma produccion."
           }
         ]
       },
@@ -5065,12 +5101,38 @@
         "guest_os_relevamiento": "",
         "wl_version": "2025",
         "esxi_host_relevamiento": "",
-        "resolved": []
+        "resolved": [
+          {
+            "claimed_name": null,
+            "resolved_vm": "OL8LABWL01",
+            "ip": "192.1.2.195",
+            "resolved_by": "teamviewer",
+            "match": null,
+            "notes": "[1 sep 2026] Candidato sin confirmar: serzarex.condor.solutions -> 192.1.2.195:9001 (OL8LABWL01, el WL de Heinlein), HABILITADO en NPM de DOCKER-DEB. Nombre 'serzarex' sugiere Rex pero no esta confirmado -- podria ser otro cliente/app. Self Service de Rex ya conocido por separado en 192.1.1.57 (OPENDOCKER.57, SelfRex via NAT FWOPEN)."
+          }
+        ]
       },
       "database": {
         "claimed_name": "REX Produccion",
         "guest_os_relevamiento": "",
-        "resolved": []
+        "resolved": [
+          {
+            "claimed_name": null,
+            "resolved_vm": "OPENDBPROD001",
+            "ip": "10.77.7.11",
+            "resolved_by": "teamviewer",
+            "match": null,
+            "notes": "[2 sep 2026] Primer dato de DB para Rex Argentina, jamas mapeado antes. Encontrado en tnsnames.ora de OPENWLPROD01: alias PROD_REX, HOST=10.77.7.11 PORT=1521, SERVICE_NAME=PRODREX01. Mismo host consolidado que sirve a Heinlein/CEFAS(destino)/GIAR. Ver tambien el segundo candidato (PDBREXPROD) abajo -- dos alias distintos, sin confirmar cual esta realmente en uso."
+          },
+          {
+            "claimed_name": null,
+            "resolved_vm": null,
+            "ip": "192.1.3.34",
+            "resolved_by": "teamviewer",
+            "match": null,
+            "notes": "[2 sep 2026] Segundo candidato de DB para Rex: alias PDBREXPROD en tnsnames.ora de OPENWLPROD01, HOST=192.1.3.34 PORT=1521, SERVICE_NAME=pdbrexprod ('PDB' sugiere pluggable database). Esta IP NO aparece en ExportList.csv ni en ningun export de vCenter -- VM sin identificar, en el segmento aislado 192.1.3.x (mismo rango que WL-CLIENTES/DB-GIAR/DB-ROMAN). Agregado a blind_spots."
+          }
+        ]
       },
       "admin_user": "",
       "source": [
@@ -5083,7 +5145,7 @@
           "Enterprise": "No"
         }
       },
-      "notes": "Not present in Relevamiento CSV or ExportList.csv by name. DB server 'REX Produccion' not resolved to a specific VM yet — needs TeamViewer lookup."
+      "notes": "Not present in Relevamiento CSV or ExportList.csv by name. [2 sep 2026] Primeros candidatos de WL (OL8LABWL01, sin confirmar) y DB (dos alias TNS distintos: PROD_REX/OPENDBPROD001 y PDBREXPROD/192.1.3.34 sin VM conocida) encontrados via tnsnames.ora de OPENWLPROD01 y el re-dump de NPM de DOCKER-DEB -- ninguno verificado en vivo todavia."
     },
     {
       "name": "Argocean",
@@ -5208,6 +5270,11 @@
       "topic": "10 IPs del segmento 192.1.1.x sin ningun rastro en ExportList.csv, encontradas via reglas NAT completas de FWOPEN",
       "evidence": "FWOPEN-nat-rules/nat_rules.csv (19 ago 2026, tabla completa Firewall > NAT > Port Forward, 45 reglas): 192.1.1.10 (NAT IMAP Exchange); 192.1.1.12 (NAT Remote App2); 192.1.1.133 (Firma Digital); 192.1.1.17 (UIA DB 1521); 192.1.1.2 (Access to SIGOWEB Backend); 192.1.1.26 (TETST); 192.1.1.39 (REMOTO_SALUD); 192.1.1.7 (Demo Self service -back); 192.1.1.70 (Access to SELFSERVICE); 192.1.1.97 (Jira)",
       "known_detail": "Ninguna de estas 10 IPs aparece en las 129 VMs de ExportList.csv ni en ExportList-Datacenter-Full.csv, pese a estar en el mismo segmento 192.1.1.x que el cluster principal. Podrian ser hosts fisicos fuera de vSphere, VMs de un vCenter/cluster distinto al relevado, o servicios contratados. Etiquetas mas relevantes: 192.1.1.10 (mail Exchange), 192.1.1.12 (gateway RemoteApp/RDS), 192.1.1.17 ('Cliente UIPBA' + DB Oracle de UIA), 192.1.1.39 ('REMOTO_SALUD', RDP expuesto), 192.1.1.97 (Jira), 192.1.1.133 (Firma Digital), 192.1.1.2/192.1.1.7/192.1.1.70 (backends de SIGOWEB/TESTSIGO/SELFSERVICE), 192.1.1.26 (Oracle de test)."
+    },
+    {
+      "topic": "192.1.3.34 -- posible DB de Rex Argentina, sin VM conocida",
+      "evidence": "tnsnames.ora real de OPENWLPROD01 (2 sep 2026, /u01/app/oracle/product/12.2.1/user_projects/domains/base_domain/config/fmwconfig/tnsnames.ora): alias PDBREXPROD, HOST=192.1.3.34 PORT=1521, SERVICE_NAME=pdbrexprod.",
+      "known_detail": "No aparece en ExportList.csv ni en ningun otro export de vCenter. Esta en el rango 192.1.3.x -- el mismo segmento aislado del segundo host ESXi (192.1.3.252) donde viven WL-CLIENTES/DB-GIAR/DB-ROMAN. 'PDB' sugiere una pluggable database dentro de un multitenant Oracle, quizas alojada en una VM ya conocida de ese segmento bajo un service name nuevo -- o una VM genuinamente sin inventariar. Segundo candidato de DB para Rex Argentina junto con OPENDBPROD001/PROD_REX -- ver clients[279].database.resolved."
     }
   ],
   "cloud_infra_note": "Azure/AWS data moved to cloud-infra/inventory-cloud.json — out of scope for this discovery, see cloud-infra/README.md.",

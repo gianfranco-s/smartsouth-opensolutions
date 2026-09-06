@@ -465,15 +465,18 @@
         {
           "client": "ABB S.A.",
           "code": "ABB",
-          "role": "database"
+          "role": "database",
+          "notes": "[6 sep 2026] Confirmada en vivo como LA DB productiva de ABB. Instancia 'ABB' (non-CDB, READ WRITE), datos en schema CONDOR (~6.9 GB). ABB sin uso real desde el 1-jul-2026 (ultimo DML de CONDOR ese dia)."
         },
         {
           "client": "Ente Servicios y Obras Públicas (ESYOP)",
           "code": "ESYOP",
-          "role": "database"
+          "role": "database",
+          "notes": "[6 sep 2026] Confirmada en vivo (bono del trazado ABB). Instancia 'esyop' (ora_pmon_esyop viva), READ WRITE, charset WE8ISO8859P1 (= matriz), datos en schema CONDOR con ultimo DML 04/09/2026 -> ESYOP en uso activo. Cierra capa 6 de ESYOP (antes solo 'identificado por nombre/IP')."
         }
       ],
       "uptime_days": 198,
+      "confirmation": "Accedido root@192.1.1.31 el 6 sep 2026 (trazado ABB). Oracle 12.2, hostname 'dbclientes' (FQDN dbclientes.open.solutions). /etc/oratab: aqualum(N), esyop(Y), abbhist(N), ABB(Y), abbtubio(Y), pero ps -ef | grep pmon SOLO muestra ora_pmon_esyop y ora_pmon_ABB levantadas -- abbhist/abbtubio/aqualum estan frias (abbhist/abbtubio son sub-esquemas historicos de ABB). Instancias ABB y esyop: startup_time 31-ene-2026, AWR retention 8 dias (default). DB 'ABB' = non-CDB, sin PDB, no hay ambiguedad tipo BOCAPDB. Schemas en 'ABB' por tamano: SYS 6949 MB, CONDOR 6895 MB (app real, 1850 segs), DESA 2574 MB, ABB 612 MB (legado, ultimo DML 2021). last_login de dba_users en instancia ABB: FRAMASCO 28/07/2026, ARVIMON 01/07/2026, JAGRELO 15/05/2026, CONDOR 05/05/2026 (login pooled que sirvio hasta el apagado de jul), CONDORBI 06/06/2025; ABB/DESA/abbhist/abbtubio con last_login NULL (nunca login directo).",
       "notes": "1.31\naqualum:/app/oracle/product/12.2.0/dbhome_1:N\nesyop:/app/oracle/product/12.2.0/dbhome_1:Y\nabbhist:/app/oracle/product/12.2.0/dbhome_1:N\nABB:/app/oracle/product/12.2.0/dbhome_1:Y\nabbtubio:/app/oracle/product/12.2.0/dbhome_1:N\n\n\nLast backup: [7/10/2025 1:11:06 AM]; Veeam server: [openbk]; Job: [Job_002_Backup_quincenal]; Repository: [openbk]"
     },
     {
@@ -495,7 +498,8 @@
         {
           "client": "ABB S.A.",
           "code": "ABB",
-          "role": "database"
+          "role": "database_historica",
+          "notes": "[6 sep 2026] NO es la DB productiva de ABB (esa es 192.1.1.31). Este box solo tiene las sub-bases historicas 'abbhist' y 'abbtubio' en /etc/oratab (Oracle 11.2), y ni siquiera estan levantadas. Lo unico que corre aca es ora_pmon_DCVIAJES."
         },
         {
           "client": "DC Viajes y Turismo S.A.",
@@ -503,7 +507,8 @@
           "role": "database"
         }
       ],
-      "uptime_days": 198
+      "uptime_days": 198,
+      "confirmation": "Accedido root@192.1.1.190 el 6 sep 2026 (trazado ABB). Oracle 11.2 (/app/oracle/product/11.2.0/dbhome_1). /etc/oratab: GRIMALDI(Y), GRIMA2015(N), SECLA(N), DCVIAJES(Y), GRIMATEMP(N), SECLATEST(N), REXTEST(Y), abbhist(Y), abbtubio(Y), TOLEDO(N). ps -ef | grep pmon: SOLO ora_pmon_DCVIAJES levantada. DB DCVIAJES: READ WRITE, NOARCHIVELOG, charset WE8ISO8859P1 (= matriz), schema de app CONDOR con ultimo DML 04/09/2026 -> DCVIAJES en uso activo (sin sesion al momento de mirar, sabado). AWR sin datos (dba_hist_active_sess_history vacio). Nombres GRIMALDI/GRIMA2015/GRIMATEMP, SECLA/SECLATEST, REXTEST, TOLEDO son instancias de este box no mapeadas a clientes conocidos -- candidatos a clasificar (REXTEST podria ser test de Rex Argentina)."
     },
     {
       "name": "DBClientes.238",
@@ -4225,19 +4230,27 @@
             "claimed_name": "dbclientes",
             "resolved_vm": "DBClientes-12C.31",
             "ip": "192.1.1.31",
-            "resolved_by": "ip",
-            "match": false
+            "resolved_by": "teamviewer",
+            "match": true,
+            "role": "productiva",
+            "sid_confirmed": "ABB",
+            "app_schema": "CONDOR",
+            "charset_confirmed": "WE8ISO8859P1",
+            "notes": "[6 sep 2026] Confirmada en vivo como LA DB de ABB (root@192.1.1.31, sqlplus). Instancia 'ABB' (non-CDB, READ WRITE, NOARCHIVELOG), levantada desde 31-ene-2026. Datos de la app en el schema CONDOR (~6.9 GB, 1850 segmentos); el schema 'ABB' del mismo box es legado (ultimo DML 12-abr-2021, 612 MB). Charset WE8ISO8859P1 = matriz. Comparte el box con la instancia 'esyop' (ora_pmon_esyop, tambien viva). Ultimo DML del schema CONDOR: 01/07/2026 17:24 -- calza exacto con la ultima sesion Forms de la capa 1 (ver confirmation). Sin sesiones de aplicacion al momento de la consulta (sabado + ABB sin uso hace 2 meses)."
           },
           {
             "claimed_name": "dbclientes.190",
             "resolved_vm": "DBClientes.190",
             "ip": "192.1.1.190",
             "resolved_by": "name",
-            "match": true
+            "match": false,
+            "role": "descartada",
+            "notes": "[6 sep 2026] Descartada como DB de ABB (root@192.1.1.190). El /etc/oratab de este box (Oracle 11.2) NO tiene instancia 'ABB' -- solo 'abbhist' y 'abbtubio' (sub-bases historicas de ABB, marcadas Y pero apagadas). Lo unico levantado es ora_pmon_DCVIAJES. Es el box de DCVIAJES, no de ABB. La segunda IP que traia el inventario tecnico para 'DB actual' de ABB era ruido -- la fuente funcional ('192.1.1.31 / SID ABB') tenia razon."
           }
         ]
       },
       "admin_user": "soportesmart",
+      "db_dark_since": "2026-07-01",
       "matrix_detail": {
         "sid_actual": "ABB",
         "version_db": "12.2.0.1.0",
@@ -4259,13 +4272,14 @@
           "MicroStrategy": ""
         },
         "observaciones": "",
-        "validacion_pendiente": "Confirmar qué IP DB actual corresponde a producción y el servidor WL definitivo."
+        "validacion_pendiente": "RESUELTO (6 sep 2026): DB actual productiva = 192.1.1.31 / SID ABB / schema CONDOR (la segunda IP, 192.1.1.190, no es DB de ABB). WL definitivo = 192.1.2.54 (WLS_FORMS compartido), sin WL nuevo. Pendiente solo la decision de negocio sobre baja/retencion (QUESTIONS.md), no un dato de infra."
       },
       "source": [
         "Relevamiento (sin claves) - VM Linux.csv",
         "Matriz_servicios_por_cliente_Hosting_V2.xlsx"
       ],
-      "status_note": "Sin confirmar, tensión en la fuente: una nota suelta en Matriz_servicios_por_cliente_Hosting_V2.xlsx (agregada debajo de la tabla principal, no un campo formal) dice 'Estos dos clientes estan de baja pero por el momento se mantiene sus bases' refiriendose a ABB y Arris/GIAR juntos. Pero el campo formal 'Estado / migración' de este mismo cliente, en la misma planilla, dice 'Mantenimiento solamente' — no 'de baja'. No son necesariamente contradictorios (podría estar en mantenimiento mientras se lo da de baja), pero no es un dato limpio. Confirmar con el equipo saliente antes de despriorizar este entorno (ver QUESTIONS.md)."
+      "trace_status": "7/7 capas (6 sep 2026) -- ver plan_relevamiento_alta_abb.md. Capa 1: abb.condorwork.com.ar (NPM DOCKER-DEB proxy_host id 28) -> 192.1.2.54:9001, ruta viva (config=ABB responde 200) pero SIN USO REAL desde el 1-jul-2026 -- ultima sesion Forms (POST /forms/lservlet) 01/07/2026 20:24 UTC; despues solo 3 GET /forms/frmservlet?config=ABB sueltos (21-jul, 18-ago, UA navegador, sin login). Poblacion de usuarios 2026 concentrada en un solo bloque 98.98.27.0/24 (ARIN/AT&T, probable egreso corporativo de ABB), no una base repartida. Capa 2: DOCKER-DEB. Capa 3: NAT generico, sin regla dedicada; comparte la exposicion FWOPEN regla 'test' -> WAN 9998 -> 192.1.2.54:9001 con BOCA. Capa 4: WLS_FORMS en 192.1.2.54 (dominio base_domain, Forms & Reports 12.2.1.4.0), sin managed server dedicado -- heredado de la sesion BOCA del 6 sep. Capa 5: no aplica (sin contenedor abb/jasper en OPENDOCKER01). Capa 6: 192.1.1.31 (ver database.resolved). Capa 7: no aplica (sin /clientes/abb en WebLogic.191, sin Condor Link).",
+      "status_note": "El campo formal 'Estado / migración' de la matriz dice 'Mantenimiento solamente'; una nota suelta debajo de la tabla dice que ABB y Arris/GIAR 'estan de baja pero por el momento se mantiene sus bases'. El trazado del 6 sep 2026 agrega evidencia de infra que respalda la nota informal: ABB no tiene una sola sesion real de Forms ni un solo DML (schema CONDOR en 192.1.1.31) desde el 1-jul-2026 -- esta apagado de hecho, aunque la infra sigue encendida (VM WL compartida, instancia Oracle 'ABB' READ WRITE). No es prueba de la baja formal (podria haberse movido el acceso, o ser una pausa) -- sigue siendo decision de negocio del equipo saliente (ver QUESTIONS.md), ahora con un dato duro de apoyo."
     },
     {
       "name": "Arris de Argentina S.A.",
@@ -4491,7 +4505,7 @@
             "ip": "10.77.7.201",
             "resolved_by": "teamviewer",
             "match": null,
-            "notes": "romanprod.condor.solutions / romanqa.condor.solutions -> 10.77.7.201:9001, ambos HABILITADOS en el NPM de DOCKER-DEB (re-dump 1 sep 2026) -- indica que ROMAN migro al WL compartido de OPENWLPROD01 (mismo host que EBY/GIAR). No verificado en vivo todavia (sin netstat/sesion propia de ROMAN, solo el estado enabled/disabled del NPM) -- ver findings.md 1 sep 2026."
+            "notes": "romanprod.condor.solutions / romanqa.condor.solutions -> 10.77.7.201:9001, ambos HABILITADOS en el NPM de DOCKER-DEB (re-dump 1 sep 2026) -- indica que ROMAN migro al WL compartido de OPENWLPROD01 (mismo host que EBY/GIAR). No verificado en vivo todavia (sin netstat/sesion propia de ROMAN, solo el estado enabled/disabled del NPM) -- ver findings.md 1 sep 2026. [6 sep 2026] SSH+sudo(ALL) a OPENWLPROD01 -- CAPA 4 CERRADA A NIVEL CONFIG: formsweb.cfg del dominio base_domain (WLS_FORMS, compartido con EBY/GIAR, sin managed server propio) tiene secciones REALES de ROMAN: [csm]/[csmerp]/[csmFSAL]/[csmERPFSAL] -> pageTitle='CSM PRODUCCION', userid=@PRODCSM, form=/u02/clientes/csm/cdr2/menues/{cdr2w,cdr2,finit}.fmx, envFile=csm.env; QA: [qacsmFSAL]/[qacsmerpFSAL] -> pageTitle='CSM Roman WORK/ERP QA', userid=@QACSM, form=/u02/clientes/qacsm/... . csm.env NO setea ORACLE_SID/TWO_TASK (solo FORMS_PATH y NLS_LANG=AMERICAN_AMERICA.WE8ISO8859P1) -- la DB la maneja el alias @PRODCSM del formsweb.cfg. Version WL = 12.2.1.4.0 (mismo box y molde que EBY/GIAR; cierra la disputa 10-vs-11 de la matriz a favor del 12). SIN TRAFICO EN VIVO: 5 dias de access.log de WLS_FORMS (Sep 2-6, incluye habiles) muestran SOLO config=eby* -- cero config=csm/qacsm. Las unicas lineas 'roman' en el log son un bot escaneando backups (/romanprod.condor.solutions.zip|.sql|.tar.gz, todo 404, rafaga de 5s el 4-sep). Config declarada != sesion verificada (mismo caso que EBY-yacyreta). match sigue null -- pendiente access log del NPM de DOCKER-DEB para romanprod (id 93) y v$session en OPENDBPROD03."
           }
         ]
       },
@@ -4513,13 +4527,13 @@
             "ip": "10.77.7.30",
             "resolved_by": "teamviewer",
             "match": null,
-            "notes": "[2 sep 2026] Encontrado en tnsnames.ora de OPENWLPROD01 (mismo dominio que sirve a EBY): alias PRODCSM/QACSM, HOST=10.77.7.30 PORT=1525 (no 1521), SERVICE_NAME=PRODCSM/QACSM. 'CSM' = nombre oficial de ROMAN (CSM Ciencia al Servicio del Movimiento S.A.). Coincide con el WL nuevo (OPENWLPROD01) hallado el 1 sep -- candidato fuerte a stack completo migrado (WL+DB), mismo patron que EBY. Sin verificar en vivo (sin sqlplus ni sesion de ROMAN especifica)."
+            "notes": "[2 sep 2026] Encontrado en tnsnames.ora de OPENWLPROD01 (mismo dominio que sirve a EBY): alias PRODCSM/QACSM, HOST=10.77.7.30 PORT=1525 (no 1521), SERVICE_NAME=PRODCSM/QACSM. 'CSM' = nombre oficial de ROMAN (CSM Ciencia al Servicio del Movimiento S.A.). Coincide con el WL nuevo (OPENWLPROD01) hallado el 1 sep -- candidato fuerte a stack completo migrado (WL+DB), mismo patron que EBY. Sin verificar en vivo (sin sqlplus ni sesion de ROMAN especifica). [6 sep 2026] Reconfirmado por lectura en vivo del tnsnames.ora del dominio (SSH+sudo): PRODCSM y QACSM -> HOST=10.77.7.30 PORT=1525, SERVICE_NAME=PRODCSM/QACSM. El formsweb.cfg productivo de ROMAN (secciones [csm]*) usa userid=@PRODCSM -- esta es la DB productiva declarada, NO romanstest ni OPENDBDES011 (10.77.7.151, la VM 'Roman test' de vCenter), que no aparecen en la config productiva. Charset WE8ISO8859P1 confirmado por NLS_LANG de csm.env (coincide con matriz). Storage del cliente: /u02/clientes/csm y /u02/clientes/qacsm, 2.5G c/u, filesystem LOCAL de OPENWLPROD01 (creados 3-mar-2026), sin mount NFS dedicado (solo ebyprod tiene volumen propio) -- capa 7 = no aplica. SIGUE sin sqlplus/v$session directo (credencial de DB no conseguida para OPENDBPROD03, misma situacion que 10.77.7.15/.22) y sin trafico Oracle a 10.77.7.30 visto en el netstat de OPENWLPROD01 (sabado, box ocioso). Capa 6 en 'config confirmada' (0.9), no 'verificada en vivo' (1.0)."
           }
         ]
       },
       "entry_points": [
-        {"domain": "romanprod.condor.solutions", "npm_host": "DOCKER-DEB", "forward": "10.77.7.201:9001", "enabled": true, "status": "sin_verificar", "notes": "OPENWLPROD01, habilitado -- probable ruta actual"},
-        {"domain": "romanqa.condor.solutions", "npm_host": "DOCKER-DEB", "forward": "10.77.7.201:9001", "enabled": true, "status": "sin_verificar"},
+        {"domain": "romanprod.condor.solutions", "npm_host": "DOCKER-DEB", "forward": "10.77.7.201:9001", "enabled": true, "status": "sin_verificar", "notes": "OPENWLPROD01, habilitado -- probable ruta actual. [6 sep 2026] Backend confirmado: formsweb.cfg de WLS_FORMS tiene las secciones [csm]* productivas. PERO cero requests config=csm en 5 dias de access.log de WLS_FORMS -- falta el access log del NPM de DOCKER-DEB (proxy host id 93) para saber si usuarios finales pegan al dominio."},
+        {"domain": "romanqa.condor.solutions", "npm_host": "DOCKER-DEB", "forward": "10.77.7.201:9001", "enabled": true, "status": "sin_verificar", "notes": "proxy host id 94; secciones [qacsm*] en formsweb.cfg -> userid=@QACSM"},
         {"domain": "ords-roman2.open.com.ar", "npm_host": "DOCKER-DEB", "forward": "10.77.7.12:8040", "enabled": true, "status": "sin_verificar", "notes": "10.77.7.12 sin VM conocida en el inventario"},
         {"domain": "ords-romans.open.com.ar", "npm_host": "DOCKER-DEB", "forward": "200.55.243.116:2235", "enabled": false, "status": "deshabilitado"},
         {"domain": "roman.condorwork.com.ar", "npm_host": "VM-DOCKER-Clientes", "forward": "172.18.5.40:80", "enabled": false, "status": "deshabilitado", "notes": "ruta legada, WL-CLIENTES"},
@@ -4548,7 +4562,7 @@
           "MicroStrategy": ""
         },
         "observaciones": "Interfaces: Andrés Schemper.",
-        "validacion_pendiente": "Versiones WL difieren (10 vs 11). Confirmar si la base/servicio es TEST o producción."
+        "validacion_pendiente": "[6 sep 2026] PARCIAL. (a) Version WL: RESUELTA -- 12.2.1.4.0 (OPENWLPROD01, mismo box/molde que EBY/GIAR); la disputa 10-vs-11 de las fuentes se cierra a favor del 12. (b) 'TEST o produccion': la config de OPENWLPROD01 es inequivoca -- secciones [csm]* con pageTitle='CSM PRODUCCION' y userid=@PRODCSM -> OPENDBPROD03/10.77.7.30:1525. NO usa romanstest ni OPENDBDES011. Pero NO hay trafico en vivo que lo confirme: cero sesiones Forms de ROMAN, cero conexiones Oracle a 10.77.7.30, cero requests config=csm en 5 dias de access.log. ROMAN esta configurado como produccion pero puede estar dormido. Pendiente: access log del NPM de DOCKER-DEB (romanprod, id 93) + v$session en OPENDBPROD03 (bloqueado por credencial)."
       },
       "source": [
         "Relevamiento (sin claves) - VM Linux.csv",
@@ -4582,8 +4596,12 @@
             "claimed_name": "dbclientes.190",
             "resolved_vm": "DBClientes.190",
             "ip": "192.1.1.190",
-            "resolved_by": "name",
-            "match": true
+            "resolved_by": "teamviewer",
+            "match": true,
+            "sid_confirmed": "DCVIAJES",
+            "app_schema": "CONDOR",
+            "charset_confirmed": "WE8ISO8859P1",
+            "notes": "[6 sep 2026] Confirmada en vivo como bono del trazado de ABB (192.1.1.190 era el otro candidato de DB de ABB -- resulto ser el box de DCVIAJES). Oracle 11.2. Instancia 'DCVIAJES' viva (ora_pmon_DCVIAJES, la unica levantada del box), READ WRITE, NOARCHIVELOG, charset WE8ISO8859P1 = matriz. Datos en schema CONDOR con ultimo DML 04/09/2026 -> en uso activo. Sin sesion de app al momento de mirar (sabado). AWR sin datos (dba_hist_active_sess_history vacio). Confirmacion parcial: DB viva y en uso, sin sesion en vivo capturada desde WebLogic.191."
           }
         ]
       },
@@ -4766,8 +4784,12 @@
             "claimed_name": "dbclientes",
             "resolved_vm": "DBClientes-12C.31",
             "ip": "192.1.1.31",
-            "resolved_by": "ip",
-            "match": false
+            "resolved_by": "teamviewer",
+            "match": true,
+            "sid_confirmed": "ESYOP",
+            "app_schema": "CONDOR",
+            "charset_confirmed": "WE8ISO8859P1",
+            "notes": "[6 sep 2026] Confirmada en vivo como bono del trazado de ABB (co-inquilino del mismo box 192.1.1.31). Instancia 'esyop' viva (ora_pmon_esyop), READ WRITE, charset WE8ISO8859P1 = matriz. Datos de la app en schema CONDOR, ultimo DML 04/09/2026 -> ESYOP en uso activo (contraste con ABB, muerto desde el 1-jul). Sin sesion desde WebLogic.19 (192.1.1.19) al momento de mirar -- sabado, valle de fin de semana; la recencia del DML cubre la capa 6. El claimed_name 'dbclientes' matcheaba solo por IP (match:false); ahora confirmado que ESYOP corre efectivamente en este box."
           }
         ]
       },

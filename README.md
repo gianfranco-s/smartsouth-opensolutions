@@ -69,5 +69,5 @@ ssh -o "KexAlgorithms=+diffie-hellman-group-exchange-sha1,diffie-hellman-group14
 ### Credenciales incorrectas (20260901)
 
 
-ssh -oHostKeyAlgorithms=+ssh-rsa soportesmart@192.1.1.22  # OPENDBPROD006
-ssh -oHostKeyAlgorithms=+ssh-rsa soportesmart@10.77.7.15  # OPENDBPROD005
+ssh -oHostKeyAlgorithms=+ssh-rsa root@192.1.1.22  # OPENDBPROD006
+ssh -oHostKeyAlgorithms=+ssh-rsa root@10.77.7.15  # OPENDBPROD005

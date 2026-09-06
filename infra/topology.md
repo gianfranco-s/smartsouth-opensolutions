@@ -6,7 +6,7 @@ Generado a partir de [`inventory.json`](inventory.json). No editar los diagramas
 
 ## 1. Mapeo Cliente → WebLogic → Base de datos (vSphere on-premise)
 
-Construido resolviendo los servidores WebLogic/DB declarados de cada cliente (del CSV de Relevamiento y, donde hay más detalle, de la matriz de clientes `Matriz_servicios_por_cliente_Hosting_V2.xlsx`) contra el inventario real de VMs en ExportList.csv — matcheado por nombre, y si el nombre no coincide, por IP (ver `resolved_by` en el JSON). 15 clientes en total: los 13 del CSV original de Relevamiento, más **Rex Argentina** y **Argocean**, ambos encontrados solo en la matriz más completa (ver findings.md). **ABB y Arris/GIAR están marcados en la matriz como ya dados de baja** — se mantienen en el diagrama porque sus VMs todavía existen y corren, pero no tratarlos como producción activa sin confirmar el estado actual.
+Construido resolviendo los servidores WebLogic/DB declarados de cada cliente (del CSV de Relevamiento y, donde hay más detalle, de la matriz de clientes `Matriz_servicios_por_cliente_Hosting_V2.xlsx`) contra el inventario real de VMs en ExportList.csv — matcheado por nombre, y si el nombre no coincide, por IP (ver `resolved_by` en el JSON). 15 clientes en total: los 13 del CSV original de Relevamiento, más **Rex Argentina** y **Argocean**, ambos encontrados solo en la matriz más completa (ver findings.md). **ABB y Arris/GIAR están marcados en la matriz como ya dados de baja** — se mantienen en el diagrama porque sus VMs todavía existen y corren, pero no tratarlos como producción activa sin confirmar el estado actual. **ABB (6 sep 2026):** trazado en vivo — DB productiva confirmada `192.1.1.31` (`DBClientes-12C.31`, instancia `ABB`, schema `CONDOR`); `DBClientes.190` **descartada** como DB de ABB (solo tiene sub‑bases históricas apagadas). Además, ABB **sin una sola sesión ni DML desde el 1‑jul‑2026** — apagado de hecho, lo que respalda la marca de baja (ver `findings.md`).
 
 Prestar atención a las instancias compartidas: varios clientes están en la *misma* VM de WebLogic y/o la misma VM de base de datos — es un dato de radio de impacto que conviene saber antes de tocar cualquiera de ellas.
 
@@ -52,7 +52,6 @@ flowchart LR
   n_DB_ARGOCEAN[("DB: DB-ARGOCEAN")]
   n_ABB --> n_WL12C_Desarrollo_2_54
   n_WL12C_Desarrollo_2_54 --> n_DBClientes_12C_31
-  n_WL12C_Desarrollo_2_54 --> n_DBClientes_190
   n_GIAR --> n_OPENWLPROD01
   n_OPENWLPROD01 --> n_DB_GIAR
   n_OPENWLPROD01 --> n_OPENDBPROD001
@@ -92,7 +91,7 @@ flowchart LR
 
 **Leer este diagrama con cuidado — varios nodos son engañosos:**
 
-- `WL12C-Desarrollo.2.54 → DBClientes.190` y `WebLogic.191 → DBClientes.190` aparecen ambos porque ABB y DCVIAJES se resolvieron cada uno por separado; no significa que ABB y DCVIAJES compartan una instancia de WebLogic. Verificar contra `clients[].database.resolved` en el JSON antes de asumir que una flecha implica un WL compartido.
+- **`DBClientes-12C.31` la comparten ABB y ESYOP** (`WL12C-Desarrollo.2.54 → DBClientes-12C.31` y `WebLogic.19 → DBClientes-12C.31`): confirmado en vivo el 6 sep 2026 — instancias Oracle separadas (`ABB` y `esyop`) en el mismo box. `DBClientes.190` la usa **solo DCVIAJES** (vía `WebLogic.191`); la flecha ABB→`DBClientes.190` que había antes se quitó — ese box solo tiene sub‑bases históricas de ABB (`abbhist`/`abbtubio`, apagadas), no su DB productiva.
 - **`EBY`, `ROMAN`, `GIAR` y `Rex Argentina` (`279`) tienen más de un nodo WL y/o DB** — a diferencia del resto, no es "un cliente, un servidor": son candidatos en paralelo (stack legado vs. nuevo, o candidatos sin confirmar todavía). El emparejamiento WL→DB que muestra el diagrama para estos cuatro está curado a mano con la evidencia real de cada trazado (`plan_relevamiento_alta_eby.md`, `infra/findings.md`), no generado mecánicamente — antes de tocar cualquiera de estos nodos, leer el detalle en `clients[].weblogic.resolved`/`.database.resolved` (campo `notes`), no asumir por la flecha.
 - **`OPENWLPROD01` y `OPENDBPROD001` son ahora los hosts más compartidos del segundo nivel** (después de `WebLogic.191`/8 clientes y `CLIENTES-DB`/3 instancias): `OPENWLPROD01` sirve a EBY, GIAR y ROMAN; `OPENDBPROD001` a Heinlein, CEFAS (destino), GIAR y Rex Argentina — ninguno de estos últimos tres verificado en vivo todavía, solo por `tnsnames.ora`/NPM.
 - **Rex Argentina (`279`) tiene 2 candidatos de DB y 1 de WL, ninguno confirmado** — primera vez que aparece algo de infraestructura de Rex en este diagrama (antes no tenía ningún nodo resuelto).

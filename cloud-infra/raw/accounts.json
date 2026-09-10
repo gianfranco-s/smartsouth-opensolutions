@@ -1,0 +1,34 @@
+[
+  {
+    "cloudName": "AzureCloud",
+    "homeTenantId": "16c899e1-4c84-4342-9da7-0c63cd01f536",
+    "id": "c094020b-7309-4dfa-a442-33577527de05",
+    "isDefault": true,
+    "managedByTenants": [],
+    "name": "Open Prod Subscription",
+    "state": "Enabled",
+    "tenantDefaultDomain": "open.com.ar",
+    "tenantDisplayName": "open.com.ar",
+    "tenantId": "16c899e1-4c84-4342-9da7-0c63cd01f536",
+    "user": {
+      "name": "gsalomone_ext@open.com.ar",
+      "type": "user"
+    }
+  },
+  {
+    "cloudName": "AzureCloud",
+    "homeTenantId": "16c899e1-4c84-4342-9da7-0c63cd01f536",
+    "id": "f025820f-7b1a-4007-b1fb-ca9bd1cd709d",
+    "isDefault": false,
+    "managedByTenants": [],
+    "name": "Open Operations Subscription",
+    "state": "Enabled",
+    "tenantDefaultDomain": "open.com.ar",
+    "tenantDisplayName": "open.com.ar",
+    "tenantId": "16c899e1-4c84-4342-9da7-0c63cd01f536",
+    "user": {
+      "name": "gsalomone_ext@open.com.ar",
+      "type": "user"
+    }
+  }
+]

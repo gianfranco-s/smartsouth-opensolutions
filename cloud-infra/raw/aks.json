@@ -1,0 +1,54 @@
+[
+  {
+    "fqdn": "aks-open-p-rg-open-prod-c09402-kxcuxcww.hcp.eastus.azmk8s.io",
+    "k8s": "1.33.5",
+    "loc": "eastus",
+    "name": "aks-open-prod",
+    "pools": 1,
+    "privateCluster": null,
+    "rbac": true,
+    "rg": "rg-open-prod"
+  }
+]
+[
+  {
+    "fqdn": "aks-provia-rg-provia-prod01-f02582-jh3cxuik.hcp.brazilsouth.azmk8s.io",
+    "k8s": "1.32.7",
+    "loc": "brazilsouth",
+    "name": "aks-provia-prod01",
+    "pools": 1,
+    "privateCluster": null,
+    "rbac": true,
+    "rg": "rg-provia-prod01"
+  },
+  {
+    "fqdn": "opendevaks-opendevaksrg-f02582-eqg2x4x2.hcp.eastus.azmk8s.io",
+    "k8s": "1.31.7",
+    "loc": "eastus",
+    "name": "OpenDevAKS",
+    "pools": 1,
+    "privateCluster": null,
+    "rbac": true,
+    "rg": "OpenDevAKSRG"
+  },
+  {
+    "fqdn": "aks-open-d-rg-open-devtest-f02582-w1wqs93l.hcp.eastus.azmk8s.io",
+    "k8s": "1.33.5",
+    "loc": "eastus",
+    "name": "aks-open-devtest",
+    "pools": 1,
+    "privateCluster": null,
+    "rbac": true,
+    "rg": "rg-open-devtest"
+  },
+  {
+    "fqdn": "aks-open-d-rg-open-devtest-f02582-5v8kgpo2.hcp.eastus.azmk8s.io",
+    "k8s": "1.34.8",
+    "loc": "eastus",
+    "name": "aks-open-devtest-v2",
+    "pools": 2,
+    "privateCluster": null,
+    "rbac": true,
+    "rg": "rg-open-devtest"
+  }
+]

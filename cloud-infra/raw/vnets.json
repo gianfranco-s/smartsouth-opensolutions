@@ -1,0 +1,36 @@
+[
+  {
+    "cidr": [
+      "10.201.0.0/16"
+    ],
+    "loc": "eastus",
+    "name": "vnet-open-prod",
+    "rg": "rg-open-prod"
+  }
+]
+[
+  {
+    "cidr": [
+      "10.224.0.0/12"
+    ],
+    "loc": "eastus",
+    "name": "aks-vnet-41787262",
+    "rg": "MC_OpenDevAKSRG_OpenDevAKS_eastus"
+  },
+  {
+    "cidr": [
+      "10.200.0.0/16"
+    ],
+    "loc": "eastus",
+    "name": "vnet-open-devtest",
+    "rg": "rg-open-devtest"
+  },
+  {
+    "cidr": [
+      "10.66.66.0/24"
+    ],
+    "loc": "brazilsouth",
+    "name": "vnet-provia-prod01",
+    "rg": "rg-provia-prod01"
+  }
+]

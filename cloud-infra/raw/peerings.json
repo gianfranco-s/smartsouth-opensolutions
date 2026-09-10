@@ -1,0 +1,43 @@
+-- vnet-open-prod (rg-open-prod):
+[
+  {
+    "fwd": true,
+    "gw": false,
+    "name": "peer-to-provia-prod01",
+    "remote": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourceGroups/rg-provia-prod01/providers/Microsoft.Network/virtualNetworks/vnet-provia-prod01",
+    "state": "Connected",
+    "useGw": false
+  }
+]
+-- aks-vnet-41787262 (MC_OpenDevAKSRG_OpenDevAKS_eastus):
+[]
+-- vnet-open-devtest (rg-open-devtest):
+[
+  {
+    "fwd": true,
+    "gw": false,
+    "name": "peer-to-provia-prod01",
+    "remote": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourceGroups/rg-provia-prod01/providers/Microsoft.Network/virtualNetworks/vnet-provia-prod01",
+    "state": "Connected",
+    "useGw": false
+  }
+]
+-- vnet-provia-prod01 (rg-provia-prod01):
+[
+  {
+    "fwd": false,
+    "gw": false,
+    "name": "peer-to-open-devtest",
+    "remote": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourceGroups/rg-open-devtest/providers/Microsoft.Network/virtualNetworks/vnet-open-devtest",
+    "state": "Connected",
+    "useGw": false
+  },
+  {
+    "fwd": true,
+    "gw": false,
+    "name": "peer-to-open-prod",
+    "remote": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/rg-open-prod/providers/Microsoft.Network/virtualNetworks/vnet-open-prod",
+    "state": "Connected",
+    "useGw": false
+  }
+]

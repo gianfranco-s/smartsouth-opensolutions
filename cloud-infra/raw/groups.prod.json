@@ -1,0 +1,54 @@
+[
+  {
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/Open-Web-Prod",
+    "location": "eastus",
+    "managedBy": null,
+    "name": "Open-Web-Prod",
+    "properties": {
+      "provisioningState": "Succeeded"
+    },
+    "tags": null,
+    "type": "Microsoft.Resources/resourceGroups"
+  },
+  {
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/rg-open-prod",
+    "location": "eastus",
+    "managedBy": null,
+    "name": "rg-open-prod",
+    "properties": {
+      "provisioningState": "Succeeded"
+    },
+    "tags": {
+      "Descripcion": "Recursos de produccion",
+      "Responsable": "Tomas Ponce"
+    },
+    "type": "Microsoft.Resources/resourceGroups"
+  },
+  {
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/NetworkWatcherRG",
+    "location": "eastus",
+    "managedBy": null,
+    "name": "NetworkWatcherRG",
+    "properties": {
+      "provisioningState": "Succeeded"
+    },
+    "tags": null,
+    "type": "Microsoft.Resources/resourceGroups"
+  },
+  {
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/MC_rg-open-prod_aks-open-prod_eastus",
+    "location": "eastus",
+    "managedBy": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourcegroups/rg-open-prod/providers/Microsoft.ContainerService/managedClusters/aks-open-prod",
+    "name": "MC_rg-open-prod_aks-open-prod_eastus",
+    "properties": {
+      "provisioningState": "Succeeded"
+    },
+    "tags": {
+      "Descripcion": "Servidores de produccion",
+      "Responsable": "Tomas Ponce",
+      "aks-managed-cluster-name": "aks-open-prod",
+      "aks-managed-cluster-rg": "rg-open-prod"
+    },
+    "type": "Microsoft.Resources/resourceGroups"
+  }
+]

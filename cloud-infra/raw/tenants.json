@@ -1,0 +1,14 @@
+/opt/homebrew/Cellar/azure-cli/2.90.0/libexec/lib/python3.14/site-packages/azure/batch/models/_models.py:9067: SyntaxWarning: "\ " is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\ "? A raw string is also an option.
+  """The source port ranges to match for the rule. Valid values are '\ *' (for all ports 0 - 65535),
+/opt/homebrew/Cellar/azure-cli/2.90.0/libexec/lib/python3.14/site-packages/azure/batch/models/_models.py:9235: SyntaxWarning: "\ " is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\ "? A raw string is also an option.
+  using brackets (for example abc[\ *] would match a file named abc*\ ). Note that both and / are
+WARNING: Preview version of extension is disabled by default for extension installation, enabled for modules without stable versions. 
+WARNING: Please run 'az config set extension.dynamic_install_allow_preview=true or false' to config it specifically. 
+WARNING: The command requires the extension account. It will be installed first.
+WARNING: Command group 'account tenant' is experimental and under development. Reference and support levels: https://aka.ms/CLI_refstatus
+[
+  {
+    "id": "/tenants/16c899e1-4c84-4342-9da7-0c63cd01f536",
+    "tenantId": "16c899e1-4c84-4342-9da7-0c63cd01f536"
+  }
+]

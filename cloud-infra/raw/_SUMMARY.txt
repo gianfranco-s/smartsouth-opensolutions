@@ -1,0 +1,146 @@
+# Azure read-only enumeration — 2026-09-09 23:48 — identidad gsalomone_ext@open.com.ar (Reader)
+
+## Subscriptions accesibles
+Name                          State
+----------------------------  -------
+Open Prod Subscription        Enabled
+Open Operations Subscription  Enabled
+
+## AKS clusters (todos)
+[
+  {
+    "fqdn": "aks-open-p-rg-open-prod-c09402-kxcuxcww.hcp.eastus.azmk8s.io",
+    "k8s": "1.33.5",
+    "loc": "eastus",
+    "name": "aks-open-prod",
+    "pools": 1,
+    "privateCluster": null,
+    "rbac": true,
+    "rg": "rg-open-prod"
+  }
+]
+[
+  {
+    "fqdn": "aks-provia-rg-provia-prod01-f02582-jh3cxuik.hcp.brazilsouth.azmk8s.io",
+    "k8s": "1.32.7",
+    "loc": "brazilsouth",
+    "name": "aks-provia-prod01",
+    "pools": 1,
+    "privateCluster": null,
+    "rbac": true,
+    "rg": "rg-provia-prod01"
+  },
+  {
+    "fqdn": "opendevaks-opendevaksrg-f02582-eqg2x4x2.hcp.eastus.azmk8s.io",
+    "k8s": "1.31.7",
+    "loc": "eastus",
+    "name": "OpenDevAKS",
+    "pools": 1,
+    "privateCluster": null,
+    "rbac": true,
+    "rg": "OpenDevAKSRG"
+  },
+  {
+    "fqdn": "aks-open-d-rg-open-devtest-f02582-w1wqs93l.hcp.eastus.azmk8s.io",
+    "k8s": "1.33.5",
+    "loc": "eastus",
+    "name": "aks-open-devtest",
+    "pools": 1,
+    "privateCluster": null,
+    "rbac": true,
+    "rg": "rg-open-devtest"
+  },
+  {
+    "fqdn": "aks-open-d-rg-open-devtest-f02582-5v8kgpo2.hcp.eastus.azmk8s.io",
+    "k8s": "1.34.8",
+    "loc": "eastus",
+    "name": "aks-open-devtest-v2",
+    "pools": 2,
+    "privateCluster": null,
+    "rbac": true,
+    "rg": "rg-open-devtest"
+  }
+]
+
+## VNets
+[
+  {
+    "cidr": [
+      "10.201.0.0/16"
+    ],
+    "loc": "eastus",
+    "name": "vnet-open-prod",
+    "rg": "rg-open-prod"
+  }
+]
+[
+  {
+    "cidr": [
+      "10.224.0.0/12"
+    ],
+    "loc": "eastus",
+    "name": "aks-vnet-41787262",
+    "rg": "MC_OpenDevAKSRG_OpenDevAKS_eastus"
+  },
+  {
+    "cidr": [
+      "10.200.0.0/16"
+    ],
+    "loc": "eastus",
+    "name": "vnet-open-devtest",
+    "rg": "rg-open-devtest"
+  },
+  {
+    "cidr": [
+      "10.66.66.0/24"
+    ],
+    "loc": "brazilsouth",
+    "name": "vnet-provia-prod01",
+    "rg": "rg-provia-prod01"
+  }
+]
+
+## Peerings
+-- vnet-open-prod (rg-open-prod):
+[
+  {
+    "fwd": true,
+    "gw": false,
+    "name": "peer-to-provia-prod01",
+    "remote": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourceGroups/rg-provia-prod01/providers/Microsoft.Network/virtualNetworks/vnet-provia-prod01",
+    "state": "Connected",
+    "useGw": false
+  }
+]
+-- aks-vnet-41787262 (MC_OpenDevAKSRG_OpenDevAKS_eastus):
+[]
+-- vnet-open-devtest (rg-open-devtest):
+[
+  {
+    "fwd": true,
+    "gw": false,
+    "name": "peer-to-provia-prod01",
+    "remote": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourceGroups/rg-provia-prod01/providers/Microsoft.Network/virtualNetworks/vnet-provia-prod01",
+    "state": "Connected",
+    "useGw": false
+  }
+]
+-- vnet-provia-prod01 (rg-provia-prod01):
+[
+  {
+    "fwd": false,
+    "gw": false,
+    "name": "peer-to-open-devtest",
+    "remote": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourceGroups/rg-open-devtest/providers/Microsoft.Network/virtualNetworks/vnet-open-devtest",
+    "state": "Connected",
+    "useGw": false
+  },
+  {
+    "fwd": true,
+    "gw": false,
+    "name": "peer-to-open-prod",
+    "remote": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/rg-open-prod/providers/Microsoft.Network/virtualNetworks/vnet-open-prod",
+    "state": "Connected",
+    "useGw": false
+  }
+]

@@ -1,0 +1,31 @@
+-- sub c094020b-7309-4dfa-a442-33577527de05
+[
+  {
+    "frontends": null,
+    "name": "kubernetes",
+    "rg": "mc_rg-open-prod_aks-open-prod_eastus"
+  }
+]
+-- sub f025820f-7b1a-4007-b1fb-ca9bd1cd709d
+[
+  {
+    "frontends": null,
+    "name": "kubernetes",
+    "rg": "mc_opendevaksrg_opendevaks_eastus"
+  },
+  {
+    "frontends": null,
+    "name": "kubernetes",
+    "rg": "mc_rg-open-devtest_aks-open-devtest-v2_eastus"
+  },
+  {
+    "frontends": null,
+    "name": "kubernetes",
+    "rg": "mc_rg-open-devtest_aks-open-devtest_eastus"
+  },
+  {
+    "frontends": null,
+    "name": "kubernetes-internal",
+    "rg": "mc_rg-open-devtest_aks-open-devtest_eastus"
+  }
+]

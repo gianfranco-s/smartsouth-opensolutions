@@ -1,0 +1,184 @@
+[
+  {
+    "id": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourceGroups/mcpp-purchase",
+    "location": "eastus",
+    "managedBy": null,
+    "name": "mcpp-purchase",
+    "properties": {
+      "provisioningState": "Succeeded"
+    },
+    "tags": null,
+    "type": "Microsoft.Resources/resourceGroups"
+  },
+  {
+    "id": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourceGroups/OpenIA",
+    "location": "eastus",
+    "managedBy": null,
+    "name": "OpenIA",
+    "properties": {
+      "provisioningState": "Succeeded"
+    },
+    "tags": {},
+    "type": "Microsoft.Resources/resourceGroups"
+  },
+  {
+    "id": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourceGroups/OpenB2C",
+    "location": "eastus",
+    "managedBy": null,
+    "name": "OpenB2C",
+    "properties": {
+      "provisioningState": "Succeeded"
+    },
+    "tags": {},
+    "type": "Microsoft.Resources/resourceGroups"
+  },
+  {
+    "id": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourceGroups/OpenDevAKSRG",
+    "location": "eastus",
+    "managedBy": null,
+    "name": "OpenDevAKSRG",
+    "properties": {
+      "provisioningState": "Succeeded"
+    },
+    "tags": null,
+    "type": "Microsoft.Resources/resourceGroups"
+  },
+  {
+    "id": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourceGroups/MC_OpenDevAKSRG_OpenDevAKS_eastus",
+    "location": "eastus",
+    "managedBy": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourcegroups/OpenDevAKSRG/providers/Microsoft.ContainerService/managedClusters/OpenDevAKS",
+    "name": "MC_OpenDevAKSRG_OpenDevAKS_eastus",
+    "properties": {
+      "provisioningState": "Succeeded"
+    },
+    "tags": {
+      "aks-managed-cluster-name": "OpenDevAKS",
+      "aks-managed-cluster-rg": "OpenDevAKSRG"
+    },
+    "type": "Microsoft.Resources/resourceGroups"
+  },
+  {
+    "id": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourceGroups/OpenDevB2C_RG_UK",
+    "location": "eastus",
+    "managedBy": null,
+    "name": "OpenDevB2C_RG_UK",
+    "properties": {
+      "provisioningState": "Succeeded"
+    },
+    "tags": {},
+    "type": "Microsoft.Resources/resourceGroups"
+  },
+  {
+    "id": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourceGroups/OpenTestAKSRG",
+    "location": "eastus",
+    "managedBy": null,
+    "name": "OpenTestAKSRG",
+    "properties": {
+      "provisioningState": "Succeeded"
+    },
+    "tags": {},
+    "type": "Microsoft.Resources/resourceGroups"
+  },
+  {
+    "id": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourceGroups/rg-open-devtest",
+    "location": "eastus",
+    "managedBy": null,
+    "name": "rg-open-devtest",
+    "properties": {
+      "provisioningState": "Succeeded"
+    },
+    "tags": {
+      "Descripcion": "Recursos de dev y test",
+      "Responsable": "Tomas Ponce"
+    },
+    "type": "Microsoft.Resources/resourceGroups"
+  },
+  {
+    "id": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourceGroups/MC_rg-open-devtest_aks-open-devtest_eastus",
+    "location": "eastus",
+    "managedBy": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourcegroups/rg-open-devtest/providers/Microsoft.ContainerService/managedClusters/aks-open-devtest",
+    "name": "MC_rg-open-devtest_aks-open-devtest_eastus",
+    "properties": {
+      "provisioningState": "Succeeded"
+    },
+    "tags": {
+      "Descripcion": "Servidores de dev y test",
+      "Responsable": "Tomas Ponce",
+      "aks-managed-cluster-name": "aks-open-devtest",
+      "aks-managed-cluster-rg": "rg-open-devtest"
+    },
+    "type": "Microsoft.Resources/resourceGroups"
+  },
+  {
+    "id": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourceGroups/Open-BI-RG",
+    "location": "eastus",
+    "managedBy": null,
+    "name": "Open-BI-RG",
+    "properties": {
+      "provisioningState": "Succeeded"
+    },
+    "tags": null,
+    "type": "Microsoft.Resources/resourceGroups"
+  },
+  {
+    "id": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourceGroups/MC_rg-open-devtest_aks-open-devtest-v2_eastus",
+    "location": "eastus",
+    "managedBy": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourcegroups/rg-open-devtest/providers/Microsoft.ContainerService/managedClusters/aks-open-devtest-v2",
+    "name": "MC_rg-open-devtest_aks-open-devtest-v2_eastus",
+    "properties": {
+      "provisioningState": "Succeeded"
+    },
+    "tags": {
+      "aks-managed-cluster-name": "aks-open-devtest-v2",
+      "aks-managed-cluster-rg": "rg-open-devtest"
+    },
+    "type": "Microsoft.Resources/resourceGroups"
+  },
+  {
+    "id": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourceGroups/VisualStudioOnline-4862C9AED99E4996B3B7AE96B4DA8F15",
+    "location": "brazilsouth",
+    "managedBy": null,
+    "name": "VisualStudioOnline-4862C9AED99E4996B3B7AE96B4DA8F15",
+    "properties": {
+      "provisioningState": "Succeeded"
+    },
+    "tags": null,
+    "type": "Microsoft.Resources/resourceGroups"
+  },
+  {
+    "id": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourceGroups/rg-provia-prod01",
+    "location": "brazilsouth",
+    "managedBy": null,
+    "name": "rg-provia-prod01",
+    "properties": {
+      "provisioningState": "Succeeded"
+    },
+    "tags": null,
+    "type": "Microsoft.Resources/resourceGroups"
+  },
+  {
+    "id": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourceGroups/MC_rg-provia-prod01_aks-provia-prod01_brazilsouth",
+    "location": "brazilsouth",
+    "managedBy": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourcegroups/rg-provia-prod01/providers/Microsoft.ContainerService/managedClusters/aks-provia-prod01",
+    "name": "MC_rg-provia-prod01_aks-provia-prod01_brazilsouth",
+    "properties": {
+      "provisioningState": "Succeeded"
+    },
+    "tags": {
+      "aks-managed-cluster-name": "aks-provia-prod01",
+      "aks-managed-cluster-rg": "rg-provia-prod01"
+    },
+    "type": "Microsoft.Resources/resourceGroups"
+  },
+  {
+    "id": "/subscriptions/f025820f-7b1a-4007-b1fb-ca9bd1cd709d/resourceGroups/NetworkWatcherRG",
+    "location": "eastus2",
+    "managedBy": null,
+    "name": "NetworkWatcherRG",
+    "properties": {
+      "provisioningState": "Succeeded"
+    },
+    "tags": null,
+    "type": "Microsoft.Resources/resourceGroups"
+  }
+]

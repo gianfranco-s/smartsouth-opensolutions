@@ -1,0 +1,677 @@
+[
+  {
+    "changedTime": "2026-01-21T11:29:38.627629+00:00",
+    "createdTime": "2025-12-10T19:36:52.048105+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/rg-open-prod/providers/Microsoft.Network/virtualNetworks/vnet-open-prod",
+    "identity": null,
+    "kind": null,
+    "location": "eastus",
+    "managedBy": null,
+    "name": "vnet-open-prod",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-open-prod",
+    "sku": null,
+    "tags": {
+      "Descripcion": "Red virtual principal (prod)",
+      "Responsable": "Tomas Ponce"
+    },
+    "type": "Microsoft.Network/virtualNetworks"
+  },
+  {
+    "changedTime": "2025-12-10T19:46:56.013061+00:00",
+    "createdTime": "2025-12-10T19:36:58.902077+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/NetworkWatcherRG/providers/Microsoft.Network/networkWatchers/NetworkWatcher_eastus",
+    "identity": null,
+    "kind": null,
+    "location": "eastus",
+    "managedBy": null,
+    "name": "NetworkWatcher_eastus",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "NetworkWatcherRG",
+    "sku": null,
+    "tags": null,
+    "type": "Microsoft.Network/networkWatchers"
+  },
+  {
+    "changedTime": "2026-08-27T17:50:40.525998+00:00",
+    "createdTime": "2025-12-10T19:42:28.409443+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/rg-open-prod/providers/Microsoft.ContainerService/managedClusters/aks-open-prod",
+    "identity": {
+      "principalId": "b2d52c13-fc15-42a2-a374-3e0efb6398e1",
+      "tenantId": "16c899e1-4c84-4342-9da7-0c63cd01f536",
+      "type": "SystemAssigned",
+      "userAssignedIdentities": null
+    },
+    "kind": null,
+    "location": "eastus",
+    "managedBy": null,
+    "name": "aks-open-prod",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-open-prod",
+    "sku": {
+      "capacity": null,
+      "family": null,
+      "model": null,
+      "name": "Base",
+      "size": null,
+      "tier": "Free"
+    },
+    "tags": {
+      "Descripcion": "Servidores de produccion",
+      "Responsable": "Tomas Ponce"
+    },
+    "type": "Microsoft.ContainerService/managedClusters"
+  },
+  {
+    "changedTime": "2026-08-27T17:47:07.538843+00:00",
+    "createdTime": "2025-12-10T19:42:46.062591+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/MC_rg-open-prod_aks-open-prod_eastus/providers/Microsoft.Network/publicIPAddresses/9ac7d043-ef11-4330-8ce5-6c08171c3871",
+    "identity": null,
+    "kind": null,
+    "location": "eastus",
+    "managedBy": null,
+    "name": "9ac7d043-ef11-4330-8ce5-6c08171c3871",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "MC_rg-open-prod_aks-open-prod_eastus",
+    "sku": {
+      "capacity": null,
+      "family": null,
+      "model": null,
+      "name": "Standard",
+      "size": null,
+      "tier": null
+    },
+    "tags": {
+      "Descripcion": "Servidores de produccion",
+      "Responsable": "Tomas Ponce",
+      "aks-managed-cluster-name": "aks-open-prod",
+      "aks-managed-cluster-rg": "rg-open-prod",
+      "aks-managed-type": "aks-slb-managed-outbound-ip"
+    },
+    "type": "Microsoft.Network/publicIPAddresses"
+  },
+  {
+    "changedTime": "2026-08-27T17:47:09.340722+00:00",
+    "createdTime": "2025-12-10T19:42:48.148702+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/MC_rg-open-prod_aks-open-prod_eastus/providers/Microsoft.Network/loadBalancers/kubernetes",
+    "identity": null,
+    "kind": null,
+    "location": "eastus",
+    "managedBy": null,
+    "name": "kubernetes",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "MC_rg-open-prod_aks-open-prod_eastus",
+    "sku": {
+      "capacity": null,
+      "family": null,
+      "model": null,
+      "name": "Standard",
+      "size": null,
+      "tier": null
+    },
+    "tags": {
+      "Descripcion": "Servidores de produccion",
+      "Responsable": "Tomas Ponce",
+      "aks-managed-cluster-name": "aks-open-prod",
+      "aks-managed-cluster-rg": "rg-open-prod"
+    },
+    "type": "Microsoft.Network/loadBalancers"
+  },
+  {
+    "changedTime": "2026-01-21T11:13:12.787131+00:00",
+    "createdTime": "2025-12-10T19:42:52.598708+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/MC_rg-open-prod_aks-open-prod_eastus/providers/Microsoft.ManagedIdentity/userAssignedIdentities/aks-open-prod-agentpool",
+    "identity": null,
+    "kind": null,
+    "location": "eastus",
+    "managedBy": null,
+    "name": "aks-open-prod-agentpool",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "MC_rg-open-prod_aks-open-prod_eastus",
+    "sku": null,
+    "tags": {
+      "Descripcion": "Servidores de produccion",
+      "Responsable": "Tomas Ponce"
+    },
+    "type": "Microsoft.ManagedIdentity/userAssignedIdentities"
+  },
+  {
+    "changedTime": "2026-01-21T20:21:11.532712+00:00",
+    "createdTime": "2025-12-10T19:42:54.517681+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/mc_rg-open-prod_aks-open-prod_eastus/providers/Microsoft.Network/networkSecurityGroups/aks-agentpool-16195514-nsg",
+    "identity": null,
+    "kind": null,
+    "location": "eastus",
+    "managedBy": null,
+    "name": "aks-agentpool-16195514-nsg",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "mc_rg-open-prod_aks-open-prod_eastus",
+    "sku": null,
+    "tags": {
+      "Descripcion": "Servidores de produccion",
+      "Responsable": "Tomas Ponce",
+      "aks-managed-cluster-name": "aks-open-prod",
+      "aks-managed-cluster-rg": "rg-open-prod"
+    },
+    "type": "Microsoft.Network/networkSecurityGroups"
+  },
+  {
+    "changedTime": "2026-08-27T17:39:43.551673+00:00",
+    "createdTime": "2025-12-10T19:45:16.759108+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/MC_rg-open-prod_aks-open-prod_eastus/providers/Microsoft.Compute/virtualMachineScaleSets/aks-nodepool1-33812060-vmss",
+    "identity": {
+      "principalId": null,
+      "tenantId": null,
+      "type": "UserAssigned",
+      "userAssignedIdentities": {
+        "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/MC_rg-open-prod_aks-open-prod_eastus/providers/Microsoft.ManagedIdentity/userAssignedIdentities/aks-open-prod-agentpool": {
+          "clientId": "9c439375-6f69-4fea-a812-34988625a93f",
+          "principalId": "13d48c61-fa84-430c-9f5f-09574961433c"
+        },
+        "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourcegroups/MC_rg-open-prod_aks-open-prod_eastus/providers/Microsoft.ManagedIdentity/userAssignedIdentities/azurekeyvaultsecretsprovider-aks-open-prod": {
+          "clientId": "9fe27ae4-3e05-4225-b894-833aa5a5e4c9",
+          "principalId": "ba41662b-ad97-480d-a85d-f82742aec040"
+        }
+      }
+    },
+    "kind": null,
+    "location": "eastus",
+    "managedBy": null,
+    "name": "aks-nodepool1-33812060-vmss",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "MC_rg-open-prod_aks-open-prod_eastus",
+    "sku": {
+      "capacity": 2,
+      "family": null,
+      "model": null,
+      "name": "Standard_DS2_v2",
+      "size": null,
+      "tier": "Standard"
+    },
+    "tags": {
+      "aks-managed-bootstrap-profile-acr-name": "",
+      "aks-managed-consolidated-additional-properties": "adf8b0bc-8282-11f1-b11d-02b1c2d56f86",
+      "aks-managed-createOperationID": "",
+      "aks-managed-creationSource": "vmssclient-aks-nodepool1-33812060-vmss",
+      "aks-managed-enable-imds-restriction": "false",
+      "aks-managed-kubeletIdentityClientID": "9c439375-6f69-4fea-a812-34988625a93f",
+      "aks-managed-networkisolated-outbound-type": "",
+      "aks-managed-operationID": "f55075a8-a35d-4b2d-a22a-1fc1fe2bc828",
+      "aks-managed-orchestrator": "Kubernetes:1.33.5",
+      "aks-managed-poolName": "nodepool1",
+      "aks-managed-resourceNameSuffix": "16195514",
+      "aks-managed-saip-default-client-id": "",
+      "aks-managed-ssh-access": "LocalUser",
+      "compute.aks.billing": "linux"
+    },
+    "type": "Microsoft.Compute/virtualMachineScaleSets"
+  },
+  {
+    "changedTime": "2026-01-21T11:16:00.160220+00:00",
+    "createdTime": "2025-12-11T02:20:30.377748+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/rg-open-prod/providers/Microsoft.ContainerRegistry/registries/openprodregistry",
+    "identity": null,
+    "kind": null,
+    "location": "eastus",
+    "managedBy": null,
+    "name": "openprodregistry",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-open-prod",
+    "sku": {
+      "capacity": null,
+      "family": null,
+      "model": null,
+      "name": "Basic",
+      "size": null,
+      "tier": "Basic"
+    },
+    "systemData": {
+      "createdAt": "2025-12-11T02:20:30.539509Z",
+      "createdBy": "tponce@opencomar.onmicrosoft.com",
+      "createdByType": "User",
+      "lastModifiedAt": "2026-01-21T11:05:59.9676506Z",
+      "lastModifiedBy": "tponce@open.com.ar",
+      "lastModifiedByType": "User"
+    },
+    "tags": {
+      "Descripcion": "Imagenes de produccion",
+      "Responsable": "Tomas Ponce"
+    },
+    "type": "Microsoft.ContainerRegistry/registries"
+  },
+  {
+    "changedTime": "2026-01-21T20:21:12.401978+00:00",
+    "createdTime": "2025-12-11T11:35:18.193716+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/rg-open-prod/providers/Microsoft.Network/publicIPAddresses/kubernetes-a226f581df07444abaaa16ce1523e86c",
+    "identity": null,
+    "kind": null,
+    "location": "eastus",
+    "managedBy": null,
+    "name": "kubernetes-a226f581df07444abaaa16ce1523e86c",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-open-prod",
+    "sku": {
+      "capacity": null,
+      "family": null,
+      "model": null,
+      "name": "Standard",
+      "size": null,
+      "tier": null
+    },
+    "tags": {
+      "Descripcion": "Servidores de produccion",
+      "Responsable": "Tomas Ponce",
+      "aks-managed-cluster-name": "aks-open-prod",
+      "aks-managed-cluster-rg": "rg-open-prod",
+      "k8s-azure-cluster-name": "kubernetes",
+      "k8s-azure-service": "provia-prod/nginx-ingress-prod-ingress-nginx-controller"
+    },
+    "type": "Microsoft.Network/publicIPAddresses"
+  },
+  {
+    "changedTime": "2026-01-21T11:27:36.788530+00:00",
+    "createdTime": "2025-12-11T13:54:16.814335+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/rg-open-prod/providers/Microsoft.Network/publicIPAddresses/open-vpn-ip",
+    "identity": null,
+    "kind": null,
+    "location": "eastus",
+    "managedBy": null,
+    "name": "open-vpn-ip",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-open-prod",
+    "sku": {
+      "capacity": null,
+      "family": null,
+      "model": null,
+      "name": "Standard",
+      "size": null,
+      "tier": null
+    },
+    "tags": {
+      "Descripcion": "IP pública del gateway VPN (prod)",
+      "Responsable": "Tomas Ponce"
+    },
+    "type": "Microsoft.Network/publicIPAddresses"
+  },
+  {
+    "changedTime": "2026-01-21T11:18:27.068451+00:00",
+    "createdTime": "2025-12-11T13:54:23.868975+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/rg-open-prod/providers/Microsoft.Network/virtualNetworkGateways/open-vpn-gateway",
+    "identity": null,
+    "kind": null,
+    "location": "eastus",
+    "managedBy": null,
+    "name": "open-vpn-gateway",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-open-prod",
+    "sku": null,
+    "tags": {
+      "Descripcion": "Gateway VPN de la VNet (prod)",
+      "Responsable": "Tomas Ponce"
+    },
+    "type": "Microsoft.Network/virtualNetworkGateways"
+  },
+  {
+    "changedTime": "2026-01-21T11:25:32.365841+00:00",
+    "createdTime": "2025-12-11T14:27:56.137175+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/rg-open-prod/providers/Microsoft.Network/localNetworkGateways/open-pfsense-localgw",
+    "identity": null,
+    "kind": null,
+    "location": "eastus",
+    "managedBy": null,
+    "name": "open-pfsense-localgw",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-open-prod",
+    "sku": null,
+    "tags": {
+      "Descripcion": "Red local pfSense para VPN",
+      "Responsable": "Tomas Ponce"
+    },
+    "type": "Microsoft.Network/localNetworkGateways"
+  },
+  {
+    "changedTime": "2026-01-21T11:13:51.195731+00:00",
+    "createdTime": "2025-12-11T14:31:43.768210+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/rg-open-prod/providers/Microsoft.Network/connections/open-pfsense-connection",
+    "identity": null,
+    "kind": null,
+    "location": "eastus",
+    "managedBy": null,
+    "name": "open-pfsense-connection",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-open-prod",
+    "sku": null,
+    "tags": {
+      "Descripcion": "Conexión VPN a pfSense (prod)",
+      "Responsable": "Tomas Ponce"
+    },
+    "type": "Microsoft.Network/connections"
+  },
+  {
+    "changedTime": "2026-01-21T11:28:46.046209+00:00",
+    "createdTime": "2025-12-11T20:42:14.089779+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/rg-open-prod/providers/Microsoft.AzureActiveDirectory/b2cDirectories/openprod.onmicrosoft.com",
+    "identity": null,
+    "kind": null,
+    "location": "unitedstates",
+    "managedBy": null,
+    "name": "openprod.onmicrosoft.com",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-open-prod",
+    "sku": {
+      "capacity": null,
+      "family": null,
+      "model": null,
+      "name": "PremiumP1",
+      "size": null,
+      "tier": "A0"
+    },
+    "systemData": {
+      "createdAt": "2025-12-11T20:42:14.2756434Z",
+      "createdBy": "tponce@opencomar.onmicrosoft.com",
+      "createdByType": "User",
+      "lastModifiedAt": "2026-01-21T11:18:45.4758236Z",
+      "lastModifiedBy": "tponce@open.com.ar",
+      "lastModifiedByType": "User"
+    },
+    "tags": {
+      "Descripcion": "B2C de Produccion",
+      "Responsable": "Tomas Ponce"
+    },
+    "type": "Microsoft.AzureActiveDirectory/b2cDirectories"
+  },
+  {
+    "changedTime": "2026-02-17T14:46:26.892300+00:00",
+    "createdTime": "2026-02-17T13:53:51.896235+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/Open-Web-Prod/providers/Microsoft.Storage/storageAccounts/websiteopen",
+    "identity": null,
+    "kind": "StorageV2",
+    "location": "eastus",
+    "managedBy": null,
+    "name": "websiteopen",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "Open-Web-Prod",
+    "sku": {
+      "capacity": null,
+      "family": null,
+      "model": null,
+      "name": "Standard_LRS",
+      "size": null,
+      "tier": "Standard"
+    },
+    "tags": {
+      "Descripcion": "Web Site de Open Solutions",
+      "Responsable": "Federico Gurban"
+    },
+    "type": "Microsoft.Storage/storageAccounts"
+  },
+  {
+    "changedTime": "2026-04-06T19:35:00.362048+00:00",
+    "createdTime": "2026-04-06T19:34:57.254199+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/rg-open-prod/providers/Microsoft.Network/routeTables/rt-aks-prod-cefas",
+    "identity": null,
+    "kind": null,
+    "location": "eastus",
+    "managedBy": null,
+    "name": "rt-aks-prod-cefas",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-open-prod",
+    "sku": null,
+    "tags": {},
+    "type": "Microsoft.Network/routeTables"
+  },
+  {
+    "changedTime": "2026-05-22T13:56:51.620831+00:00",
+    "createdTime": "2026-05-22T13:56:48.642458+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/rg-open-prod/providers/Microsoft.Network/publicIPAddresses/pip-nat-aks-prod",
+    "identity": null,
+    "kind": null,
+    "location": "eastus",
+    "managedBy": null,
+    "name": "pip-nat-aks-prod",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-open-prod",
+    "sku": {
+      "capacity": null,
+      "family": null,
+      "model": null,
+      "name": "Standard",
+      "size": null,
+      "tier": null
+    },
+    "tags": null,
+    "type": "Microsoft.Network/publicIPAddresses"
+  },
+  {
+    "changedTime": "2026-05-22T13:57:04.077493+00:00",
+    "createdTime": "2026-05-22T13:56:53.500860+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/rg-open-prod/providers/Microsoft.Network/natGateways/natgw-aks-prod",
+    "identity": null,
+    "kind": null,
+    "location": "eastus",
+    "managedBy": null,
+    "name": "natgw-aks-prod",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-open-prod",
+    "sku": {
+      "capacity": null,
+      "family": null,
+      "model": null,
+      "name": "Standard",
+      "size": null,
+      "tier": null
+    },
+    "tags": null,
+    "type": "Microsoft.Network/natGateways"
+  },
+  {
+    "changedTime": "2026-05-28T15:07:55.172652+00:00",
+    "createdTime": "2026-05-28T14:52:52.008590+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/rg-open-prod/providers/Microsoft.DBforPostgreSQL/flexibleServers/psql-core-test-eus",
+    "identity": null,
+    "kind": null,
+    "location": "eastus2",
+    "managedBy": null,
+    "name": "psql-core-test-eus",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-open-prod",
+    "sku": {
+      "capacity": null,
+      "family": null,
+      "model": null,
+      "name": "Standard_B1ms",
+      "size": null,
+      "tier": "Burstable"
+    },
+    "systemData": {
+      "createdAt": "2026-05-28T14:53:18.6455569Z"
+    },
+    "tags": {
+      "Descripcion": "Base de datos CORE para test"
+    },
+    "type": "Microsoft.DBforPostgreSQL/flexibleServers"
+  },
+  {
+    "changedTime": "2026-06-22T19:37:53.061040+00:00",
+    "createdTime": "2026-05-28T14:53:05.376727+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/rg-open-prod/providers/Microsoft.DBforPostgreSQL/flexibleServers/psql-core-prod-eus",
+    "identity": null,
+    "kind": null,
+    "location": "eastus2",
+    "managedBy": null,
+    "name": "psql-core-prod-eus",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-open-prod",
+    "sku": {
+      "capacity": null,
+      "family": null,
+      "model": null,
+      "name": "Standard_B1ms",
+      "size": null,
+      "tier": "Burstable"
+    },
+    "systemData": {
+      "createdAt": "2026-05-28T14:53:37.9864193Z"
+    },
+    "tags": {
+      "Descripcion": "Base de datos CORE para prod"
+    },
+    "type": "Microsoft.DBforPostgreSQL/flexibleServers"
+  },
+  {
+    "changedTime": "2026-08-05T15:09:21.185875+00:00",
+    "createdTime": "2026-08-05T14:59:20.990327+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/rg-open-prod/providers/microsoft.insights/actiongroups/VPN-PROD",
+    "identity": null,
+    "kind": null,
+    "location": "eastus",
+    "managedBy": null,
+    "name": "VPN-PROD",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-open-prod",
+    "sku": null,
+    "tags": null,
+    "type": "microsoft.insights/actiongroups"
+  },
+  {
+    "changedTime": "2026-08-05T15:24:43.134506+00:00",
+    "createdTime": "2026-08-05T15:14:42.429294+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/rg-open-prod/providers/microsoft.insights/activityLogAlerts/open-pfsense-connection",
+    "identity": null,
+    "kind": null,
+    "location": "global",
+    "managedBy": null,
+    "name": "open-pfsense-connection",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-open-prod",
+    "sku": null,
+    "tags": {},
+    "type": "microsoft.insights/activityLogAlerts"
+  },
+  {
+    "changedTime": "2026-08-06T15:17:48.256614+00:00",
+    "createdTime": "2026-08-06T15:07:27.600387+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/rg-open-prod/providers/Microsoft.OperationalInsights/workspaces/law-open-prod-monitoring",
+    "identity": null,
+    "kind": null,
+    "location": "eastus",
+    "managedBy": null,
+    "name": "law-open-prod-monitoring",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-open-prod",
+    "sku": null,
+    "tags": null,
+    "type": "Microsoft.OperationalInsights/workspaces"
+  },
+  {
+    "changedTime": "2026-08-27T17:46:04.666089+00:00",
+    "createdTime": "2026-08-27T17:36:04.413313+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/rg-open-prod/providers/Microsoft.KeyVault/vaults/kv-provia-prod",
+    "identity": null,
+    "kind": null,
+    "location": "eastus",
+    "managedBy": null,
+    "name": "kv-provia-prod",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "rg-open-prod",
+    "sku": null,
+    "tags": {},
+    "type": "Microsoft.KeyVault/vaults"
+  },
+  {
+    "changedTime": "2026-08-27T17:47:10.918721+00:00",
+    "createdTime": "2026-08-27T17:37:10.555114+00:00",
+    "extendedLocation": null,
+    "id": "/subscriptions/c094020b-7309-4dfa-a442-33577527de05/resourceGroups/MC_rg-open-prod_aks-open-prod_eastus/providers/Microsoft.ManagedIdentity/userAssignedIdentities/azurekeyvaultsecretsprovider-aks-open-prod",
+    "identity": null,
+    "kind": null,
+    "location": "eastus",
+    "managedBy": null,
+    "name": "azurekeyvaultsecretsprovider-aks-open-prod",
+    "plan": null,
+    "properties": null,
+    "provisioningState": "Succeeded",
+    "resourceGroup": "MC_rg-open-prod_aks-open-prod_eastus",
+    "sku": null,
+    "tags": {
+      "Descripcion": "Servidores de produccion",
+      "Responsable": "Tomas Ponce"
+    },
+    "type": "Microsoft.ManagedIdentity/userAssignedIdentities"
+  }
+]

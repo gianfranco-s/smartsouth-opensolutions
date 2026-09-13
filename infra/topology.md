@@ -154,17 +154,19 @@ A diferencia de §1–§3 (que agrupan VMs por cliente o por categoría), esta v
 ```mermaid
 flowchart TB
   Internet(("Internet"))
+  AZURE["Azure — capa web/aplicación (en relevamiento)<br/>portales CONDOR (Work / Enterprise / ProvIA) · AKS East US<br/>Angular + backend .NET · Entra ID B2C<br/>los datos viven on-premise (vía ORDS) · ver plan_relevamiento_azure.md"]
 
   subgraph DC["Datacenter Open (sitio principal)"]
     direction TB
-    EDGE["OPENVPNFW01 — pfSense borde<br/>200.55.243.92<br/>único puerto expuesto: OpenVPN UDP/2190"]
+    EDGE["OPENVPNFW01 — pfSense borde (VPN)<br/>200.55.243.92 / .115<br/>solo OpenVPN UDP/2190 · VPN S2S a Azure casi sin uso (~487 MiB/30d)"]
+    EDGE2["FWOPEN — pfSense borde (NAT) + interno<br/>200.55.243.90 / .94 · 192.1.1.11<br/>~46 reglas NAT: los 2 NPM (80/443), Oracle directo,<br/>consola de vCenter (192.1.1.29:443), su propio panel"]
 
-    subgraph CLUSTER["Cluster ESXi principal<br/>192.1.1.214–224 (11 hosts)"]
+    subgraph CLUSTER["Cluster ESXi principal<br/>192.1.1.214–224 (11 hosts) · LAN 192.1.1.x"]
       direction TB
-      FWINT["6 pfSense internos confirmados<br/>FWOPEN · FW · CliProFw01<br/>OPENFWCLI001 · OPENFWCLI10 · DMFW01<br/>(+2 candidatos sin confirmar)"]
-      NPM["4 hosts Docker con Nginx Proxy Manager<br/>DOCKER-DEB · OPENDOCKER04<br/>VM-DOCKER-Clientes (x2)"]
+      FWINT["6 pfSense internos confirmados<br/>FWOPEN · FW · CliProFw01<br/>OPENFWCLI001 · OPENFWCLI10 · DMFW01<br/>(+2 candidatos: OPENFWCLI02, VM_FW)"]
+      NPM["4 hosts Docker con Nginx Proxy Manager<br/>DOCKER-DEB · OPENDOCKER04 · VM-DOCKER-Clientes (x2)<br/>ruteo por dominio + ORDS (ords-‹cliente›.open.com.ar)"]
       OTHERDOCKER["5 hosts Docker más<br/>(sin NPM)"]
-      WLDB["VMs WebLogic / DB de clientes<br/>(ver §1)"]
+      WLDB["VMs WebLogic / Forms-Reports / ORDS<br/>+ bases Oracle de clientes (ver §1)"]
       BACKUP["OPENBK — backup Veeam<br/>192.1.1.14 / 10.77.254.114"]
     end
 
@@ -182,21 +184,27 @@ flowchart TB
     PDC["DC2 — AD replicado<br/>192.168.100.2"]
   end
 
-  Internet -->|"OpenVPN 2190/UDP<br/>(único puerto expuesto, confirmado)"| EDGE
+  AZURE -->|"HTTPS · ords-‹cliente›.open.com.ar<br/>(grueso del tráfico app↔datos)"| Internet
+  Internet -->|"OpenVPN 2190/UDP (único puerto)"| EDGE
+  Internet -->|"NAT entrante: 80/443, Oracle, admin"| EDGE2
   EDGE --> CLUSTER
-  CLUSTER -.->|"sin confirmar si es sitio físico distinto o standalone"| HOST2
-  NPM --> WLDB
+  EDGE2 -->|"NAT 80/443 → los 2 NPM"| NPM
+  NPM -->|"dominio / Host header"| WLDB
+  NPM -->|"ords-‹cliente› → ORDS pegado a la base del cliente"| WLDB
   FWINT -.-> NPM
+  CLUSTER -.->|"sin confirmar si es sitio físico distinto o standalone"| HOST2
 
-  PWIN -->|"confirmado en vivo 18ago2026:<br/>http://192.1.1.38:81/ responde directo,<br/>sin salto intermedio"| NPM
+  PWIN -->|"confirmado en vivo 18ago2026:<br/>http://192.1.1.38:81/ responde directo, sin salto"| NPM
   PHOST -.->|"inferido — nota de backup Veeam<br/>de OPENDB_31 apunta a OPENBK"| BACKUP
 ```
 
 **Qué está confirmado vs. qué es todavía hipótesis, en este diagrama:**
 
-- **Confirmado:** el edge `OPENVPNFW01` como único punto de entrada desde Internet (OpenVPN/2190 UDP, nada más expuesto); el sitio Piedras como real, con su propio host ESXi y subred `192.168.100.0/24`; la conectividad Piedras → cluster principal (`192.1.1.x`), probada en vivo llegando al panel de NPM de `VM-DOCKER-Clientes` sin salto intermedio.
+- **Confirmado — hay dos firewalls de borde, no uno.** `OPENVPNFW01` (`200.55.243.92`) termina la VPN site-to-site con Azure y **solo** expone OpenVPN/2190 UDP — pero esa VPN hoy lleva tráfico casi nulo (~487 MiB/30d, ver `informe_ejecutivo_infraestructura_02.md`). `FWOPEN` (`200.55.243.90` / `.94`) es un segundo pfSense de cara a Internet con ~46 reglas NAT activas: los dos NPM en 80/443, acceso Oracle directo para varios clientes, **la consola de administración de vCenter** (`192.1.1.29:443`) y su propio panel. Esto **corrige** el hallazgo anterior de "solo OpenVPN expuesto" (ver `findings.md` → "Corregido: la exposición a Internet NO es mínima", 19 ago 2026). `FWOPEN` aparece dos veces en el diagrama a propósito: es a la vez pfSense interno del cluster y gateway NAT de borde.
+- **Confirmado — el plano ORDS es la vía principal app↔datos.** Los portales CONDOR en Azure AKS consultan la base Core y pegan por HTTPS a `ords-‹cliente›.open.com.ar`, endpoints publicados por el NPM on-premise cuyo destino es un ORDS (Oracle REST Data Services) pegado a la base Oracle del cliente. El grueso del tráfico app→datos va por acá, por Internet — no por la VPN S2S. Clientes con `ords-` propio: Balanz, BOCA, CEFAS, EBY, JOBS, ROMAN (ver `informe_ejecutivo_infraestructura_02.md` y `findings.md`).
+- **Confirmado — Piedras:** sitio real, con su propio host ESXi y subred `192.168.100.0/24`; la conectividad Piedras → cluster principal (`192.1.1.x`), probada en vivo llegando al panel de NPM de `VM-DOCKER-Clientes` sin salto intermedio.
 - **Inferido, no probado en vivo:** la conectividad Piedras → `OPENBK` (backup) — viene de una nota de texto en `OPENDB_31`, no de una prueba de red hecha a mano.
-- **Todavía abierto:** si el host `192.1.3.252` es un tercer sitio físico separado o una máquina standalone dentro del mismo datacenter (ver findings.md, "Todavía abierto" #2); si `OpenPiedrasFw01` es efectivamente el pfSense de Piedras (está apagada, sin confirmar por acceso directo); el mapeo dominio → NPM → firewall/NAT → servidor completo (ítem 1 de `../plan_relevamiento_alta_cefas.md`, todavía pendiente).
+- **Todavía abierto:** si el host `192.1.3.252` es un tercer sitio físico separado o una máquina standalone dentro del mismo datacenter (ver findings.md, "Todavía abierto" #2); si `OpenPiedrasFw01` es efectivamente el pfSense de Piedras (está apagada, sin confirmar por acceso directo); el rango `192.168.222.x` (endpoints ORDS de Balanz) que no aparece en ningún export — posible otra red aislada, como pasó con Piedras.
 
 ## Cómo regenerar estos diagramas
 

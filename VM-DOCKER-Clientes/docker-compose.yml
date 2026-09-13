@@ -1,0 +1,59 @@
+# Encontrado en /home/open/cefaslink/docker-compose.yml
+
+version: "3.7"
+services:
+ frontend:
+    # Seleccionar la imagen para el frontend
+    # image: nginx
+    # image: registry.gitlab.com/opentecnologia/self-service-angular:master
+    image: registry.gitlab.com/opentecnologia/self-service-angular:cefas-sfd
+    container_name: ss_front_cefas
+    restart: unless-stopped
+    volumes:
+     # - ./frontend/html:/usr/share/nginx/html
+     - ./archivos/:/opt/archivos
+    ports:
+      - "8881:80"
+    networks:
+       - ss_cefas
+ postgres:
+    image: registry.gitlab.com/opentecnologia/self-service-database:yacyreta-sfd
+    container_name: ss_pg_cefas
+    restart: unless-stopped
+    command: postgres -c 'max_connections=10000'
+    environment:
+      - POSTGRES_DB=selfservice
+      - POSTGRES_PASSWORD=[REDACTED — quitada antes de versionar, ver CLAUDE.md]
+      - POSTGRES_USER=selfs
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - LANG='es_ES.UTF-8'
+    volumes:
+         - ./postgres:/var/lib/postgresql/data
+         - ./archivos:/opt/archivos
+       #  - ./postgres/init:/docker-entrypoint-initdb.d/
+    ports:
+         - "5532:5432"
+    networks:
+       - ss_cefas
+ backend:
+    container_name: ss_back_cefas
+    # Seleccionar la imagen para el backend
+    #image: openjdk:8-jdk
+    image: registry.gitlab.com/opentecnologia/self-service-backend:cefas-sfd
+    depends_on:
+        - postgres
+    expose:
+         - 9001
+    ports:
+         - 9001:9001
+    restart: unless-stopped
+    volumes:
+         - ./archivos:/usr/src/backend/archivos
+    #     - ./backend/:/usr/src/backend
+    #command: bash -c "cd /usr/src/backend && java -jar SelfServiceBackend-3.0.2.jar server config.yml"
+    networks:
+       - ss_cefas
+    links:
+       - postgres
+networks:
+       ss_cefas:

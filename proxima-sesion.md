@@ -1,8 +1,39 @@
 puede ser que ABB este dado de baja, pero tengamos datos como backup exlusinvamente?
 
-Próximos pasos de ROMAN (por orden)
-1. Access log del NPM de DOCKER-DEB para romanprod.condor.solutions — el que dirime si ROMAN está vivo o dormido.
+Próximos pasos de GIAR (por orden) — ver plan_relevamiento_alta_giar.md para el detalle completo
 
+0. HECHO (12 sep 2026): dashboard de `FW` (`192.1.3.1`) accedido, NAT completo transcripto (`pfsense-192.1.3.1-nat-rules.txt`, cargado en inventory.json). Confirmado: `200.55.243.117:80/443` -> `10.10.1.50` (`WL-GIAR`) es el backend real de `giarprod.condorenterprise.com.ar`. Capa 3 cerrada.
+
+1. SSH a `WL-GIAR` (10.10.1.50) -- directo primero, si no responde usar la ruta NAT confirmada (puerto 215 en la IP publica de FW):
+ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa soportesmart@10.10.1.50
+# si no responde:
+ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa -p 215 soportesmart@200.55.243.117
+sudo ss -tlnp
+ps -ef | grep -iE 'java|weblogic|forms'
+Si responde algo vivo -> GIAR legado activo. Si mudo -> dato duro a favor de la baja.
+
+2. Repetir en `DB-GIAR` (`10.10.1.9`) — primero solo para ver si hay una instancia Oracle levantada:
+ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa soportesmart@10.10.1.9
+# o via NAT: -p 212 soportesmart@200.55.243.117
+ps -ef | grep pmon
+cat /etc/oratab
+
+3. Si `DB-GIAR` esta muda: probar el candidato nuevo `10.1.1.10` (NAT `.117:51521` -> `10.1.1.10:1521`, descripcion "GIAR DB 1521 NUEVO" -- ojo, la subred no coincide con ninguna conocida, podria ser typo por 10.10.1.10).
+
+4. `OPENDBPROD001`/`CDBOPEN03` (ya accesible via `su - oracle`): repetir `v$session` sobre `PRODGIAR` un día hábil, y sobre todo correr `dba_tab_modifications` del schema de aplicación (probablemente `CONDOR`) para un último-DML — el mismo truco que cerró ABB sin depender de pescar una sesión activa en el momento exacto.
+
+5. `DOCKER-DEB` (`192.1.1.37`), ya con acceso de la sesión de ROMAN:
+ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa soportesmart@192.1.1.37
+sudo docker ps
+sudo docker exec <NPM> sh -c "find /data/logs -name 'proxy_host-*.log' -exec grep -l giarprod {} \;"
+tail -50 <log encontrado>
+
+
+---
+
+Pendiente de ROMAN (pausado, no se sigue esta sesión — ver infra/findings.md y plan_relevamiento_alta_roman.md):
+
+1. Access log del NPM de DOCKER-DEB para romanprod.condor.solutions — el que dirime si ROMAN está vivo o dormido.
 
 ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa soportesmart@192.1.1.37
 sudo docker ps                          # ubicar el contenedor NPM
@@ -14,9 +45,7 @@ Si tiene POST /forms/lservlet 200 reciente → ROMAN vivo, capa 1 cerrada y 4/6 
 
 3. Capas 3 y 5 (pendientes, bajo costo): revisar vms[FWOPEN].nat_rules por regla dedicada a 10.77.7.201:9001 o 200.55.243.116:2235; y grep -i 'roman\|csm' proxy_hosts.csv + docker ps en OPENDOCKER01 por Jasper/Condor Link de ROMAN.
 
-4. Cabo aparte: clasificar OPENDBDES011 (10.77.7.151, "Roman test" en vCenter) — descartado de la ruta productiva, pero sin trazar qué corre ahí (¿romanstest de la matriz? VINST2025 también apunta a esa IP).
-
-
+4. Cabo aparte: clasificar OPENDBDES011 (10.77.7.151, "Roman test" en vCenter), descartado de la ruta productiva, pero sin trazar qué corre ahí (¿romanstest de la matriz? VINST2025 también apunta a esa IP).
 
 
 DBs que no se pudo acceder

@@ -4,7 +4,7 @@
 
 **Uno de tres trazados en paralelo.** CEFAS = WL compartido + una migración de DB a medio hacer + capa Docker (Self Service). JOBS = cadena dedicada, de contraste. EBY = **máximo enredo**: arrancó con cuatro ubicaciones WL candidatas; al 1 sep 2026 los logs de NPM confirmaron que corre en producción sobre **dos motores a la vez** (`192.1.1.191` + `10.77.7.201`), el tercero (`10.77.8.201`) es un clon apagado y el cuarto (`192.1.2.54`) solo sirve ORDS. La receta generalizada se convalida contra los tres, no contra uno.
 
-**Estado al 2 sep 2026: 6 de 7 capas cerradas.** 1–3 (rutas de entrada, NPM, firewall/NAT), 4 y 6 (motor clásico y DB de la ruta productiva real, `eby-prod`/`OPENWLPROD01`/`OPENDBPROD005`, confirmados por `formsweb.cfg` + `tnsnames.ora` reales) y 7 (storage, no aplica) cerradas. Capa 5 cerrada como "no aplica" por desk-check. Único cabo suelto: la ruta paralela `yacyreta`/`WebLogic.191` usa una DB compartida (`Database .90`/`CDRADM`) sin resolver a qué cliente corresponde cada sesión — anotado como nota abierta, no bloqueante, dado que `eby-prod` es la ruta con evidencia más fuerte (archivos dedicados, TNS oficial, mayor tráfico).
+**Estado al 12 sep 2026: 7 de 7 capas cerradas — EBY completo.** 1–3 (rutas de entrada, NPM, firewall/NAT), 4 y 6 (motor clásico y DB de la ruta productiva real, `eby-prod`/`OPENWLPROD01`/`OPENDBPROD005`, confirmados por `formsweb.cfg` + `tnsnames.ora` reales) y 7 (storage, no aplica) cerradas. Capa 5 cerrada como "no aplica" por desk-check. **Único cabo suelto cerrado el 12 sep 2026:** `sqlplus` directo a `Database .90`/`CDRADM` (`root@192.1.1.90`) confirmó que esa DB compartida NO es de EBY — de los 8 inquilinos de `WebLogic.191`, solo `SIGO` tiene schema propio ahí (2.6 GB, uso activo el mismo día). La ruta paralela `yacyreta`/`WebLogic.191` no tiene DB de EBY identificable; `eby-prod` sigue siendo la única ruta productiva real de EBY. Ver `infra/findings.md` → "EBY — capa 6 cerrada del todo, 7/7".
 
 ## Por qué EBY (impacto sobre el resto del relevamiento)
 
@@ -43,7 +43,7 @@ De `infra/inventory.json` → `clients[EBY]`, `infra/findings.md` y `infra/topol
 | 3 | Firewall / NAT | ✅ **Resuelto, sin regla dedicada (1 sep 2026).** Mismo patrón que CEFAS/JOBS: la web de EBY entra por el NAT genérico de `DOCKER-DEB` (`200.55.243.94:80/443` → `192.1.1.37`), ruteo por Host header dentro del NPM. `FWOPEN` (46 reglas, tabla completa en `inventory.json`) no tiene NAT web hacia ningún WL. Única regla EBY-específica: `acceso YACYRETA` → `192.1.1.22:1521` (Oracle, restringida por origen). | Ninguno. |
 | 4 | App — motor clásico | ✅ **Resuelto para la ruta `eby-prod` (2 sep 2026).** EBY corre Forms en producción **en dos motores a la vez**: `192.1.1.191` (WebLogic.191, F&R 11g, `ClassicDomain`, bloqueado sin sudo) y `10.77.7.201` (OPENWLPROD01, F&R **12.2.1**, dominio **`base_domain`**, `sudo (ALL) ALL` disponible). En `OPENWLPROD01`: 3 ambientes reales confirmados en `formsweb.cfg` — `[ebyprod]` → `/u02/clientes/ebyprod/cdr2/menues/cdr2w.fmx`, `[ebyqa]` → `/u02/clientes/ebyqa/cdr2/menues/cdr2w.fmx`, `[ebyaudit]` → `/u02/clientes/ebyaudit/cdr2/menues/cdr2w.fmx` (más las variantes `FSAL`/`activacion*` de cada uno). Sin `userid=` preconfigurado — el login lo tipea el usuario en la pantalla de Forms (coincide con la sesión real de `AGARCIA` vista en capa 6). | Ninguno para `eby-prod`. La ruta `yacyreta`/`WebLogic.191` queda sin poder confirmar sus módulos exactos (permission wall sin sudo) — no bloqueante, dado que `eby-prod` es la ruta con archivos/DB dedicados. |
 | 5 | App — capa Docker / reportes | ✅ **Resuelto — no aplica (2 sep 2026).** Revisadas las 101 rutas de `DOCKER-DEB` (desk-check, sin sesión): no existe ningún `*jasper*` para EBY/Yacyretá, a diferencia de `cefasjasper`/`cabjjasper`/`jobsjasper` que sí están. Junto con el `ls -la /clientes/` negativo (capa 7) y `Self Service` en blanco de la matriz, cierra la capa: EBY no tiene componente Docker/reportes containerizado. | Ninguno. |
-| 6 | Base de datos | ✅ **Resuelto para la ruta `eby-prod` (2 sep 2026), vía `tnsnames.ora` de `OPENWLPROD01`.** Tres alias TNS confirmados con `SERVICE_NAME` exacto: `EBYPROD`, `EBYQA`, `EBYAUDIT` — los tres a `10.77.7.15` (`OPENDBPROD005`), puerto 1521. `EBYPROD` coincide letra por letra con `sid_nuevo` de la matriz. Es configuración oficial del dominio, no solo tráfico de red — cierra la disputa. La ruta `yacyreta` sigue con `Database .90`/`CDRADM` como DB compartida sin resolver a qué cliente corresponde cada sesión (ver hallazgo del `.90`) — queda como nota abierta, no bloqueante: la ruta productiva real de EBY (`eby-prod`, con `.env` dedicados y most tráfico) ya está confirmada de punta a punta. | Ninguno para la ruta `eby-prod`. Opcional, sin prioridad: `sqlplus` a `10.77.7.15` (ahora con credencial disponible, ver más abajo) para el último `SELECT name FROM v$database;` — la config TNS ya alcanza para dar por cerrada la capa. |
+| 6 | Base de datos | ✅ **Resuelto de punta a punta (12 sep 2026).** Ruta `eby-prod`: tres alias TNS confirmados con `SERVICE_NAME` exacto: `EBYPROD`, `EBYQA`, `EBYAUDIT` — los tres a `10.77.7.15` (`OPENDBPROD005`), puerto 1521, vía `tnsnames.ora` real de `OPENWLPROD01` (2 sep 2026). `EBYPROD` coincide letra por letra con `sid_nuevo` de la matriz. Ruta `yacyreta`: `sqlplus` directo a `Database .90`/`CDRADM` (`root@192.1.1.90`, 12 sep 2026) confirmó que **no** es la DB de EBY — de los 8 inquilinos de `WebLogic.191`, solo `SIGO` tiene schema propio ahí. La ruta paralela no tiene DB de EBY identificable. | Ninguno. Capa cerrada por completo — ruta productiva confirmada por config oficial, ruta paralela descartada por evidencia directa `sqlplus`. |
 | 7 | Almacenamiento / object store | ✅ **Resuelto — no aplica (1 sep 2026).** `ls -la /clientes/` en `WebLogic.191` no muestra ninguna carpeta de EBY/Yacyretá (al 6 sep 2026 solo `cefas` y `lost+found`). Sin mount NFS dedicado para EBY. Coincide con la matriz (`Self Service` en blanco para EBY) y con el resultado de capa 5. | Ninguno. Reabrir solo si capa 5 encuentra un `ss_*_yacyreta` vivo en otro host. |
 
 ## Capa 1 — rutas de entrada (detalle, 1 sep 2026)
@@ -100,21 +100,9 @@ Los logs de NPM confirman que `yacyreta.condorwork.com.ar` sirve Forms de EBY de
 - ~~`sudo` / `formsweb.cfg` / `tnsnames.ora`~~ ❌ **bloqueado sin sudo** — `soportesmart` no está en sudoers, y el árbol `/app/oracle/...` no es legible sin él (`oracle:oinstall`, sin permiso de "otros"). No reintentar sin credencial nueva.
 - ~~`ls -la /clientes/`~~ ✅ hecho — sin carpeta EBY/Yacyretá. Cierra capa 7 (no aplica).
 
-### 2.5. `192.1.1.90` (`Database .90`) — ❌ **bloqueada por credencial (1 sep 2026)**
+### 2.5. `192.1.1.90` (`Database .90`) — ✅ **resuelta (12 sep 2026)**
 
-Domina el tráfico Oracle en vivo de `WebLogic.191` (14/18 conexiones) — sigue siendo la candidata más fuerte a DB real de EBY. Pero **`soportesmart` fue rechazada por SSH** en los tres hosts de DB probados hoy: `192.1.1.90`, `192.1.1.22` (`OPENDBPROD006`) y `10.77.7.15` (`OPENDBPROD005`). Contraste notable: la misma cuenta **sí** funciona en los hosts de aplicación/middleware (`WebLogic.191`, `OPENWLPROD01`, `192.1.2.54`, `docker-deb`) — los hosts de DB (al menos estos tres) parecen tener otro esquema de acceso, no resuelto por probar más flags de SSH. Ya no es un problema técnico — es una credencial que hay que pedir. Ver `QUESTIONS.md`.
-
-```bash
-# reintentar solo si aparece una credencial nueva (SSH o Oracle):
-ssh -oHostKeyAlgorithms=+ssh-rsa <cuenta-nueva>@192.1.1.90
-ps -ef | grep pmon
-sqlplus / as sysdba
-SELECT name FROM v$database;
-SELECT username, machine, program, count(*) FROM v$session
-  WHERE username IS NOT NULL GROUP BY username, machine, program;
-```
-
-Si el SID o las sesiones dicen `EBY`/`MBA`/`YACYRETA`, o `machine=192.1.1.191`, confirma la DB real y cierra capa 6.
+~~Domina el tráfico Oracle en vivo de `WebLogic.191` (14/18 conexiones) — candidata más fuerte a DB real de EBY.~~ Con la credencial `root` conseguida el 2 sep (ver `QUESTIONS.md`), `sqlplus` a `CDRADM` confirmó lo contrario: **de los 8 inquilinos de `WebLogic.191`, solo `SIGO` tiene schema propio en esta DB** (2.6 GB, uso activo el mismo día). `Database .90` queda descartada como DB de EBY — detalle completo en `infra/findings.md` → "EBY — capa 6 cerrada del todo, 7/7" y en `inventory.json` → `vms['Database .90'].db_detail`.
 
 ### 3. `10.77.7.201` (`OPENWLPROD01`) — **segundo motor Forms productivo de EBY, en progreso (2 sep 2026)**
 
@@ -130,21 +118,9 @@ Los logs de NPM confirman que `eby-prod.condorwork.com.ar` sirve Forms de EBY de
 
 Resuelto por cruce con inventario (1 sep 2026): es el clon apagado a propósito de `OPENWLPROD01` (`state: Apagado`, nota "dejar apagada"). Por eso `ebyprod.open.com.ar` da 502. No requiere acción — la ruta NPM se puede deshabilitar cuando se limpie el NPM.
 
-### 5. DB — ❌ bloqueada por credencial (1 sep 2026)
+### 5. DB — ✅ resuelta (12 sep 2026)
 
-`soportesmart` por SSH fue rechazada en los tres hosts de DB probados: `192.1.1.90` (`Database .90`), `192.1.1.22` (`OPENDBPROD006`, origen reclamado) y `10.77.7.15` (`OPENDBPROD005`, destino). No es un problema de flags/negociación SSH — la cuenta compartida no tiene acceso a estos hosts, a diferencia de los de app/middleware. Anotado en `QUESTIONS.md` como pendiente de credencial. Comandos abajo, para retomar cuando llegue una:
-
-```bash
-# en cualquiera de los 3, con credencial nueva:
-ssh -oHostKeyAlgorithms=+ssh-rsa <cuenta-nueva>@<ip>
-ps -ef | grep pmon
-sqlplus / as sysdba
-SELECT name, open_mode FROM v$database;
-SELECT value FROM nls_database_parameters WHERE parameter='NLS_CHARACTERSET';   -- esperado WE8ISO8859P1 en el origen
-SELECT username, machine, program, count(*) FROM v$session WHERE username IS NOT NULL GROUP BY username, machine, program;
-```
-
-**Mientras tanto, una lectura indirecta sin login a la DB:** `netstat -tn | grep 1521` en `10.77.7.201` (§3, capa 4) — si repite el patrón de `192.1.1.191` (mayoría a `.90`, nada a `.22`), refuerza `Database .90` como la real sin necesitar acceso a la DB misma.
+~~`soportesmart` por SSH fue rechazada en los tres hosts de DB probados: `192.1.1.90` (`Database .90`), `192.1.1.22` (`OPENDBPROD006`, origen reclamado) y `10.77.7.15` (`OPENDBPROD005`, destino).~~ `root` (credencial conseguida el 2 sep, ver `QUESTIONS.md`) sí abrió `192.1.1.90`: `sqlplus` a `CDRADM` descartó esa DB para EBY (solo `SIGO` tiene schema ahí — ver §2.5). `10.77.7.15` ya no hace falta por `sqlplus` directo — su capa 6 quedó cerrada por `tnsnames.ora` oficial (§3). `192.1.1.22` queda sin acceso directo, pero también sin evidencia de tráfico real (netstat de `WebLogic.191`, 1 sep, dio 0 conexiones ahí) — no bloqueante.
 
 ## Al terminar
 
@@ -160,3 +136,7 @@ SELECT username, machine, program, count(*) FROM v$session WHERE username IS NOT
 *(Vacío a propósito — se llena cuando los tres trazados converjan, no antes.)*
 
 **Aporte específico que se espera de EBY:** el caso "cliente con la migración BD+WL declarada 'hecha' pero sin cierre, y varios WL candidatos listados a la vez". Cómo distinguir, con la misma evidencia disponible, el WL/DB **productivo** del **destino de migración** y del **legado** cuando la documentación lista los tres sin marcar cuál está vivo — método: sesiones activas + `netstat` en vivo, no la config declarada ni la matriz. CEFAS tenía una sola migración pendiente (DB); JOBS ninguna; EBY es el del árbol de candidatos más frondoso.
+
+## Cierre (12 sep 2026)
+
+**EBY queda en 7 de 7 capas cerradas.** El único cabo suelto (a qué cliente correspondía la DB compartida `Database .90`/`CDRADM` detrás de la ruta legada `yacyreta`) se cerró por `sqlplus` directo: esa DB no es de EBY — de los 8 inquilinos de `WebLogic.191`, solo `SIGO` tiene schema propio ahí, en uso activo el mismo día. Bono: resuelve de paso el blind spot de `SIGO` (uno de los 4 clientes de `.191` sin VM mapeada). Detalle completo en `infra/findings.md` → "EBY — capa 6 cerrada del todo, 7/7".

@@ -10,6 +10,8 @@ Construido resolviendo los servidores WebLogic/DB declarados de cada cliente (de
 
 Prestar atención a las instancias compartidas: varios clientes están en la *misma* VM de WebLogic y/o la misma VM de base de datos — es un dato de radio de impacto que conviene saber antes de tocar cualquiera de ellas.
 
+**EBY (12 sep 2026):** DB cerrada a un solo nodo real, `OPENDBPROD005` — la candidata `Database .90` (detrás de la ruta paralela `yacyreta`/`WebLogic.191`) quedó descartada por `sqlplus` directo (esa DB es de `SIGO`, un tenant de `WebLogic.191` sin código de cliente asignado, fuera del alcance de este diagrama). EBY sigue con **dos** nodos WL en el diagrama (`WebLogic.191` y `OPENWLPROD01`) porque ambos corren tráfico Forms productivo real y concurrente — no es ambigüedad sin resolver, son dos stacks vivos a la vez.
+
 ```mermaid
 flowchart LR
   n_ABB["ABB S.A.<br/>(ABB)<br/><i>DADA DE BAJA</i>"]
@@ -37,9 +39,7 @@ flowchart LR
   n_ESYOP["Ente Servicios y Obras Públicas (ESYOP)<br/>(ESYOP)"]
   n_WebLogic_19["WL: WebLogic.19"]
   n_EBY["Entidad Binacional Yacyretá<br/>(EBY)"]
-  n_Database__90[("DB: Database .90")]
   n_OPENDBPROD005[("DB: OPENDBPROD005")]
-  n_OPENDBPROD006[("DB: OPENDBPROD006")]
   n_JOBS["Jobs Servicios de Recursos Humanos SRL<br/>(JOBS)"]
   n_HEINLEIN["Heinlein<br/>(HEINLEIN)"]
   n_OL8LABWL01["WL: OL8LABWL01"]
@@ -73,10 +73,8 @@ flowchart LR
   n_WebLogic_19 --> n_DBClientes_12C_31
   n_EBY --> n_WL12C_Desarrollo_2_54
   n_EBY --> n_WebLogic_191
-  n_WebLogic_191 --> n_Database__90
   n_EBY --> n_OPENWLPROD01
   n_OPENWLPROD01 --> n_OPENDBPROD005
-  n_EBY --> n_OPENDBPROD006
   n_JOBS --> n_WL12C_PROD
   n_HEINLEIN --> n_OL8LABWL01
   n_OL8LABWL01 --> n_OPENDBPROD001
@@ -92,7 +90,7 @@ flowchart LR
 **Leer este diagrama con cuidado — varios nodos son engañosos:**
 
 - **`DBClientes-12C.31` la comparten ABB y ESYOP** (`WL12C-Desarrollo.2.54 → DBClientes-12C.31` y `WebLogic.19 → DBClientes-12C.31`): confirmado en vivo el 6 sep 2026 — instancias Oracle separadas (`ABB` y `esyop`) en el mismo box. `DBClientes.190` la usa **solo DCVIAJES** (vía `WebLogic.191`); la flecha ABB→`DBClientes.190` que había antes se quitó — ese box solo tiene sub‑bases históricas de ABB (`abbhist`/`abbtubio`, apagadas), no su DB productiva.
-- **`EBY`, `ROMAN`, `GIAR` y `Rex Argentina` (`279`) tienen más de un nodo WL y/o DB** — a diferencia del resto, no es "un cliente, un servidor": son candidatos en paralelo (stack legado vs. nuevo, o candidatos sin confirmar todavía). El emparejamiento WL→DB que muestra el diagrama para estos cuatro está curado a mano con la evidencia real de cada trazado (`plan_relevamiento_alta_eby.md`, `infra/findings.md`), no generado mecánicamente — antes de tocar cualquiera de estos nodos, leer el detalle en `clients[].weblogic.resolved`/`.database.resolved` (campo `notes`), no asumir por la flecha.
+- **`EBY`, `ROMAN`, `GIAR` y `Rex Argentina` (`279`) tienen más de un nodo WL y/o DB** — a diferencia del resto, no es "un cliente, un servidor": son candidatos en paralelo (stack legado vs. nuevo, o candidatos sin confirmar todavía). El emparejamiento WL→DB que muestra el diagrama para estos cuatro está curado a mano con la evidencia real de cada trazado (`plan_relevamiento_alta_eby.md`, `infra/findings.md`), no generado mecánicamente — antes de tocar cualquiera de estos nodos, leer el detalle en `clients[].weblogic.resolved`/`.database.resolved` (campo `notes`), no asumir por la flecha. **Excepción: EBY ya no tiene ambigüedad de DB** (cerrado 12 sep 2026, un solo nodo `OPENDBPROD005`) — sus dos nodos WL siguen dobles porque ambos stacks están vivos en simultáneo, no porque falte resolver cuál es el real.
 - **`OPENWLPROD01` y `OPENDBPROD001` son ahora los hosts más compartidos del segundo nivel** (después de `WebLogic.191`/8 clientes y `CLIENTES-DB`/3 instancias): `OPENWLPROD01` sirve a EBY, GIAR y ROMAN; `OPENDBPROD001` a Heinlein, CEFAS (destino), GIAR y Rex Argentina — ninguno de estos últimos tres verificado en vivo todavía, solo por `tnsnames.ora`/NPM.
 - **Rex Argentina (`279`) tiene 2 candidatos de DB y 1 de WL, ninguno confirmado** — primera vez que aparece algo de infraestructura de Rex en este diagrama (antes no tenía ningún nodo resuelto).
 

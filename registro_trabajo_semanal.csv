@@ -1,0 +1,22 @@
+semana,descripcion,porcentaje,horas
+2026-08-10,Kick-off,8%,1.4
+2026-08-10,Exploración inicial de conexiones y metodologías de conexión,14%,2.5
+2026-08-10,"Inventario inicial, ajuste de enfoque (on-premise)",22%,4.0
+2026-08-10,Relevamiento pfSense,14%,2.5
+2026-08-10,Set up de interacción con IA,11%,2.0
+2026-08-10,Diagrama de topología inicial,11%,2.0
+2026-08-10,Automatización para extracción de datos de archivos CSV,20%,3.6
+2026-08-17,Relevamiento de sitio Piedras,16%,3.0
+2026-08-17,Relevamiento de sitio Datacenter,14%,2.7
+2026-08-17,Análisis expandido de CSV (con tiempos de actividad y notas de VM),12%,2.3
+2026-08-17,Inicio relevamiento CEFAS y JOBS,15%,2.8
+2026-08-17,Documentación de relevamiento por cliente,10%,1.9
+2026-08-17,Mapeo NPM en DOCKER-DEB,14%,2.7
+2026-08-17,Mapeo FWOPEN,11%,2.1
+2026-08-17,Redacción de informe ejecutivo,8%,1.5
+2026-08-24,Fin relevamiento CEFAS,25%,4.5
+2026-08-24,Acceso a DB Oracle,15%,2.7
+2026-08-24,Alineación de inconsistencias entre relevamiento manual e IA,20%,3.6
+2026-08-24,Preparación de informes,18%,3.2
+2026-08-24,Reuniones de ajuste,12%,2.2
+2026-08-24,Reunión con cliente,10%,1.8

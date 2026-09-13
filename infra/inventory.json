@@ -244,9 +244,26 @@
         "192.1.1.90"
       ],
       "category": "database",
-      "used_by_clients": [],
+      "used_by_clients": [
+        {
+          "client": "SIGO",
+          "code": "",
+          "role": "database (confirmado en vivo 12 sep 2026, ver db_detail)"
+        }
+      ],
       "uptime_days": 536,
-      "notes": "Last backup: [7/14/2025 1:07:44 AM]; Veeam server: [openbk]; Job: [Job_002_Backup_quincenal]; Repository: [openbk]"
+      "notes": "Last backup: [7/14/2025 1:07:44 AM]; Veeam server: [openbk]; Job: [Job_002_Backup_quincenal]; Repository: [openbk]",
+      "db_detail": {
+        "confirmed": "12 sep 2026",
+        "sid": "CDRADM",
+        "engine": "Oracle 11.2.0.4.0, non-CDB, WE8ISO8859P1",
+        "oratab": "OPEN:N (declarada, no levantada); CDRADM:Y (unica instancia corriendo, ora_pmon_CDRA)",
+        "method": "root@192.1.1.90 (misma credencial que abrio 192.1.1.32/CLIENTES-DB) -- su - oracle, ORACLE_SID=CDRADM, sqlplus / as sysdba",
+        "schemas_reales": "Cruce completo de dba_segments (top 15 por tamano) + SELECT username FROM dba_users WHERE username IN ('EBY','YACYRETA','YACYRET','CEFAS','DCVIAJES','DVAL','UIA','MAFISA','TASSAROLI','SIGO') -- de los 8 inquilinos de WebLogic.191, SOLO 'SIGO' existe como schema en esta DB (2.6 GB, 211 segmentos, ultimo DML 12/09/2026 11:00 -- uso productivo el mismo dia de la consulta). Ni EBY/YACYRETA ni CEFAS/DCVIAJES/DVAL/UIA/MAFISA/TASSAROLI tienen schema propio aca -- descartados de plano como duenos de esta DB.",
+        "otros_schemas": "CONDORBI (252 MB, activo -- ultimo DML 11/09/2026, probable BI generico/compartido, sin owner claro); CONDOR (19 MB, inactivo desde 06/01/2026, legado); PEPE/MPEROTTI/MCALELLO/VMUNOZ (16-85 MB c/u, sin dba_tab_modifications -- cuentas nominales de usuario, no schemas de cliente).",
+        "sesiones_en_vivo": "SIGOWEB via JDBC Thin desde contenedor Docker (9 sesiones inactivas al momento de mirar) -- confirma el patron de acceso de SIGO. AGARCIA via frmweb@NAI (=WebLogic.191, Forms real) -- cuenta nominal de usuario, no atribuible a un cliente especifico por nombre de schema; podria ser un usuario de SIGO usando su propio login personal, o trafico de otro inquilino sin schema propio. No investigado mas alla -- fuera del metodo validado.",
+        "conclusion_eby": "Database .90/CDRADM NO es la DB de EBY -- descartada con evidencia directa (ausencia de schema EBY/YACYRETA). Cierra el ultimo cabo suelto de EBY (ver plan_relevamiento_alta_eby.md): la ruta productiva real (eby-prod/OPENWLPROD01/OPENDBPROD005) sigue siendo la unica confirmada; la ruta paralela legada (yacyreta/WebLogic.191) no tiene una DB propia de EBY identificable -- lo que hay detras es la DB de SIGO, compartida con cuentas nominales sin atribucion clara."
+      }
     },
     {
       "name": "Database 12c .17",
@@ -424,14 +441,21 @@
         "fe80::20c:29ff:fe38:a92a"
       ],
       "category": "database",
-      "used_by_clients": [],
+      "used_by_clients": [
+        {
+          "client": "CSM Ciencia al Servicio del Movimiento S.A.",
+          "code": "ROMAN",
+          "role": "database_historica"
+        }
+      ],
       "name_hint_client": {
         "client_code": "ROMAN",
         "client_name": "CSM Ciencia al Servicio del Movimiento S.A.",
         "basis": "name substring 'ROMAN' matches client code; likely a historical/archive DB for this client",
         "confidence": "inferred_from_name_only_not_confirmed"
       },
-      "uptime_days": 1017
+      "uptime_days": 1017,
+      "notes": "[12 sep 2026] Confirmado via reglas NAT de FW (192.1.3.1): 'SSH DBromanHist' (213->22) y 'Publicacion de Base Datos' (1521->1521, alias ROMAN_IP_PUBLICAS). Cierra el item 1 de findings.md 'Todavia abierto' (instancia extra DB-ROMAN-HISTORICO)."
     },
     {
       "name": "DB-TEST",
@@ -1245,7 +1269,489 @@
       "category": "firewall_confirmed_pfsense",
       "used_by_clients": [],
       "confirmation": "Confirmado pfSense vía relevamiento manual de firewalls (source-files/Relevamiento (sin claves) - Pfsense.csv): dashboard accesible en 192.1.3.1, etiquetado 'fwClientes - dashboard'.",
-      "uptime_days": 784
+      "uptime_days": 784,
+      "nat_rules": {
+        "source": "pfsense-192.1.3.1-nat-rules.txt -- transcripcion completa de Firewall > NAT > Port Forward, via TeamViewer (12 sep 2026). 51 reglas. 'WAN address' = IP WAN primaria de esta VM (probablemente 200.55.243.116, ya conocida como destino de ords-romans.open.com.ar); 200.55.243.117 es una IP WAN secundaria explicita en varias reglas.",
+        "rules": [
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "dest_address": "WAN address",
+            "dest_port": "5555",
+            "nat_to": "10.10.1.200:22 (SSH)",
+            "resolved_vm": null,
+            "description": "mitiga OPENINFR01"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "WAN address",
+            "dest_port": "1522",
+            "nat_to": "172.18.5.43:1522",
+            "resolved_vm": "DB-ROMAN",
+            "description": "mitiga"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "WAN address",
+            "dest_port": "212",
+            "nat_to": "172.18.5.43:22 (SSH)",
+            "resolved_vm": "DB-ROMAN",
+            "description": "SSH DBromanP"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "WAN address",
+            "dest_port": "213",
+            "nat_to": "172.18.5.38:22 (SSH)",
+            "resolved_vm": "DB-ROMAN-HISTORICO",
+            "description": "SSH DBromanHist"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "WAN address",
+            "dest_port": "214",
+            "nat_to": "10.10.1.132:22 (SSH)",
+            "resolved_vm": null,
+            "description": "SSH DBromanTest"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "WAN address",
+            "dest_port": "215",
+            "nat_to": "172.18.5.40:22 (SSH)",
+            "resolved_vm": "WL-CLIENTES",
+            "description": "SSH WLromanPROD"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "WAN address",
+            "dest_port": "216",
+            "nat_to": "172.18.5.39:22 (SSH)",
+            "resolved_vm": "WL-ROMAN",
+            "description": "SSH WLromanHist"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "WAN address",
+            "dest_port": "217",
+            "nat_to": "172.18.5.60:22 (SSH)",
+            "resolved_vm": "DB-ARGOCEAN",
+            "description": "SSH DBargoceanPROD"
+          },
+          {
+            "protocol": "TCP",
+            "source": "ROMAN_IP_PUBLICAS",
+            "dest_address": "WAN address",
+            "dest_port": "1522",
+            "nat_to": "172.18.5.43:1522",
+            "resolved_vm": "DB-ROMAN",
+            "description": null
+          },
+          {
+            "protocol": "TCP",
+            "source": "ROMAN_IP_PUBLICAS",
+            "dest_address": "WAN address",
+            "dest_port": "1523",
+            "nat_to": "172.18.5.43:1522",
+            "resolved_vm": "DB-ROMAN",
+            "description": "romans"
+          },
+          {
+            "protocol": "TCP",
+            "source": "ROMAN_IP_PUBLICAS",
+            "dest_address": "WAN address",
+            "dest_port": "1524",
+            "nat_to": "10.10.1.132:1521",
+            "resolved_vm": null,
+            "description": "test roman , GIARG"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "WAN address",
+            "dest_port": "1524",
+            "nat_to": "10.10.1.132:1521",
+            "resolved_vm": null,
+            "description": "mitiga test roman,GIARG"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "dest_address": "WAN address",
+            "dest_port": "1523",
+            "nat_to": "172.18.5.43:1522",
+            "resolved_vm": "DB-ROMAN",
+            "description": "mitiga romans"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "dest_address": "WAN address",
+            "dest_port": "8888",
+            "nat_to": "172.18.5.39:8888",
+            "resolved_vm": "WL-ROMAN",
+            "description": "Publicacion de Weblogic"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "dest_address": "WAN address",
+            "dest_port": "8080",
+            "nat_to": "172.18.5.40:80 (HTTP)",
+            "resolved_vm": "WL-CLIENTES",
+            "description": "Publicacion de Weblogic 11gR2"
+          },
+          {
+            "protocol": "TCP",
+            "source": "ROMAN_IP_PUBLICAS",
+            "dest_address": "WAN address",
+            "dest_port": "8080",
+            "nat_to": "172.18.5.40:80 (HTTP)",
+            "resolved_vm": "WL-CLIENTES",
+            "description": "Publicacion de Weblogic 11gR2 (ROMAN)"
+          },
+          {
+            "protocol": "TCP",
+            "source": "Argocean_IP_Publicas",
+            "dest_address": "WAN address",
+            "dest_port": "8080",
+            "nat_to": "172.18.5.40:80 (HTTP)",
+            "resolved_vm": "WL-CLIENTES",
+            "description": "Weblogic 11gR2 argocean"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "WAN address",
+            "dest_port": "1521",
+            "nat_to": "172.18.5.38:1521",
+            "resolved_vm": "DB-ROMAN-HISTORICO",
+            "description": "mitiga Publicacion de Base Datos"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "WAN address",
+            "dest_port": "1520",
+            "nat_to": "172.18.5.60:1521",
+            "resolved_vm": "DB-ARGOCEAN",
+            "description": "mitiga Publicacion de Base Datos - ARGOCEAN"
+          },
+          {
+            "protocol": "TCP",
+            "source": "ROMAN_IP_PUBLICAS",
+            "dest_address": "WAN address",
+            "dest_port": "1521",
+            "nat_to": "172.18.5.38:1521",
+            "resolved_vm": "DB-ROMAN-HISTORICO",
+            "description": "Publicacion de Base Datos"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "dest_address": "WAN address",
+            "dest_port": "8889",
+            "nat_to": "172.18.5.243:8889",
+            "resolved_vm": null,
+            "description": "Cefas CondorLink"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "dest_address": "WAN address",
+            "dest_port": "9001",
+            "nat_to": "172.18.5.243:9001",
+            "resolved_vm": null,
+            "description": "Cefas CondorLink Backend"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "WAN address",
+            "dest_port": "2222",
+            "nat_to": "172.18.5.243:22 (SSH)",
+            "resolved_vm": null,
+            "description": "Docker SYT"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "dest_address": "WAN address",
+            "dest_port": "4443",
+            "nat_to": "172.18.5.2:443 (HTTPS)",
+            "resolved_vm": "FW",
+            "description": "FW Https"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "dest_address": "200.55.243.117",
+            "dest_port": "8888",
+            "nat_to": "10.10.1.100:8888",
+            "resolved_vm": null,
+            "description": "CEFAS WL"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "200.55.243.117",
+            "dest_port": "214",
+            "nat_to": "10.10.1.100:22 (SSH)",
+            "resolved_vm": null,
+            "description": "CEFAS WL ssh"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "200.55.243.117",
+            "dest_port": "2144",
+            "nat_to": "10.10.1.100:7001",
+            "resolved_vm": null,
+            "description": "CEFAS WL admin"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "dest_address": "200.55.243.117",
+            "dest_port": "443 (HTTPS)",
+            "nat_to": "10.10.1.50:443 (HTTPS)",
+            "resolved_vm": "WL-GIAR",
+            "description": "GIAR WL"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "dest_address": "200.55.243.117",
+            "dest_port": "80 (HTTP)",
+            "nat_to": "10.10.1.50:80 (HTTP)",
+            "resolved_vm": "WL-GIAR",
+            "description": "GIAR WL http"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "200.55.243.117",
+            "dest_port": "215",
+            "nat_to": "10.10.1.50:22 (SSH)",
+            "resolved_vm": "WL-GIAR",
+            "description": "GIAR WL ssh"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "200.55.243.117",
+            "dest_port": "1521",
+            "nat_to": "10.10.1.8:1521",
+            "resolved_vm": null,
+            "description": "mitiga CEFAS DB 1521"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "200.55.243.117",
+            "dest_port": "213 - 218",
+            "nat_to": "10.10.1.8:22 - 27",
+            "resolved_vm": null,
+            "description": "CEFAS DB ssh"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "200.55.243.117",
+            "dest_port": "1522",
+            "nat_to": "10.10.1.9:1521",
+            "resolved_vm": "DB-GIAR",
+            "description": "mitiga GIAR DB 1521"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "200.55.243.117",
+            "dest_port": "51521",
+            "nat_to": "10.1.1.10:1521",
+            "resolved_vm": null,
+            "description": "mitiga GIAR DB 1521 NUEVO"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "200.55.243.117",
+            "dest_port": "212",
+            "nat_to": "10.10.1.9:22 (SSH)",
+            "resolved_vm": "DB-GIAR",
+            "description": "GIAR DB ssh"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "200.55.243.117",
+            "dest_port": "2222",
+            "nat_to": "10.10.1.43:22 (SSH)",
+            "resolved_vm": "VM-DOCKER-Clientes (1)",
+            "description": "CEFAS Docker ssh"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "dest_address": "200.55.243.117",
+            "dest_port": "8881",
+            "nat_to": "10.10.1.43:8881",
+            "resolved_vm": "VM-DOCKER-Clientes (1)",
+            "description": "CEFAS CONDORLINK"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "dest_address": "200.55.243.117",
+            "dest_port": "9001",
+            "nat_to": "10.10.1.43:9001",
+            "resolved_vm": "VM-DOCKER-Clientes (1)",
+            "description": "CEFAS CONDORLINK Backend"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "dest_address": "WAN address",
+            "dest_port": "81",
+            "nat_to": "10.10.1.43:81",
+            "resolved_vm": "VM-DOCKER-Clientes (1)",
+            "description": "NGINX"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "dest_address": "WAN address",
+            "dest_port": "80 (HTTP)",
+            "nat_to": "10.10.1.43:80 (HTTP)",
+            "resolved_vm": "VM-DOCKER-Clientes (1)",
+            "description": "NGINX http"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "dest_address": "WAN address",
+            "dest_port": "443 (HTTPS)",
+            "nat_to": "10.10.1.43:443 (HTTPS)",
+            "resolved_vm": "VM-DOCKER-Clientes (1)",
+            "description": "NGINX https"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "WAN address",
+            "dest_port": "61991",
+            "nat_to": "10.10.1.3:22 (SSH)",
+            "resolved_vm": null,
+            "description": "SSH WL12C Clientes"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "WAN address",
+            "dest_port": "9999",
+            "nat_to": "172.18.5.200:9090",
+            "resolved_vm": null,
+            "description": "obackup cockpit"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "WAN address",
+            "dest_port": "2232",
+            "nat_to": "172.18.5.111:22 (SSH)",
+            "resolved_vm": null,
+            "description": "WL12-CLI-SYT"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "WAN address",
+            "dest_port": "2233",
+            "nat_to": "172.18.5.112:22 (SSH)",
+            "resolved_vm": null,
+            "description": "DB-CLI-SYT"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "WAN address",
+            "dest_port": "2236",
+            "nat_to": "172.18.5.112:1525",
+            "resolved_vm": null,
+            "description": "mitiga DB-CLI-SYT-LISTENER"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "WAN address",
+            "dest_port": "2333",
+            "nat_to": "172.18.5.6:22 (SSH)",
+            "resolved_vm": null,
+            "description": "DB-PROD"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "WAN address",
+            "dest_port": "2234",
+            "nat_to": "172.18.5.111:7001",
+            "resolved_vm": null,
+            "description": "wl12-cl-syt-CONSOLE"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "dest_address": "WAN address",
+            "dest_port": "2235",
+            "nat_to": "172.18.5.111:8001",
+            "resolved_vm": null,
+            "description": "wl12-cl-syt-ORDS-ROMANS"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "dest_address": "WAN address",
+            "dest_port": "2223",
+            "nat_to": "172.18.5.111:9001",
+            "resolved_vm": null,
+            "description": "wl12-cl-syt"
+          },
+          {
+            "protocol": "TCP",
+            "source": "*",
+            "dest_address": "WAN address",
+            "dest_port": "2224",
+            "nat_to": "172.18.5.111:9002",
+            "resolved_vm": null,
+            "description": "wl12-cl-syt_report"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "WAN address",
+            "dest_port": "9996",
+            "nat_to": "10.10.1.132:22 (SSH)",
+            "resolved_vm": null,
+            "description": "DB_CLIENTES TEST"
+          },
+          {
+            "protocol": "TCP",
+            "source": "OPEN_REDES_PUBLICAS_2024",
+            "dest_address": "WAN address",
+            "dest_port": "61160 - 62000",
+            "nat_to": "10.10.1.200:61160 - 62000",
+            "resolved_vm": null,
+            "description": "veem proxy"
+          }
+        ]
+      }
     },
     {
       "name": "FWOPEN",
@@ -2465,13 +2971,41 @@
         "runs_nginx_proxy_manager": false,
         "notes": "High docker storage utilization. Confirm which instances are still in use before touching.",
         "containers_confirmed_live": [
-          {"name": "jasper-jobs-jasperreports-1", "port": "8098->8080", "note": "JOBS -- coincide con jobsjasper.condorwork.com.ar"},
-          {"name": "jasper-jobs-mariadb-1", "port": "3306 (interno)", "note": "DB propia del Jasper de JOBS, no CLIENTES-DB2"},
-          {"name": "jasper-open-release-jasperreports-1", "port": "8099->8080", "note": "instancia Jasper separada, sin cliente especifico -- 'open' generico"},
-          {"name": "jasper-open-release-mariadb-1", "port": "3306 (interno)", "note": "DB propia del Jasper 'open'"},
-          {"name": "cont_condor_new", "port": "8082->80", "note": "nginx, sin identificar a que dominio sirve"},
-          {"name": "cont_open_com_ar2", "port": "sin publicar", "note": "img_open_com_ar2, sin identificar"},
-          {"name": "portainer (jovial_nobel)", "port": "sin publicar en este listado", "note": "portainer-ce"}
+          {
+            "name": "jasper-jobs-jasperreports-1",
+            "port": "8098->8080",
+            "note": "JOBS -- coincide con jobsjasper.condorwork.com.ar"
+          },
+          {
+            "name": "jasper-jobs-mariadb-1",
+            "port": "3306 (interno)",
+            "note": "DB propia del Jasper de JOBS, no CLIENTES-DB2"
+          },
+          {
+            "name": "jasper-open-release-jasperreports-1",
+            "port": "8099->8080",
+            "note": "instancia Jasper separada, sin cliente especifico -- 'open' generico"
+          },
+          {
+            "name": "jasper-open-release-mariadb-1",
+            "port": "3306 (interno)",
+            "note": "DB propia del Jasper 'open'"
+          },
+          {
+            "name": "cont_condor_new",
+            "port": "8082->80",
+            "note": "nginx, sin identificar a que dominio sirve"
+          },
+          {
+            "name": "cont_open_com_ar2",
+            "port": "sin publicar",
+            "note": "img_open_com_ar2, sin identificar"
+          },
+          {
+            "name": "portainer (jovial_nobel)",
+            "port": "sin publicar en este listado",
+            "note": "portainer-ce"
+          }
         ],
         "containers_confirmed_live_date": "1 sep 2026 -- sudo docker ps, confirma capa 5 de plan_relevamiento_alta_jobs.md: JOBS solo tiene Jasper + su propia MariaDB en este host, sin frontend/backend dedicado (a diferencia de CEFAS)."
       },
@@ -3706,7 +4240,8 @@
         {
           "client": "SIGO",
           "code": "",
-          "role": "weblogic"
+          "role": "weblogic",
+          "notes": "[12 sep 2026] Su DB confirmada en vivo: Database .90 (192.1.1.90, SID CDRADM) -- unico de los 8 inquilinos con schema propio ahi (2.6 GB, uso activo el mismo dia via sesion SIGOWEB/JDBC desde contenedor Docker). Ver vms['Database .90'].db_detail."
         },
         {
           "client": "Tassaroli",
@@ -3863,15 +4398,15 @@
         "fe80::20c:29ff:fe47:8aa8"
       ],
       "category": "weblogic_app",
-      "used_by_clients": [],
-      "name_hint_client": {
-        "client_code": "ROMAN",
-        "client_name": "CSM Ciencia al Servicio del Movimiento S.A.",
-        "basis": "name substring 'ROMAN' matches client code; likely an additional WebLogic instance for this client not captured in Relevamiento",
-        "confidence": "inferred_from_name_only_not_confirmed"
-      },
+      "used_by_clients": [
+        {
+          "client": "CSM Ciencia al Servicio del Movimiento S.A.",
+          "code": "ROMAN",
+          "role": "weblogic_historico"
+        }
+      ],
       "uptime_days": 1017,
-      "notes": "172.18.5.39"
+      "notes": "172.18.5.39 [12 sep 2026] Confirmado via reglas NAT de FW (192.1.3.1): 'SSH WLromanHist' (puerto 216->22) y 'Publicacion de Weblogic' (8888->8888). Es el WL historico/legado de ROMAN, distinto del WL-CLIENTES (172.18.5.40) que sirve la ruta productiva legada actual. Cierra el item 1 de findings.md 'Todavia abierto' (instancia extra WL-ROMAN)."
     },
     {
       "name": "WL12-Clientes",
@@ -4297,7 +4832,17 @@
             "resolved_vm": "OPENWLPROD01",
             "ip": "10.77.7.201",
             "resolved_by": "name",
-            "match": true
+            "match": true,
+            "notes": "[12 sep 2026] Este es el WL 'nuevo' compartido (EBY/ROMAN) -- solo tiene el alias de DB PRODGIAR/QAGIAR en tnsnames.ora, sin confirmar seccion propia en formsweb.cfg todavia."
+          },
+          {
+            "claimed_name": null,
+            "resolved_vm": "WL-GIAR",
+            "ip": "10.10.1.50",
+            "resolved_by": "nat_rules",
+            "match": true,
+            "role": "legado",
+            "notes": "[12 sep 2026] Confirmado via reglas NAT de FW (192.1.3.1, pfsense-192.1.3.1-nat-rules.txt): 200.55.243.117:80 -> 10.10.1.50:80 ('GIAR WL http') y :443 -> :443 ('GIAR WL'), source '*' (sin restriccion de IP) -- coincide exacto con el proxy host habilitado giarprod.condorenterprise.com.ar en el NPM de DOCKER-DEB (id 76). Es el backend real de esa ruta -- cierra capa 3 de punta a punta. SSH tambien mapeado: 200.55.243.117:215 -> 10.10.1.50:22. Falta entrar y confirmar que hay un proceso de app vivo escuchando (capa 4)."
           }
         ]
       },
@@ -4311,7 +4856,7 @@
             "ip": "10.10.1.9",
             "resolved_by": "name",
             "match": true,
-            "notes": "Candidato original. Ver el resolved de abajo, encontrado via tnsnames.ora real -- mismo patron de dos candidatos (legado vs consolidado) que EBY/CEFAS."
+            "notes": "Candidato original. Ver el resolved de abajo, encontrado via tnsnames.ora real -- mismo patron de dos candidatos (legado vs consolidado) que EBY/CEFAS. [12 sep 2026] SSH mapeado via NAT de FW: 200.55.243.117:212 -> 10.10.1.9:22. Listener Oracle tambien expuesto: 200.55.243.117:1522 -> 10.10.1.9:1521 ('mitiga GIAR DB 1521')."
           },
           {
             "claimed_name": null,
@@ -4320,6 +4865,15 @@
             "resolved_by": "teamviewer",
             "match": null,
             "notes": "[2 sep 2026] Encontrado en tnsnames.ora de OPENWLPROD01: alias PRODGIAR/QAGIAR, HOST=10.77.7.11 PORT=1521, SERVICE_NAME=prodgiar/QAGIAR. Mismo host consolidado que ya sirve a Heinlein (DB) y CEFAS (destino de migracion) -- ahora GIAR (prod+qa) y Rex Argentina (prod) tambien. [6 sep 2026] v$pdbs en CDBOPEN03 (OPENDBPROD001) confirma PRODGIAR como PDB real y activa (READ WRITE). QAGIAR, en cambio, NO existe como PDB provisionada -- la QA de GIAR probablemente nunca se armo. v$session sobre PRODGIAR al momento de la consulta solo mostro sesiones SYS internas (oracle/OFSD, sqlplus) -- sin trafico de aplicacion visible en ese instante, no es evidencia de que este inactiva, solo que no se capturo una sesion de usuario en la ventana consultada. Sigue sin verificar en vivo con trafico real."
+          },
+          {
+            "claimed_name": null,
+            "resolved_vm": null,
+            "ip": "10.1.1.10",
+            "resolved_by": "nat_rules",
+            "match": null,
+            "role": "candidato_nuevo_sin_confirmar",
+            "notes": "[12 sep 2026] Regla NAT de FW: 200.55.243.117:51521 -> 10.1.1.10:1521, descripcion literal 'mitiga GIAR DB 1521 NUEVO'. Subred 10.1.1.x no coincide con ningun otro segmento conocido del proyecto (ni 10.10.1.x del resto del stack legado de GIAR, ni 192.1.x/10.77.x) -- posible error de tipeo en pfSense por 10.10.1.10, o una red genuinamente nueva. Sin VM identificada en ExportList.csv. Nombre 'NUEVO' sugiere que es un reemplazo del DB-GIAR legado (10.10.1.9) -- candidato a verificar antes que el legado."
           }
         ]
       },
@@ -4357,7 +4911,8 @@
         "Relevamiento (sin claves) - VM Linux.csv",
         "Matriz_servicios_por_cliente_Hosting_V2.xlsx"
       ],
-      "status_note": "Sin confirmar, tensión en la fuente: una nota suelta en Matriz_servicios_por_cliente_Hosting_V2.xlsx (agregada debajo de la tabla principal, no un campo formal) dice 'Estos dos clientes estan de baja pero por el momento se mantiene sus bases' refiriendose a ABB y Arris/GIAR juntos. Pero el campo formal 'Estado / migración' de este mismo cliente, en la misma planilla, dice 'Mantenimiento solamente' — no 'de baja'. No son necesariamente contradictorios (podría estar en mantenimiento mientras se lo da de baja), pero no es un dato limpio. Confirmar con el equipo saliente antes de despriorizar este entorno (ver QUESTIONS.md)."
+      "status_note": "Sin confirmar, tensión en la fuente: una nota suelta en Matriz_servicios_por_cliente_Hosting_V2.xlsx (agregada debajo de la tabla principal, no un campo formal) dice 'Estos dos clientes estan de baja pero por el momento se mantiene sus bases' refiriendose a ABB y Arris/GIAR juntos. Pero el campo formal 'Estado / migración' de este mismo cliente, en la misma planilla, dice 'Mantenimiento solamente' — no 'de baja'. No son necesariamente contradictorios (podría estar en mantenimiento mientras se lo da de baja), pero no es un dato limpio. Confirmar con el equipo saliente antes de despriorizar este entorno (ver QUESTIONS.md). [12 sep 2026] La ruta giarprod.condorenterprise.com.ar esta habilitada y su NAT en FW (192.1.3.1) no tiene restriccion de IP origen (source '*') a diferencia de otras reglas de este mismo firewall que si usan un alias 'ROMAN_IP_PUBLICAS'/'Argocean_IP_Publicas' -- no impide sesiones nuevas. Sigue sin confirmarse trafico real (capa 4/6 en vivo).",
+      "status_note_update": null
     },
     {
       "name": "Cefas S.A.",
@@ -4539,12 +5094,52 @@
         ]
       },
       "entry_points": [
-        {"domain": "romanprod.condor.solutions", "npm_host": "DOCKER-DEB", "forward": "10.77.7.201:9001", "enabled": true, "status": "sin_verificar", "notes": "OPENWLPROD01, habilitado -- probable ruta actual. [6 sep 2026] Backend confirmado: formsweb.cfg de WLS_FORMS tiene las secciones [csm]* productivas. PERO cero requests config=csm en 5 dias de access.log de WLS_FORMS -- falta el access log del NPM de DOCKER-DEB (proxy host id 93) para saber si usuarios finales pegan al dominio."},
-        {"domain": "romanqa.condor.solutions", "npm_host": "DOCKER-DEB", "forward": "10.77.7.201:9001", "enabled": true, "status": "sin_verificar", "notes": "proxy host id 94; secciones [qacsm*] en formsweb.cfg -> userid=@QACSM"},
-        {"domain": "ords-roman2.open.com.ar", "npm_host": "DOCKER-DEB", "forward": "10.77.7.12:8040", "enabled": true, "status": "sin_verificar", "notes": "10.77.7.12 sin VM conocida en el inventario"},
-        {"domain": "ords-romans.open.com.ar", "npm_host": "DOCKER-DEB", "forward": "200.55.243.116:2235", "enabled": false, "status": "deshabilitado"},
-        {"domain": "roman.condorwork.com.ar", "npm_host": "VM-DOCKER-Clientes", "forward": "172.18.5.40:80", "enabled": false, "status": "deshabilitado", "notes": "ruta legada, WL-CLIENTES"},
-        {"domain": "roman.condorenterprise.com.ar", "npm_host": "VM-DOCKER-Clientes", "forward": "172.18.5.40:80", "enabled": false, "status": "deshabilitado"}
+        {
+          "domain": "romanprod.condor.solutions",
+          "npm_host": "DOCKER-DEB",
+          "forward": "10.77.7.201:9001",
+          "enabled": true,
+          "status": "sin_trafico_real",
+          "notes": "OPENWLPROD01, habilitado -- probable ruta actual. [6 sep 2026] Backend confirmado: formsweb.cfg de WLS_FORMS tiene las secciones [csm]* productivas. PERO cero requests config=csm en 5 dias de access.log de WLS_FORMS. [12/13 sep 2026] CERRADO: proxy-host-93_access.log en DOCKER-DEB (contenedor ssl-app-1) -- 0 requests lservlet en 5097 total, 100% escaneo de vulnerabilidades (bots). Sin un solo usuario real."
+        },
+        {
+          "domain": "romanqa.condor.solutions",
+          "npm_host": "DOCKER-DEB",
+          "forward": "10.77.7.201:9001",
+          "enabled": true,
+          "status": "sin_trafico_real",
+          "notes": "proxy host id 94; secciones [qacsm*] en formsweb.cfg -> userid=@QACSM. [12/13 sep 2026] proxy-host-94_access.log: 0 requests lservlet, mismo patron que romanprod -- solo escaneo de bots."
+        },
+        {
+          "domain": "ords-roman2.open.com.ar",
+          "npm_host": "DOCKER-DEB",
+          "forward": "10.77.7.12:8040",
+          "enabled": true,
+          "status": "sin_trafico_real",
+          "notes": "10.77.7.12 sin VM conocida en el inventario. [12/13 sep 2026] CERRADO: proxy-host-85_access.log en DOCKER-DEB -- 322 requests totales, 305 con status 499 (nginx sin respuesta del backend) + 9 con 504 (timeout) = 95% fallas de backend; los otros 8 son 5x 200 (renovacion Let's Encrypt via /.well-known/acme-challenge/, no aplicacion) + 3x 400. Cero requests de aplicacion real. El backend 10.77.7.12:8040 probablemente ni esta levantado."
+        },
+        {
+          "domain": "ords-romans.open.com.ar",
+          "npm_host": "DOCKER-DEB",
+          "forward": "200.55.243.116:2235",
+          "enabled": false,
+          "status": "deshabilitado"
+        },
+        {
+          "domain": "roman.condorwork.com.ar",
+          "npm_host": "VM-DOCKER-Clientes",
+          "forward": "172.18.5.40:80",
+          "enabled": false,
+          "status": "deshabilitado",
+          "notes": "ruta legada, WL-CLIENTES"
+        },
+        {
+          "domain": "roman.condorenterprise.com.ar",
+          "npm_host": "VM-DOCKER-Clientes",
+          "forward": "172.18.5.40:80",
+          "enabled": false,
+          "status": "deshabilitado"
+        }
       ],
       "entry_points_note": "Fuente: re-dump proxy_host de DOCKER-DEB (1 sep 2026) + transcripcion previa de VM-DOCKER-Clientes. Patron enabled/disabled sugiere migracion a OPENWLPROD01, sin confirmar en vivo (sesion pendiente).",
       "admin_user": "soportesmart",
@@ -4882,8 +5477,8 @@
             "resolved_vm": "Database .90",
             "ip": "192.1.1.90",
             "resolved_by": "teamviewer",
-            "match": null,
-            "notes": "Candidata mas fuerte a DB real de EBY: 14/18 (78%) de las conexiones Oracle activas de WebLogic.191 van aca (netstat 1 sep 2026), contra 0 a OPENDBPROD006. Sin cliente asignado previamente en el inventario. Acceso SSH bloqueado por credencial -- sin confirmar por sqlplus, ver QUESTIONS.md."
+            "match": false,
+            "notes": "[1 sep 2026] Candidata mas fuerte a DB real de EBY por netstat (14/18 conexiones Oracle activas de WebLogic.191 iban aca). [12 sep 2026] DESCARTADA con evidencia directa: sqlplus a CDRADM (root@192.1.1.90) + cruce de dba_users/dba_segments confirma que la unica schema de cliente real en esta DB es SIGO (2.6 GB, uso activo el mismo dia) -- ni EBY ni YACYRETA existen como schema. La sesion AGARCIA vista via frmweb@NAI (WebLogic.191) es una cuenta nominal, no atribuible a EBY. Detalle completo en vms['Database .90'].db_detail. Cierra el ultimo cabo suelto de EBY: la ruta paralela yacyreta no tiene DB propia identificable, solo pasa por la misma VM que sirve a SIGO."
           },
           {
             "claimed_name": null,
@@ -4896,16 +5491,83 @@
         ]
       },
       "entry_points": [
-        {"domain": "yacyreta.condorwork.com.ar", "npm_host": "DOCKER-DEB", "forward": "192.1.1.191:80", "enabled": true, "status": "produccion_viva", "notes": "1.60M req 200, ultima req 1 sep 2026 17:32, Forms /forms/lservlet"},
-        {"domain": "eby-prod.condorwork.com.ar", "npm_host": "DOCKER-DEB", "forward": "10.77.7.201:9001", "enabled": true, "status": "produccion_viva", "notes": "1.45M req 200, ultima req 1 sep 2026 17:48, Forms, concurrente con yacyreta"},
-        {"domain": "ords-eby.open.com.ar", "npm_host": "DOCKER-DEB", "forward": "192.1.2.54:7010", "enabled": true, "status": "en_uso", "notes": "44.5k req 200, IPs de cliente coinciden con las de EBY"},
-        {"domain": "ords-yacy.open.com.ar", "npm_host": "DOCKER-DEB", "forward": "10.77.7.15:8080", "enabled": true, "status": "sin_verificar", "notes": "apunta a OPENDBPROD005 (destino de migracion)"},
-        {"domain": "ords-ebyqa.open.com.ar", "npm_host": "DOCKER-DEB", "forward": "10.77.7.15:8040", "enabled": true, "status": "sin_trafico", "notes": "apunta a OPENDBPROD005, sin archivo de log"},
-        {"domain": "ebyprod.open.com.ar", "npm_host": "DOCKER-DEB", "forward": "10.77.8.201:9001", "enabled": true, "status": "muerto", "notes": "apunta a OPENWLCLI01, clon apagado a proposito de OPENWLPROD01"},
-        {"domain": "eby-qa.condorwork.com.ar", "npm_host": "DOCKER-DEB", "forward": "10.77.7.201:9001", "enabled": true, "status": "sin_trafico", "notes": "sin archivo de log"},
-        {"domain": "yacyretatest.condorwork.com.ar", "npm_host": "DOCKER-DEB", "forward": "192.1.2.54:9002", "enabled": true, "status": "test"},
-        {"domain": "yacyretatest.condorwork.com.ar:9002", "npm_host": "DOCKER-DEB", "forward": "192.1.2.54:9002", "enabled": true, "status": "test"},
-        {"domain": "yacyretatest.condor.com.ar", "npm_host": "DOCKER-DEB", "forward": "200.55.243.91:443", "enabled": true, "status": "test"}
+        {
+          "domain": "yacyreta.condorwork.com.ar",
+          "npm_host": "DOCKER-DEB",
+          "forward": "192.1.1.191:80",
+          "enabled": true,
+          "status": "produccion_viva",
+          "notes": "1.60M req 200, ultima req 1 sep 2026 17:32, Forms /forms/lservlet"
+        },
+        {
+          "domain": "eby-prod.condorwork.com.ar",
+          "npm_host": "DOCKER-DEB",
+          "forward": "10.77.7.201:9001",
+          "enabled": true,
+          "status": "produccion_viva",
+          "notes": "1.45M req 200, ultima req 1 sep 2026 17:48, Forms, concurrente con yacyreta"
+        },
+        {
+          "domain": "ords-eby.open.com.ar",
+          "npm_host": "DOCKER-DEB",
+          "forward": "192.1.2.54:7010",
+          "enabled": true,
+          "status": "en_uso",
+          "notes": "44.5k req 200, IPs de cliente coinciden con las de EBY"
+        },
+        {
+          "domain": "ords-yacy.open.com.ar",
+          "npm_host": "DOCKER-DEB",
+          "forward": "10.77.7.15:8080",
+          "enabled": true,
+          "status": "sin_verificar",
+          "notes": "apunta a OPENDBPROD005 (destino de migracion)"
+        },
+        {
+          "domain": "ords-ebyqa.open.com.ar",
+          "npm_host": "DOCKER-DEB",
+          "forward": "10.77.7.15:8040",
+          "enabled": true,
+          "status": "sin_trafico",
+          "notes": "apunta a OPENDBPROD005, sin archivo de log"
+        },
+        {
+          "domain": "ebyprod.open.com.ar",
+          "npm_host": "DOCKER-DEB",
+          "forward": "10.77.8.201:9001",
+          "enabled": true,
+          "status": "muerto",
+          "notes": "apunta a OPENWLCLI01, clon apagado a proposito de OPENWLPROD01"
+        },
+        {
+          "domain": "eby-qa.condorwork.com.ar",
+          "npm_host": "DOCKER-DEB",
+          "forward": "10.77.7.201:9001",
+          "enabled": true,
+          "status": "sin_trafico",
+          "notes": "sin archivo de log"
+        },
+        {
+          "domain": "yacyretatest.condorwork.com.ar",
+          "npm_host": "DOCKER-DEB",
+          "forward": "192.1.2.54:9002",
+          "enabled": true,
+          "status": "test"
+        },
+        {
+          "domain": "yacyretatest.condorwork.com.ar:9002",
+          "npm_host": "DOCKER-DEB",
+          "forward": "192.1.2.54:9002",
+          "enabled": true,
+          "status": "test"
+        },
+        {
+          "domain": "yacyretatest.condor.com.ar",
+          "npm_host": "DOCKER-DEB",
+          "forward": "200.55.243.91:443",
+          "enabled": true,
+          "status": "test"
+        }
       ],
       "entry_points_note": "Fuente: proxy_host real de DOCKER-DEB (1 sep 2026, DOCKER-DEB-NginxProxyManager/dockerdeb_proxy_host_2026-09-01.tsv) + access logs de NPM. Pendiente confirmar que OPENDOCKER04 y VM-DOCKER-Clientes (1) (los 2 NPM sin transcribir) no tengan rutas EBY adicionales.",
       "admin_user": "soportesmart",
@@ -5314,6 +5976,11 @@
       "topic": "192.1.3.34 -- posible DB de Rex Argentina, sin VM conocida",
       "evidence": "tnsnames.ora real de OPENWLPROD01 (2 sep 2026, /u01/app/oracle/product/12.2.1/user_projects/domains/base_domain/config/fmwconfig/tnsnames.ora): alias PDBREXPROD, HOST=192.1.3.34 PORT=1521, SERVICE_NAME=pdbrexprod.",
       "known_detail": "No aparece en ExportList.csv ni en ningun otro export de vCenter. Esta en el rango 192.1.3.x -- el mismo segmento aislado del segundo host ESXi (192.1.3.252) donde viven WL-CLIENTES/DB-GIAR/DB-ROMAN. 'PDB' sugiere una pluggable database dentro de un multitenant Oracle, quizas alojada en una VM ya conocida de ese segmento bajo un service name nuevo -- o una VM genuinamente sin inventariar. Segundo candidato de DB para Rex Argentina junto con OPENDBPROD001/PROD_REX -- ver clients[279].database.resolved."
+    },
+    {
+      "topic": "Segundo stack de CEFAS y un cliente 'SYT' sin documentar, en el segmento aislado detras de FW (192.1.3.1)",
+      "evidence": "pfsense-192.1.3.1-nat-rules.txt (12 sep 2026): reglas 'CEFAS WL' (10.10.1.100:8888/7001, con puerto admin WebLogic :2144->7001), 'mitiga CEFAS DB 1521' (10.10.1.8:1521, SSH en :22-27), 'Cefas CondorLink'/'CEFAS CONDORLINK' (172.18.5.243:8889/9001 Y TAMBIEN 10.10.1.43:8881/9001 -- dos IPs distintas con el mismo rol), y 'Docker SYT' (172.18.5.243:22 SSH) + 'WL12-CLI-SYT'/'DB-CLI-SYT' (172.18.5.111/172.18.5.112, con consola WebLogic en :7001 y un 'wl12-cl-syt-ORDS-ROMANS' que resuelve el viejo blind spot de ords-romans.open.com.ar->200.55.243.116:2235).",
+      "known_detail": "CEFAS ya estaba resuelto en el cluster principal (WebLogic.191 + CLIENTES-DB + VM-DOCKER-Clientes/192.1.1.38 para Self Service) -- estas reglas apuntan a un segundo stack CEFAS *distinto*, en el segmento aislado 10.10.1.x/172.18.5.x, nunca visto hasta ahora. Ninguna de las 5 IPs (10.10.1.100, 10.10.1.8, 172.18.5.111, 172.18.5.112, 172.18.5.6, 172.18.5.200, 10.10.1.3) aparece en ExportList.csv. 'SYT' no coincide con ninguno de los 15 clientes conocidos ni con los nombres sueltos ya vistos (Mafisa/UIPBA/COBRA/Allianz/Monroe/Rovella/SMQ/NABSA) -- nombre nuevo. Podria ser: (a) un ambiente legado de CEFAS que quedo abandonado sin apagar, (b) un cliente real sin ningun otro rastro en el proyecto, o (c) infraestructura interna con un nombre en clave. Sin confirmar -- requiere TeamViewer a estas IPs (via los puertos NAT de FW: SSH a 172.18.5.111 por WAN:2232, a 172.18.5.112 por WAN:2233, a 172.18.5.6 por WAN:2333, a 10.10.1.3 por WAN:61991)."
     }
   ],
   "cloud_infra_note": "Azure/AWS data moved to cloud-infra/inventory-cloud.json — out of scope for this discovery, see cloud-infra/README.md.",

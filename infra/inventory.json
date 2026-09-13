@@ -6,9 +6,10 @@
       "ExportList (1).csv (2026-08-18 vCenter export refresh, same 129 VMs/IPs, adds 'Tiempo de actividad' uptime and manual 'Notas' per VM -> vms[].uptime_days / vms[].notes)",
       "ExportList-Datacenter-Full.csv (2026-08-18, mismo snapshot que ExportList.csv/ExportList (1).csv -- mismas 129 VMs, mismo estado/host/IP, columnas extra: Clúster/UUID/DNS/VMware Tools -- no aporta VMs ni hallazgos nuevos, campo Clúster vacío para las 129)",
       "DOCKER-DEB-NginxProxyManager/proxy_hosts.csv (19 ago 2026, transcripcion manual de 8 capturas del panel NPM de DOCKER-DEB -- 79 proxy hosts reales, primer mapeo dominio->destino confirmado)",
-      "FWOPEN-nat-rules/nat_rules.csv (19 ago 2026, 46 reglas NAT reales de FWOPEN -- confirma que WebLogic.191 es compartido por 7 clientes distintos, ninguno CEFAS)"
+      "FWOPEN-nat-rules/nat_rules.csv (19 ago 2026, 46 reglas NAT reales de FWOPEN -- confirma que WebLogic.191 es compartido por 7 clientes distintos, ninguno CEFAS)",
+      "ExportList20260912.csv (12 sep 2026, refresh de vCenter -- formato mas liviano, solo Name/State/Status/Provisioned/Used/Host CPU/Host Mem, sin IP/ESXi host/guest OS. Las 144 VMs previas (129 principal + 15 Piedras) siguen todas presentes por nombre -- ninguna desaparecio. 3 VMs nuevas nunca vistas: OL7SIGOPROD, OL8CASLAWL01, OL8HEINPROD (las tres Powered On). 5 cambios de power_state respecto al snapshot anterior: WL-GIAR y DB-GIAR (Encendido->Apagado, todo el stack legado de GIAR), OPENDB19DEV01, OPENDBPROD011, OPENOEM24ai (sin cliente asignado, Encendido->Apagado)."
     ],
-    "vm_count": 129,
+    "vm_count": 132,
     "esxi_host_count": 12,
     "client_count_in_relevamiento": 13,
     "piedras_site": {
@@ -376,7 +377,7 @@
     },
     {
       "name": "DB-GIAR",
-      "power_state": "Encendido",
+      "power_state": "Apagado",
       "condition": "Normal",
       "esxi_host": "192.1.3.252",
       "provisioned": "262,16 GB",
@@ -397,7 +398,8 @@
           "role": "database"
         }
       ],
-      "uptime_days": 1017
+      "uptime_days": 1017,
+      "notes": "[12 sep 2026] Confirmado APAGADA en ExportList20260912.csv -- power_state cambio de Encendido a Apagado respecto al snapshot anterior (1017 dias de uptime declarados). Junto con WL-GIAR (tambien apagada en el mismo export), TODO el stack legado de GIAR quedo apagado entre el 18 ago y el 12 sep 2026. Cierra capa 6 legado de GIAR por ausencia directa (sin instancia Oracle que pueda estar corriendo en una VM apagada) -- no hace falta sqlplus. Ver infra/findings.md."
     },
     {
       "name": "DB-ROMAN",
@@ -2665,7 +2667,7 @@
     },
     {
       "name": "OPENDB19DEV01",
-      "power_state": "Encendido",
+      "power_state": "Apagado",
       "condition": "Normal",
       "esxi_host": "192.1.1.218",
       "provisioned": "138,11 GB",
@@ -2807,7 +2809,7 @@
     },
     {
       "name": "OPENDBPROD011",
-      "power_state": "Encendido",
+      "power_state": "Apagado",
       "condition": "Normal",
       "esxi_host": "192.1.1.218",
       "provisioned": "196,11 GB",
@@ -3462,7 +3464,7 @@
     },
     {
       "name": "OPENOEM24ai",
-      "power_state": "Encendido",
+      "power_state": "Apagado",
       "condition": "Normal",
       "esxi_host": "192.1.1.223",
       "provisioned": "304,1 GB",
@@ -4340,7 +4342,7 @@
       "esxi_host": "192.1.3.252",
       "provisioned": "60,15 GB",
       "used": "59,27 GB",
-      "guest_os": "Red Hat Enterprise Linux 6 (64-bit)",
+      "guest_os": "Oracle Linux 6 (64-bit)",
       "ipv4": [
         "172.18.5.40"
       ],
@@ -4380,7 +4382,8 @@
         "basis": "name substring 'GIAR' matches client code; likely an additional WebLogic instance for this client not captured in Relevamiento (which only tracks one WL per client)",
         "confidence": "inferred_from_name_only_not_confirmed"
       },
-      "uptime_days": 627
+      "uptime_days": 627,
+      "notes": "[12 sep 2026] Confirmado APAGADA en vivo por vCenter (Powered Off) -- contradice el power_state 'Encendido'/627 dias de uptime del snapshot ExportList.csv. VMware Tools not running; Guest OS reportado ahora como 'Oracle Linux 4/5 or later' (generico, config estatica) en vez del RHEL 6 detectado antes -- consistente con Tools caidas hace tiempo. DNS name real (dentro del guest): ARDMZWEB108, sin IP visible en el resumen de vCenter estando apagada. Cierra capa 4 de GIAR (legado) por ausencia directa: no puede haber proceso de app vivo en una VM apagada -- no hace falta SSH. Evidencia mas fuerte que la de ABB (que seguia encendida sin sesiones/DML): esta VM esta apagada de verdad, no solo inactiva. Apoya fuerte la hipotesis de 'GIAR de baja' (ver QUESTIONS.md)."
     },
     {
       "name": "WL-ROMAN",
@@ -4736,6 +4739,78 @@
       "used_by_clients": [],
       "uptime_days": 9,
       "notes": "Segundo controlador de dominio del entorno (el sitio principal tiene DC1) -- nombre y rol consistentes con Piedras siendo un sitio AD replicado, no un entorno aislado. Encendida, 9 dias de actividad."
+    },
+    {
+      "name": "OL7SIGOPROD",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": null,
+      "provisioned": "195,11 GB",
+      "used": "195,11 GB",
+      "guest_os": null,
+      "ipv4": [],
+      "all_ips": [],
+      "category": "unclear",
+      "used_by_clients": [
+        {
+          "client": "SIGO",
+          "code": "",
+          "role": "app_o_db (nombre sugiere produccion de SIGO -- sin confirmar todavia)"
+        }
+      ],
+      "name_hint_client": {
+        "client_code": "",
+        "client_name": "SIGO",
+        "basis": "name substring 'SIGO' + 'PROD' -- coincide con el tenant SIGO de WebLogic.191, cuya DB (Database .90/CDRADM) se confirmo en vivo el 12 sep 2026",
+        "confidence": "inferred_from_name_only_not_confirmed"
+      },
+      "notes": "[12 sep 2026] VM nueva, no existia en ningun export anterior (18 ago). Aparecio en ExportList20260912.csv, formato liviano sin IP/ESXi host/guest OS -- pendiente TeamViewer para esos datos. Coincide en tiempo con el hallazgo de la sesion SIGOWEB/JDBC activa en Database .90 -- podria ser un app server nuevo dedicado para SIGO, separado del WebLogic.191 compartido. Sin confirmar."
+    },
+    {
+      "name": "OL8CASLAWL01",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": null,
+      "provisioned": "149,11 GB",
+      "used": "149,11 GB",
+      "guest_os": null,
+      "ipv4": [],
+      "all_ips": [],
+      "category": "weblogic_app",
+      "used_by_clients": [],
+      "name_hint_client": {
+        "client_code": "",
+        "client_name": "",
+        "basis": "name substring 'CASLA' -- no coincide con ningun codigo de cliente conocido de los 15. 'Casla' es el apodo popular de Club Atletico San Lorenzo de Almagro (futbol argentino) -- mismo patron de nombre que 'BOCA' (Boca Juniors), que si es cliente confirmado del proyecto. Sufijo 'WL01' sigue la misma convencion de nombre que OL8LABWL01 (WebLogic de Heinlein).",
+        "confidence": "inferred_from_name_only_not_confirmed"
+      },
+      "notes": "[12 sep 2026] VM completamente nueva, nunca vista en ningun export ni fuente anterior -- posible cliente nuevo sin ningun otro rastro en el proyecto (candidato: San Lorenzo, por el apodo 'Casla'). Formato liviano del export nuevo no trae IP/ESXi host/guest OS -- pendiente TeamViewer. Blind spot nuevo, sumado a infra/findings.md."
+    },
+    {
+      "name": "OL8HEINPROD",
+      "power_state": "Encendido",
+      "condition": "Normal",
+      "esxi_host": null,
+      "provisioned": "152,11 GB",
+      "used": "152,11 GB",
+      "guest_os": null,
+      "ipv4": [],
+      "all_ips": [],
+      "category": "unclear",
+      "used_by_clients": [
+        {
+          "client": "Heinlein",
+          "code": "HEINLEIN",
+          "role": "app_o_db (nombre sugiere produccion de Heinlein -- sin confirmar todavia)"
+        }
+      ],
+      "name_hint_client": {
+        "client_code": "HEINLEIN",
+        "client_name": "Heinlein",
+        "basis": "name substring 'HEIN' + 'PROD' -- Heinlein figura como 'Solo infraestructura'/solo ambiente de test en el inventario, pero ya se habia visto la PDB 'HEINLEIN_PROD' en CDBOPEN03 (6 sep 2026, deliberadamente sin investigar) contradiciendo ese status. Esta VM nueva refuerza que Heinlein tiene produccion real, no solo test.",
+        "confidence": "inferred_from_name_only_not_confirmed"
+      },
+      "notes": "[12 sep 2026] VM nueva, no existia en el export anterior (18 ago). Coincide con el hallazgo ya anotado de la PDB HEINLEIN_PROD (6 sep 2026, fuera de foco por indicacion explicita del usuario en ese momento). Si Heinlein vuelve a ser prioridad, esta VM + esa PDB son el punto de partida logico -- status 'Solo infraestructura' del inventario quedaria desactualizado."
     }
   ],
   "clients": [
@@ -4831,9 +4906,9 @@
             "claimed_name": "OPENWLPROD01",
             "resolved_vm": "OPENWLPROD01",
             "ip": "10.77.7.201",
-            "resolved_by": "name",
+            "resolved_by": "teamviewer",
             "match": true,
-            "notes": "[12 sep 2026] Este es el WL 'nuevo' compartido (EBY/ROMAN) -- solo tiene el alias de DB PRODGIAR/QAGIAR en tnsnames.ora, sin confirmar seccion propia en formsweb.cfg todavia."
+            "notes": "[13 sep 2026] CONFIRMADO -- formsweb.cfg de WLS_FORMS (/u01/app/oracle/product/12.2.1/user_projects/domains/base_domain/config/fmwconfig/servers/WLS_FORMS/applications/formsapp_12.2.1/config/formsweb.cfg) tiene secciones reales y dedicadas: [giargprod] (pageTitle='Giarg PRODUCCION', userid=@PRODGIAR, form=/u01/cliente/giarg/cdr2/menues/cdr2.fmx), [activaciongiarg], [giargprodFSAL]. 'Giarg' coincide letra por letra con sid_actual='GIARG' de la matriz. Es deployment real y deliberado, mismo patron que EBY/ROMAN -- GIAR SI migro al stack nuevo, no es solo un alias de DB de paso (descarta la hipotesis que se manejaba el 12 sep). Cierra capa 4 nuevo a nivel config (0.9) -- falta solo confirmar sesion real en dia habil (sesion de cierre fue en sabado)."
           },
           {
             "claimed_name": null,
@@ -4864,7 +4939,7 @@
             "ip": "10.77.7.11",
             "resolved_by": "teamviewer",
             "match": null,
-            "notes": "[2 sep 2026] Encontrado en tnsnames.ora de OPENWLPROD01: alias PRODGIAR/QAGIAR, HOST=10.77.7.11 PORT=1521, SERVICE_NAME=prodgiar/QAGIAR. Mismo host consolidado que ya sirve a Heinlein (DB) y CEFAS (destino de migracion) -- ahora GIAR (prod+qa) y Rex Argentina (prod) tambien. [6 sep 2026] v$pdbs en CDBOPEN03 (OPENDBPROD001) confirma PRODGIAR como PDB real y activa (READ WRITE). QAGIAR, en cambio, NO existe como PDB provisionada -- la QA de GIAR probablemente nunca se armo. v$session sobre PRODGIAR al momento de la consulta solo mostro sesiones SYS internas (oracle/OFSD, sqlplus) -- sin trafico de aplicacion visible en ese instante, no es evidencia de que este inactiva, solo que no se capturo una sesion de usuario en la ventana consultada. Sigue sin verificar en vivo con trafico real."
+            "notes": "[2 sep 2026] Encontrado en tnsnames.ora de OPENWLPROD01: alias PRODGIAR/QAGIAR, HOST=10.77.7.11 PORT=1521, SERVICE_NAME=prodgiar/QAGIAR. Mismo host consolidado que ya sirve a Heinlein (DB) y CEFAS (destino de migracion) -- ahora GIAR (prod+qa) y Rex Argentina (prod) tambien. [6 sep 2026] v$pdbs en CDBOPEN03 (OPENDBPROD001) confirma PRODGIAR como PDB real y activa (READ WRITE). QAGIAR, en cambio, NO existe como PDB provisionada -- la QA de GIAR probablemente nunca se armo. v$session sobre PRODGIAR al momento de la consulta solo mostro sesiones SYS internas -- sin trafico de aplicacion visible en ese instante. [12/13 sep 2026] Vuelto a entrar (su - oracle, ORACLE_HOME/PATH manuales, ORACLE_SID=CDBOPEN03). dba_segments dentro de PRODGIAR: CONDOR (7.5 GB, 1557 segs, real), CONDORBKP (4.5 GB) y CONDOR_ORIG (4.2 GB) -- patron de copia viva/backup/original de una migracion --, mas un schema MOTOROLA (464 MB, 70 segs) nunca visto antes -- GIAR = 'Arris de Argentina S.A.', y Arris compro el negocio de set-top-boxes de Motorola Home; MOTOROLA podria ser el nombre legado real de los datos de GIAR previo al rebrand. dba_tab_modifications vacio para los 6 schemas candidatos. v$session filtrado por con_id=PRODGIAR: cero sesiones de aplicacion (solo SYS de la propia consulta) -- pero la sesion fue en sabado, mismo caveat que ya jugo en contra en ROMAN/DCVIAJES. dba_objects.last_ddl_time da una señal a favor de actividad real: procedimientos de negocio de CONDOR (EJECUTA_NOTIF, JENVIOALERTAS_VENCIMP, BORRA_DEBUG_APP) tocados 12/13-sep-26 (hoy/ayer), mientras que el procedimiento propio de MOTOROLA (GENERA_ARCHIVOS) no se toca desde 29-may-26. Combinado con el formsweb.cfg real de OPENWLPROD01 (ver weblogic.resolved) -- GIAR SI parece tener un stack nuevo activo, no solo un alias muerto. Sigue pendiente confirmar sesion real en dia habil para pasar de 0.9 a 1.0."
           },
           {
             "claimed_name": null,
@@ -5864,7 +5939,7 @@
             "ip": "172.18.5.40",
             "resolved_by": "npm_proxy_host",
             "match": true,
-            "notes": "Resuelto via tabla proxy_host de NPM en VM-DOCKER-Clientes (19 ago 2026): dominio 'argocean.condorenterprise.com.ar' -> 172.18.5.40:80, enabled=0 (deshabilitado). Compartido con ROMAN (mismo destino, ver clients[ROMAN])."
+            "notes": "Resuelto via tabla proxy_host de NPM en VM-DOCKER-Clientes (19 ago 2026): dominio 'argocean.condorenterprise.com.ar' -> 172.18.5.40:80, enabled=0 (deshabilitado). Compartido con ROMAN (mismo destino, ver clients[ROMAN]). [13 sep 2026] Capa 3 (FW, 192.1.3.1) confirmada por captura de pantalla del dashboard pfSense: 5 reglas NAT de Argocean/ROMAN para este destino todas habilitadas (check verde). Pero la restriccion por alias 'Argocean_IP_Publicas' (WAN:8080->172.18.5.40:80) es letra muerta en la practica -- hay una regla previa en el orden de evaluacion, 'Publicacion de Weblogic 11gR2' (origen '*', sin restriccion), tambien habilitada, para el mismo destino exacto. pfSense evalua NAT top-to-bottom, primera que matchea gana -- la regla generica ya deja pasar cualquier IP antes de llegar a la alias-restringida. Contenido parcial del alias (la UI lo trunca): 186.22.238.146, 190.229.251.241, 200.68.123.109, 190.210.104.50, 200.55.243.90, 186.22.245.44, 186.128.254.54, 190.194.229.35, 186.189.239.45... -- IPs publicas argentinas, documentan intencion de control de acceso, no control de acceso real vigente."
           }
         ]
       },
@@ -5886,7 +5961,7 @@
         "Matriz_servicios_por_cliente_Hosting_V2.xlsx (Discrepancias sheet)",
         "ExportList.csv"
       ],
-      "notes": "Discovered via the Discrepancias sheet, not the main client table. VM is currently powered off ('Apagado') in ExportList.csv. No WebLogic server identified yet. WebLogic identificado 19 ago 2026: WL-CLIENTES (172.18.5.40), via config de NPM -- ver arriba. El proxy host esta deshabilitado, no se confirmo si esta realmente en uso."
+      "notes": "Discovered via the Discrepancias sheet, not the main client table. VM is currently powered off ('Apagado') in ExportList.csv. No WebLogic server identified yet. WebLogic identificado 19 ago 2026: WL-CLIENTES (172.18.5.40), via config de NPM -- ver arriba. El proxy host esta deshabilitado, no se confirmo si esta realmente en uso. [12 sep 2026] Capa 6 cerrada por ausencia directa, sin necesidad de sesion: DB-ARGOCEAN figura 'Apagado' en ExportList.csv (uptime_days: 0, sin IP asignada), la fuente mas confiable del relevamiento -- no puede haber instancia Oracle corriendo en una VM apagada. Evidencia mas dura todavia que GIAR/ABB (que necesitaron ausencia de sesiones/DML para inferir inactividad): aca el hipervisor mismo confirma que la maquina no esta corriendo. SID reclamado 'MBA' (hoja Discrepancias) sigue sin poder confirmarse -- solo se podria si la VM se prende. Ver infra/findings.md y QUESTIONS.md."
     }
   ],
   "infra_notes_rows": [
@@ -5992,5 +6067,218 @@
   },
   "piedras_esxi_hosts": [
     "192.168.100.4"
-  ]
+  ],
+  "esxi_capacity": {
+    "_note": "Recalculado 13 sep 2026, cruzando por nombre de VM tres exports: ExportList-Datacenter-Full.csv / ExportList-Piedras-Full.csv (18 ago 2026 -- unica fuente con RAM/vCPU ASIGNADA por VM y host ESXi, columnas 'CPU'/'Tamano de memoria'), ExportList20260912.csv (12 sep 23:30 -- estado ON/OFF y uso real actualizados por VM, sin host ni columnas de asignacion) y ExportList-hosts_and_clusters.csv (13 sep 00:15, 45 min despues del anterior, misma sesion -- 'Consumed Memory %' por host). ram_used_gb_on/cpu_used_mhz_on/vms_on ya reflejan el estado del 12 sep (5 VMs cambiaron de encendida a apagada entre agosto y ahora -- ver 'note' por host). ram_assigned_* sigue viniendo del export de agosto porque ExportList20260912.csv no trae esas columnas -- la configuracion de una VM no cambia por uso diario, es la unica pieza que no se pudo re-alinear en fecha. ram_physical_implied_gb = ram_used_gb_on / (consumed_mem_pct/100) -- aproximacion, no lectura directa de capacidad (ese dato no aparece en ningun export). CPU fisica NO se pudo derivar por el mismo metodo -- Consumed CPU % es demasiado volatil instante a instante, resultados sin sentido (implica de ~4 a ~36 GHz para hosts del mismo cluster, confirmado tanto con datos de agosto como de septiembre). Pedido de Alexis Lombardi: sospecha de RAM asignada por encima de la capacidad fisica real de algun host -- confirmada como patron de cluster (7 de 12 hosts), no solo en 2 hosts.",
+    "physical_capacity_known": "approximate",
+    "by_host": {
+      "192.1.1.214": {
+        "vms_total": 5,
+        "vms_on": 4,
+        "vcpu_assigned_total": 30,
+        "vcpu_assigned_on": 22,
+        "ram_assigned_gb_total": 86,
+        "ram_assigned_gb_on": 62,
+        "ram_used_gb_on": 49.7,
+        "cpu_used_mhz_on": 579,
+        "consumed_cpu_pct": 3,
+        "consumed_mem_pct": 43,
+        "vcenter_status": "Normal",
+        "ha_state": "N/A",
+        "ram_physical_implied_gb": 115.6,
+        "overcommitted_ram": false
+      },
+      "192.1.1.215": {
+        "vms_total": 7,
+        "vms_on": 7,
+        "vcpu_assigned_total": 40,
+        "vcpu_assigned_on": 40,
+        "ram_assigned_gb_total": 114,
+        "ram_assigned_gb_on": 114,
+        "ram_used_gb_on": 52.1,
+        "cpu_used_mhz_on": 1493,
+        "consumed_cpu_pct": 11,
+        "consumed_mem_pct": 47,
+        "vcenter_status": "Normal",
+        "ha_state": "N/A",
+        "ram_physical_implied_gb": 110.9,
+        "overcommitted_ram": true
+      },
+      "192.1.1.216": {
+        "vms_total": 11,
+        "vms_on": 10,
+        "vcpu_assigned_total": 33,
+        "vcpu_assigned_on": 29,
+        "ram_assigned_gb_total": 129,
+        "ram_assigned_gb_on": 105,
+        "ram_used_gb_on": 51.5,
+        "cpu_used_mhz_on": 2434,
+        "consumed_cpu_pct": 26,
+        "consumed_mem_pct": 81,
+        "vcenter_status": "Normal",
+        "ha_state": "N/A",
+        "ram_physical_implied_gb": 63.6,
+        "overcommitted_ram": true
+      },
+      "192.1.1.217": {
+        "vms_total": 7,
+        "vms_on": 7,
+        "vcpu_assigned_total": 56,
+        "vcpu_assigned_on": 56,
+        "ram_assigned_gb_total": 110,
+        "ram_assigned_gb_on": 110,
+        "ram_used_gb_on": 71.1,
+        "cpu_used_mhz_on": 2443,
+        "consumed_cpu_pct": 8,
+        "consumed_mem_pct": 74,
+        "vcenter_status": "Normal",
+        "ha_state": "N/A",
+        "ram_physical_implied_gb": 96.1,
+        "overcommitted_ram": true
+      },
+      "192.1.1.218": {
+        "vms_total": 7,
+        "vms_on": 5,
+        "vcpu_assigned_total": 36,
+        "vcpu_assigned_on": 30,
+        "ram_assigned_gb_total": 100,
+        "ram_assigned_gb_on": 66,
+        "ram_used_gb_on": 51.1,
+        "cpu_used_mhz_on": 1218,
+        "note": "2 VMs apagadas entre 18 ago y 12 sep: OPENDB19DEV01, OPENDBPROD011",
+        "consumed_cpu_pct": 11,
+        "consumed_mem_pct": 84,
+        "vcenter_status": "Normal",
+        "ha_state": "N/A",
+        "ram_physical_implied_gb": 60.8,
+        "overcommitted_ram": true
+      },
+      "192.1.1.219": {
+        "vms_total": 7,
+        "vms_on": 6,
+        "vcpu_assigned_total": 32,
+        "vcpu_assigned_on": 24,
+        "ram_assigned_gb_total": 58,
+        "ram_assigned_gb_on": 52,
+        "ram_used_gb_on": 45.8,
+        "cpu_used_mhz_on": 3037,
+        "consumed_cpu_pct": 34,
+        "consumed_mem_pct": 67,
+        "vcenter_status": "Normal",
+        "ha_state": "N/A",
+        "ram_physical_implied_gb": 68.4,
+        "overcommitted_ram": false
+      },
+      "192.1.1.220": {
+        "vms_total": 9,
+        "vms_on": 6,
+        "vcpu_assigned_total": 39,
+        "vcpu_assigned_on": 32,
+        "ram_assigned_gb_total": 106,
+        "ram_assigned_gb_on": 70,
+        "ram_used_gb_on": 44.1,
+        "cpu_used_mhz_on": 500,
+        "consumed_cpu_pct": 3,
+        "consumed_mem_pct": 36,
+        "vcenter_status": "Normal",
+        "ha_state": "N/A",
+        "ram_physical_implied_gb": 122.5,
+        "overcommitted_ram": false
+      },
+      "192.1.1.221": {
+        "vms_total": 22,
+        "vms_on": 5,
+        "vcpu_assigned_total": 60,
+        "vcpu_assigned_on": 20,
+        "ram_assigned_gb_total": 128,
+        "ram_assigned_gb_on": 46,
+        "ram_used_gb_on": 32.7,
+        "cpu_used_mhz_on": 200,
+        "consumed_cpu_pct": 5,
+        "consumed_mem_pct": 86,
+        "vcenter_status": "Normal",
+        "ha_state": "N/A",
+        "ram_physical_implied_gb": 38.0,
+        "overcommitted_ram": true
+      },
+      "192.1.1.222": {
+        "vms_total": 5,
+        "vms_on": 3,
+        "vcpu_assigned_total": 23,
+        "vcpu_assigned_on": 13,
+        "ram_assigned_gb_total": 92,
+        "ram_assigned_gb_on": 36,
+        "ram_used_gb_on": 23.4,
+        "cpu_used_mhz_on": 111,
+        "consumed_cpu_pct": 1,
+        "consumed_mem_pct": 20,
+        "vcenter_status": "Normal",
+        "ha_state": "Uninitialization Error",
+        "ram_physical_implied_gb": 117.0,
+        "overcommitted_ram": false
+      },
+      "192.1.1.223": {
+        "vms_total": 17,
+        "vms_on": 15,
+        "vcpu_assigned_total": 134,
+        "vcpu_assigned_on": 116,
+        "ram_assigned_gb_total": 330,
+        "ram_assigned_gb_on": 290,
+        "ram_used_gb_on": 231.7,
+        "cpu_used_mhz_on": 2190,
+        "note": "1 VM apagada entre 18 ago y 12 sep: OPENOEM24ai. Mayor RAM asignada + mayor uso real del cluster principal -- candidato #1 a sobreasignacion, ver findings.md",
+        "consumed_cpu_pct": 10,
+        "consumed_mem_pct": 91,
+        "vcenter_status": "Warning",
+        "ha_state": "N/A",
+        "ram_physical_implied_gb": 254.6,
+        "overcommitted_ram": true
+      },
+      "192.1.1.224": {
+        "vms_total": 16,
+        "vms_on": 14,
+        "vcpu_assigned_total": 115,
+        "vcpu_assigned_on": 107,
+        "ram_assigned_gb_total": 324,
+        "ram_assigned_gb_on": 292,
+        "ram_used_gb_on": 239.5,
+        "cpu_used_mhz_on": 3262,
+        "note": "segunda mayor RAM asignada + segundo mayor uso real -- candidato #2 a sobreasignacion, ver findings.md",
+        "consumed_cpu_pct": 9,
+        "consumed_mem_pct": 94,
+        "vcenter_status": "Normal",
+        "ha_state": "N/A",
+        "ram_physical_implied_gb": 254.8,
+        "overcommitted_ram": true
+      },
+      "192.1.3.252": {
+        "vms_total": 16,
+        "vms_on": 9,
+        "vcpu_assigned_total": 96,
+        "vcpu_assigned_on": 48,
+        "ram_assigned_gb_total": 157.9,
+        "ram_assigned_gb_on": 82,
+        "ram_used_gb_on": 77.9,
+        "cpu_used_mhz_on": 3808,
+        "note": "2 VMs apagadas entre 18 ago y 12 sep: WL-GIAR, DB-GIAR (stack legado de GIAR) -- antes de esto hubiera dado sobreasignado tambien",
+        "consumed_cpu_pct": 25,
+        "consumed_mem_pct": 85,
+        "vcenter_status": "Normal",
+        "ha_state": "N/A",
+        "ram_physical_implied_gb": 91.6,
+        "overcommitted_ram": false
+      },
+      "192.168.100.4": {
+        "vms_total": 15,
+        "vms_on": 2,
+        "vcpu_assigned_total": 58,
+        "vcpu_assigned_on": 6,
+        "ram_assigned_gb_total": 177,
+        "ram_assigned_gb_on": 16,
+        "ram_used_gb_on": 16.1,
+        "cpu_used_mhz_on": 146,
+        "site": "Piedras"
+      }
+    }
+  }
 }

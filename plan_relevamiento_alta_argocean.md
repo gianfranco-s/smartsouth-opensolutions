@@ -1,0 +1,47 @@
+# Relevamiento de alta de cliente — camino punta a punta (Argocean de referencia)
+
+**Objetivo:** el mismo que [`plan_relevamiento_alta_cefas.md`](plan_relevamiento_alta_cefas.md), [`plan_relevamiento_alta_jobs.md`](plan_relevamiento_alta_jobs.md), [`plan_relevamiento_alta_eby.md`](plan_relevamiento_alta_eby.md), [`plan_relevamiento_alta_boca.md`](plan_relevamiento_alta_boca.md), [`plan_relevamiento_alta_abb.md`](plan_relevamiento_alta_abb.md) y [`plan_relevamiento_alta_giar.md`](plan_relevamiento_alta_giar.md) — entender capa por capa qué infraestructura usa un cliente (dominio → NPM → firewall/NAT → app → DB → storage) recorriéndolo de punta a punta.
+
+**Octavo trazado, el cliente con menos datos de los 15 — y el único con una capa central ya resuelta de escritorio, sin sesión.** Argocean ni siquiera está en la tabla principal de la matriz: se descubrió únicamente por una nota suelta en la hoja **Discrepancias** ("DB `172.18.5.60` / SID `MBA` — no figura en tabla funcional"). Sin `code`, sin `admin_user`, sin `matrix_detail` — el perfil más pobre del proyecto. Pero tiene algo que ningún otro "plano" tiene todavía: su VM de base de datos figura **apagada** en `ExportList.csv`, la fuente más confiable del relevamiento — un dato duro de capa 6 sin necesidad de TeamViewer.
+
+## Por qué Argocean ahora (impacto sobre el resto del relevamiento)
+
+- **Capa 6 casi se cierra sola.** `DB-ARGOCEAN` (`infra/inventory.json` → `vms[]`) tiene `power_state: "Apagado"`, sin IP asignada actualmente. A diferencia de ABB (que necesitó `dba_tab_modifications` para probar inactividad) o ROMAN (que necesitó access logs), acá el hipervisor mismo ya dice que la máquina no está corriendo — el dato más duro posible, y gratis.
+- **El WebLogic compartido ya es terreno conocido por el plan de GIAR.** `WL-CLIENTES` (`172.18.5.40`) vive en el mismo segmento aislado (`192.1.3.252`) que el legado de GIAR (`WL-GIAR`/`DB-GIAR`) y el legado de ROMAN (`WL-CLIENTES` mismo box) — el firewall que lo expone es el mismo `FW` (`192.1.3.1`) que `plan_relevamiento_alta_giar.md` ya prevé recorrer. Si esa sesión ocurre, un `ps -ef`/`netstat` ahí deja de paso el dato que le falta a Argocean en capa 4, sin costo extra.
+- **Acceso restringido por alias, no abierto a `*` — señal de que alguna vez hubo control de acceso deliberado.** La regla de NAT `Weblogic 11gR2 argocean` (`FW`, `WAN:8080 → 172.18.5.40:80`) usa el alias de origen `Argocean_IP_Publicas`, a diferencia de la mayoría de reglas de `FWOPEN` (todas `source: *`). Vale la pena ver qué IPs contiene ese alias si se llega al dashboard de `FW` — podría ser la única pista de quién accedía y desde dónde.
+- **El SID reclamado (`MBA`) no se parece a nada conocido.** Ni al nombre del cliente, ni a ningún alias visto en otros `tnsnames.ora`. Sin poder prender la VM no hay forma de confirmarlo — queda como pregunta abierta, no bloqueante.
+- **Cierra el último de los cuatro "planos"** (`DVAL`, `DCVIAJES`, `ESYOP`, `Argocean` — ver `plan_relevamiento_alta_abb.md`). `DCVIAJES`/`ESYOP` ya se resolvieron de rebote en el trazado de ABB; `DVAL` está iniciado y bloqueado por credencial (`plan_relevamiento_alta_dval.md`). Argocean es el único que no había recibido ni una mirada dedicada.
+
+## Estado de partida (13 sep 2026)
+
+De `infra/inventory.json` → `clients[]` (entrada `Argocean`, sin `code`), `infra/findings.md` y `pfsense-192.1.3.1-nat-rules.txt`:
+
+- **Cliente:** `"Argocean"` — `code: ""`, `admin_user: ""`, **sin `matrix_detail`** (no está en la tabla principal de clientes de `Matriz_servicios_por_cliente_Hosting_V2.xlsx`, solo en la hoja **Discrepancias**: *"DB 172.18.5.60 / SID MBA — No figura [en tabla funcional]"*). `status`: `"Inventario técnico incompleto"`. Sin productos, sin charset, sin versión de Condor — nada de eso existe para este cliente en ninguna fuente.
+- **WebLogic (capa 4):** resuelto **no por nombre reclamado (no había ninguno) sino por el NPM** — `argocean.condorenterprise.com.ar` → `172.18.5.40:80`, visto en la tabla `proxy_host` de `VM-DOCKER-Clientes` (19 ago 2026), **`enabled=0`** (deshabilitado). VM real: `WL-CLIENTES` — Red Hat Enterprise Linux 6, **uptime 823 días** (la VM más vieja sin reiniciar vista en el proyecto hasta ahora), **encendida**, `esxi_host: 192.1.3.252` (el segundo host ESXi, segmento aislado `172.18.5.x`/`10.10.1.x`). **Compartida con ROMAN** (mismo `172.18.5.40`, mismo hallazgo que ya tenía `plan_relevamiento_alta_roman.md`).
+- **Base de datos (capa 6):** `DB-ARGOCEAN` — **`power_state: "Apagado"`** en `ExportList.csv`, `ipv4: []` (sin IP asignada mientras está apagada), `esxi_host: 192.1.3.252` (mismo segmento). `notes: "argocean 172.18.5.60"` — su IP histórica, la que usan las reglas de NAT de `FW`. `uptime_days: 0` (coherente con apagada).
+- **Firewall / NAT — 3 reglas en `FW` (`192.1.3.1`), transcriptas pero sin estado enabled/disabled capturado:**
+  - `SSH DBargoceanPROD`: `WAN:217 → 172.18.5.60:22` (alias `OPEN_REDES_PUBLICAS_2024`).
+  - `Weblogic 11gR2 argocean`: `WAN:8080 → 172.18.5.40:80` (alias **`Argocean_IP_Publicas`**, restringido — no `*`).
+  - `mitiga Publicacion de Base Datos - ARGOCEAN`: `WAN:1520 → 172.18.5.60:1521` (alias `OPEN_REDES_PUBLICAS_2024`).
+  - Las tres reglas apuntan a un backend que hoy está apagado (`.60`) o a uno compartido cuya ruta de dominio está deshabilitada (`.40`) — sin importar si las reglas de NAT en sí siguen activas en pfSense, no hay evidencia de tráfico real posible ahora mismo del lado servidor.
+- **No hay ninguna credencial conocida, ni siquiera un intento.** A diferencia de DVAL/ROMAN, nadie probó `root`/`soportesmart` contra `172.18.5.60` (irrelevante mientras esté apagada) ni contra `172.18.5.40` en el contexto de Argocean específicamente (sí se accedió a ese box de rebote para ROMAN/GIAR, sin buscar nada de Argocean).
+
+## El camino, capa por capa
+
+| # | Capa | Estado (13 sep 2026) | Próximo paso |
+|---|---|---|---|
+| 1 | Dominio de entrada | 🔴 **Deshabilitado.** `argocean.condorenterprise.com.ar` → `172.18.5.40:80`, `enabled=0` en el NPM de `VM-DOCKER-Clientes` (visto 19 ago 2026). | Ninguno bloqueante. Si se vuelve a entrar a `VM-DOCKER-Clientes`, confirmar que sigue `enabled=0` (no debería haber cambiado). |
+| 2 | Nginx Proxy Manager | 🔴 **Mismo estado — deshabilitado**, mismo NPM (`VM-DOCKER-Clientes`, `192.1.1.38`). | Ninguno. |
+| 3 | Firewall / NAT | 🟢 **Cerrada (13 sep 2026).** Las 5 reglas de Argocean/ROMAN en `FW` están habilitadas (confirmado por captura de pantalla del dashboard). Pero la restricción por alias `Argocean_IP_Publicas` es letra muerta: una regla previa sin restricción de origen, para el mismo destino (`WAN:8080`→`172.18.5.40:80`), ya deja pasar cualquier IP antes de que la regla con alias se evalúe. Contenido del alias obtenido (parcial, ~10 IPs públicas argentinas). | Ninguno. |
+| 4 | App — motor clásico | 🟡 **Host identificado (`WL-CLIENTES`, `172.18.5.40`), nunca recorrido.** Compartido con ROMAN legado; el segmento entero (`192.1.3.252`) sigue sin una sola sesión SSH del proyecto. | Cuando se acceda a este segmento (la sesión de GIAR ya lo prevé — ver `plan_relevamiento_alta_giar.md`), correr `ps -ef \| grep -iE 'argocean\|mba'` y `sudo ss -tlnp` / `netstat -tn` buscando cualquier proceso o conexión atribuible a Argocean, además de lo que se busque para ROMAN/GIAR. |
+| 5 | App — capa Docker / reportes | ⬜ **Sin evidencia, probablemente no aplica.** Sin matriz de productos para este cliente (no está en la tabla principal). | Ninguno — no hay ninguna señal que sugerir de dónde buscar. |
+| 6 | Base de datos | 🟢 **Prácticamente cerrada de escritorio — VM apagada, confirmado por la fuente más confiable del proyecto.** `DB-ARGOCEAN` con `power_state: "Apagado"` en `ExportList.csv` (vCenter). SID reclamado `MBA` (hoja Discrepancias) sin poder confirmarse — la VM no tiene IP mientras está apagada. | Ninguno posible sin prender la VM — decisión de negocio/operativa, no algo que se resuelva por TeamViewer. Si en algún momento se prende (para un backup, una migración, etc.), aprovechar para `cat /etc/oratab` + `v$database` y confirmar/descartar el SID `MBA`. |
+| 7 | Almacenamiento / object store | ⬜ **Sin trazar, sin ningún dato.** | Ninguno — no hay pista de dónde buscar (sin matriz, sin notas). |
+
+## Al terminar
+
+1. En `infra/inventory.json` → `clients[Argocean]`, agregar una nota explícita de conclusión de capa 6 (VM `DB-ARGOCEAN` apagada, confirmado por `ExportList.csv`, sin necesidad de sesión) — ya está el dato (`power_state`), falta la interpretación escrita en el `notes` del cliente, no solo del VM.
+2. Mover a `infra/findings.md` la conclusión de Argocean junto a ABB/GIAR en la pregunta de negocio de `QUESTIONS.md` (¿de baja también?) — a diferencia de esos dos, acá ni siquiera hace falta `dba_tab_modifications`: la VM de DB está apagada, punto.
+3. Si la sesión de GIAR toca `WL-CLIENTES` (`172.18.5.40`) y aparece algo de Argocean (proceso, conexión, archivo de config): sumarlo a `clients[Argocean].weblogic.resolved` con `resolved_by: teamviewer`.
+4. Actualizar `verificacion_completitud_clientes.md` (Argocean deja de estar "sin cambios") y `resumen_relevamiento_alta_cliente.md`.
+5. Dejar anotado en `QUESTIONS.md`, si no está ya, la pregunta de negocio: ¿Argocean es un cliente dado de baja formalmente, o infraestructura que nunca llegó a producción (`status: "Inventario técnico incompleto"` sugiere esto último, no una baja)? Distinto matiz que ABB/GIAR (que sí tuvieron uso y se apagaron después).

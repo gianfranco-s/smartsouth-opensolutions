@@ -1,3 +1,11 @@
+PEDIDO DE ALEXIS (12/13 sep 2026) — capacidad real de cada host ESXi, sospecha de sobreasignación de RAM — **prácticamente resuelto, sin necesitar TeamViewer**
+
+`ExportList-hosts_and_clusters.csv` (export de la vista Hosts and Clusters, con `Consumed Memory %` por host) resolvió lo que pensábamos que iba a necesitar anotación manual host por host: cruzando el % contra el uso real ya conocido se despeja la capacidad física implícita sin entrar a ningún Summary tab. Resultado en `infra/topology.md` §3 y `infra/findings.md`: **7 de 12 hosts del cluster principal (`.215`, `.216`, `.217`, `.218`, `.221`, `.223`, `.224`) ya tienen más RAM asignada a VMs encendidas que su capacidad física implícita** — confirma la sospecha de Alexis como patrón de cluster, no solo en los dos hosts más grandes. `.223` además es el único host con `Status: Warning` en vCenter (no `Normal`).
+
+Único cabo suelto, bajo costo y no urgente: el mismo cálculo para CPU no sirve (`Consumed CPU %` es demasiado volátil, da resultados sin sentido). Si en algún momento hace falta el dato exacto de sockets/cores/GHz por host, ahí sí no hay atajo — TeamViewer, vCenter → Hosts and Clusters → cada host → Summary. También serviría, si la herramienta que generó `ExportList-hosts_and_clusters.csv` lo permite, agregar una columna de capacidad absoluta (no solo %) para reemplazar la aproximación de RAM por un número exacto — pero no bloquea informar el hallazgo tal como está.
+
+---
+
 puede ser que ABB este dado de baja, pero tengamos datos como backup exlusinvamente?
 
 Próximos pasos de GIAR (por orden) — ver plan_relevamiento_alta_giar.md para el detalle completo
@@ -52,3 +60,6 @@ DBs que no se pudo acceder
 ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa root@10.77.7.30
 ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa root@10.77.7.151
 ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa root@10.77.7.15
+
+
+tampoco puedo a .238

@@ -26,6 +26,8 @@
 
 **Contexto: probablemente una sola reunión con el equipo saliente.** Todo lo de acá se resuelve por TeamViewer nosotros mismos; `QUESTIONS.md` queda para lo que solo ellos pueden responder.
 
+**Pedido externo (Alexis Lombardi, 12/13 sep 2026): auditoría de sobreasignación de RAM por host ESXi — confirmada, sin necesitar TeamViewer.** Sospechaba que había más RAM asignada a las VMs de la que algún host físico realmente tiene. Cruzando VM count/vCPU/RAM asignada/uso real (`ExportList-Datacenter-Full.csv`/`ExportList-Piedras-Full.csv`) con `Consumed Memory %` por host (`ExportList-hosts_and_clusters.csv`, export de la vista Hosts and Clusters), se despejó la capacidad física implícita de cada host sin leer ningún Summary a mano: **7 de 12 hosts del cluster principal ya tienen más RAM asignada a VMs encendidas que su capacidad física implícita** (`.215`/`.216`/`.217`/`.218`/`.221`/`.223`/`.224` — `.223` además con `Status: Warning` en vCenter). Detalle en `infra/topology.md` §3 y `infra/findings.md`; datos estructurados en `infra/inventory.json` → `esxi_capacity`. Cabo suelto menor, no urgente: capacidad física exacta de CPU (sockets/cores/GHz) sí requiere TeamViewer si hace falta — el mismo método por porcentaje no sirve para CPU (demasiado ruidoso). Ver `proxima-sesion.md`.
+
 ### Tier 1 — completa la ruta de recursos de un cliente
 
 1. **Construir el mapa dominio → instancia Nginx Proxy Manager → servidor/puerto interno**, a partir de las 4 instancias confirmadas y las reglas NAT de `pfsense`. Esta es la pieza que realmente falta del mapeo completo.

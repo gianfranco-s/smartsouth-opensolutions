@@ -58,7 +58,8 @@
         {
           "client": "Club Atlético Boca Juniors",
           "code": "BOCA",
-          "role": "database"
+          "role": "database",
+          "notes": "[12 sep 2026] Confirmada en vivo. Este host corre al menos 3 instancias Oracle separadas (ora_pmon_BOCA, ora_pmon_CEFAS, ora_pmon_wl12prod). La instancia BOCA es una CDB (multitenant); los datos reales de BOCA viven en la PDB BOCAPDB, schema CONDOR (~22.5 GB), ultimo DML 12/09/2026 21:37 -- uso activo confirmado. Charset WE8MSWIN1252."
         }
       ],
       "uptime_days": 145,
@@ -4447,8 +4448,13 @@
             "claimed_name": "clientes-db",
             "resolved_vm": "CLIENTES-DB",
             "ip": "192.1.1.32",
-            "resolved_by": "name",
-            "match": true
+            "resolved_by": "teamviewer",
+            "match": true,
+            "cdb": "BOCA",
+            "pdb": "BOCAPDB",
+            "app_schema": "CONDOR",
+            "charset_confirmed": "WE8MSWIN1252",
+            "notes": "[12 sep 2026] Confirmada en vivo (root@192.1.1.32, ORACLE_SID=BOCA, sqlplus). La disputa 'BOCA vs BOCAPDB' de la matriz NO era una disputa real: v$database.cdb=YES, es una CDB (multitenant). La CDB en si (nombre BOCA) esta practicamente vacia -- solo schemas de infraestructura Oracle (SYS, APEX, OJVMSYS, etc), sin CONDOR/BOCA de negocio. Los datos reales viven en la PDB 'BOCAPDB' (READ WRITE): schema CONDOR ~22.5 GB (2571 segmentos, coincide con los 18G declarados en la matriz), mas BOCA (11 MB, chico), CONDORBI (105 MB), SPOT. Charset WE8MSWIN1252 confirmado dentro de la PDB (= matriz). Ultimo DML de CONDOR: 12/09/2026 21:37 -- el mismo dia de la consulta, uso productivo activo confirmado en vivo. Sesiones via ORDS local (CONDOR, ORDS_PUBLIC_USER) inactivas al momento de mirar; nada desde 192.1.2.54 en el instante exacto (fin de semana), pero el DML reciente ya prueba el uso."
           }
         ]
       },
@@ -4474,12 +4480,13 @@
           "MicroStrategy": ""
         },
         "observaciones": "No realizar tareas los domingos.",
-        "validacion_pendiente": "Confirmar SID actual: BOCA o BOCAPDB y plan para WL nuevo."
+        "validacion_pendiente": "RESUELTO (12 sep 2026): 'BOCA' y 'BOCAPDB' son las dos correctas a la vez -- BOCA es el nombre de la CDB, BOCAPDB la PDB con los datos reales (schema CONDOR). Plan de WL nuevo sigue sin definirse (status inventory: 'Destino definido / sin WL nuevo')."
       },
       "source": [
         "Relevamiento (sin claves) - VM Linux.csv",
         "Matriz_servicios_por_cliente_Hosting_V2.xlsx"
-      ]
+      ],
+      "trace_status": "7/7 capas (12 sep 2026) -- ver plan_relevamiento_alta_boca.md. Capas 1-5 y 7 cerradas el 6 sep (ver confirmation de WL12C-Desarrollo.2.54 en vms[]); capa 6 cerrada el 12 sep en CLIENTES-DB (192.1.1.32) -- ver database.resolved."
     },
     {
       "name": "CSM Ciencia al Servicio del Movimiento S.A.",
@@ -4562,7 +4569,7 @@
           "MicroStrategy": ""
         },
         "observaciones": "Interfaces: Andrés Schemper.",
-        "validacion_pendiente": "[6 sep 2026] PARCIAL. (a) Version WL: RESUELTA -- 12.2.1.4.0 (OPENWLPROD01, mismo box/molde que EBY/GIAR); la disputa 10-vs-11 de las fuentes se cierra a favor del 12. (b) 'TEST o produccion': la config de OPENWLPROD01 es inequivoca -- secciones [csm]* con pageTitle='CSM PRODUCCION' y userid=@PRODCSM -> OPENDBPROD03/10.77.7.30:1525. NO usa romanstest ni OPENDBDES011. Pero NO hay trafico en vivo que lo confirme: cero sesiones Forms de ROMAN, cero conexiones Oracle a 10.77.7.30, cero requests config=csm en 5 dias de access.log. ROMAN esta configurado como produccion pero puede estar dormido. Pendiente: access log del NPM de DOCKER-DEB (romanprod, id 93) + v$session en OPENDBPROD03 (bloqueado por credencial)."
+        "validacion_pendiente": "[6 sep 2026] PARCIAL. (a) Version WL: RESUELTA -- 12.2.1.4.0 (OPENWLPROD01, mismo box/molde que EBY/GIAR); la disputa 10-vs-11 de las fuentes se cierra a favor del 12. (b) 'TEST o produccion': la config de OPENWLPROD01 es inequivoca -- secciones [csm]* con pageTitle='CSM PRODUCCION' y userid=@PRODCSM -> OPENDBPROD03/10.77.7.30:1525. NO usa romanstest ni OPENDBDES011. Pero NO hay trafico en vivo que lo confirme: cero sesiones Forms de ROMAN, cero conexiones Oracle a 10.77.7.30, cero requests config=csm en 5 dias de access.log. ROMAN esta configurado como produccion pero puede estar dormido. Pendiente: access log del NPM de DOCKER-DEB (romanprod, id 93) + v$session en OPENDBPROD03 (bloqueado por credencial). [12 sep 2026] Probado ssh root@10.77.7.30 -- RECHAZADO. El mismo root que abrio 192.1.1.32 (CLIENTES-DB, cierre de capa 6 de BOCA el mismo dia) no sirve en el segmento 10.77.7.x (tampoco funciono en .151 ni .15). Ver QUESTIONS.md -- credencial de DB para 10.77.7.x sigue pendiente, ya sin reunion adicional confirmada con el equipo saliente."
       },
       "source": [
         "Relevamiento (sin claves) - VM Linux.csv",

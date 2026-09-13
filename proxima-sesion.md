@@ -15,3 +15,11 @@ Si tiene POST /forms/lservlet 200 reciente → ROMAN vivo, capa 1 cerrada y 4/6 
 3. Capas 3 y 5 (pendientes, bajo costo): revisar vms[FWOPEN].nat_rules por regla dedicada a 10.77.7.201:9001 o 200.55.243.116:2235; y grep -i 'roman\|csm' proxy_hosts.csv + docker ps en OPENDOCKER01 por Jasper/Condor Link de ROMAN.
 
 4. Cabo aparte: clasificar OPENDBDES011 (10.77.7.151, "Roman test" en vCenter) — descartado de la ruta productiva, pero sin trazar qué corre ahí (¿romanstest de la matriz? VINST2025 también apunta a esa IP).
+
+
+
+
+DBs que no se pudo acceder
+ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa root@10.77.7.30
+ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa root@10.77.7.151
+ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa root@10.77.7.15

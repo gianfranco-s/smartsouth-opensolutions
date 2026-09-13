@@ -44,7 +44,7 @@
 
 ### Tier 3 — pausado, baja urgencia (no bloquea el mapeo de rutas)
 
-- Versión de WebLogic en ROMAN, JOBS; SID en CEFAS, BOCA; charset en Enerflex — dato de higiene de la hoja Discrepancias, no bloquea nada operativo. Ya se abrió consola a `WL-CLIENTES` (ROMAN) en una sesión anterior; retomar desde ahí si se vuelve a priorizar. Detalle de método abajo.
+- Charset en Enerflex — dato de higiene de la hoja Discrepancias, no bloquea nada operativo. (Versión de WebLogic en ROMAN/JOBS y SID en CEFAS/BOCA ya resueltos — ver `infra/findings.md`.) Detalle de método abajo.
 - Últimos 2 candidatos a firewall (`OPENFWCLI02`, `VM_FW`).
 - Si el segundo host ESXi (`192.1.3.252`) es un sitio separado.
 - Piedras: revisar jobs de backup de `VEEAM-PIEDRAS`, reintentar `192.168.100.1`.
@@ -78,9 +78,9 @@ El chequeo más rápido y confiable para la mayoría de estos es leer la URL de 
 
 **JOBS — versión real de WebLogic (¿12 o 11?).** `WL12C-PROD` (`192.1.1.1`). Mismo método que ROMAN.
 
-**CEFAS — SID real (¿`CEFASPDB` o `CEFAS`?).** `CLIENTES-DB` (`192.1.1.32`, compartida con BOCA). `cat /etc/oratab` para ver qué instancias corren ahí, y por cada una `sqlplus / as sysdba` → `SELECT name FROM v$database;`. Cruzar contra el datasource JDBC en `WebLogic.191` (el WL de Cefas).
+~~**CEFAS — SID real.**~~ **RESUELTO (25 ago 2026)** — `CEFAS`, no `CEFASPDB`. Ver `infra/findings.md`.
 
-**BOCA — SID real (¿`BOCAPDB` o `BOCA`?).** Mismo servidor que CEFAS — aprovechar la misma conexión. Cruzar contra el datasource JDBC en `WL12C-Desarrollo.2.54` (el WL de Boca).
+~~**BOCA — SID real (¿`BOCAPDB` o `BOCA`?).**~~ **RESUELTO (12 sep 2026)** — las dos eran correctas: `BOCA` es la CDB, `BOCAPDB` la PDB con los datos (schema `CONDOR`, ~22.5 GB, charset `WE8MSWIN1252`, uso activo confirmado por último DML el mismo día de la consulta). Ver `plan_relevamiento_alta_boca.md` e `infra/findings.md`.
 
 **Enerflex — ¿el charset es realmente `WE8ISO8859P15`?** `CLIENTES-DB2` (`192.1.1.51`, compartida con JOBS). `sqlplus / as sysdba` → `SELECT value FROM nls_database_parameters WHERE parameter = 'NLS_CHARACTERSET';`.
 

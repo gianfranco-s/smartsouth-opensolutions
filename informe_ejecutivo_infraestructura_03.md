@@ -1,0 +1,80 @@
+# Informe infraestructura Open Solutions — entrega 03
+
+Esta tercera entrega ya no está dirigida al equipo saliente — el traspaso terminó y no hay más reuniones previstas con ellos. Es un documento de referencia interna: consolida los puntos ciegos que quedan sin resolver del lado on-premise y lo que sabemos, cliente por cliente, desde la óptica pura de infraestructura (qué corre, dónde, y si tiene tráfico real hoy). Complementa al informe 02 (arquitectura punta a punta y modelo de producto) y no lo reemplaza. Fuentes: `infra/inventory.json`, `infra/findings.md`, `verificacion_completitud_clientes.md`, `QUESTIONS.md`.
+
+**Desde el punto de vista de infraestructura, la comprensión del parque on-premise está prácticamente completa.** Las 144 VMs están catalogadas, los 12+1 hosts ESXi identificados, y para los 15 clientes conocidos sabemos qué motor, qué base de datos y qué firewall/NAT les corresponde — con excepciones puntuales y acotadas, no un vacío general (ver "Puntos ciegos abiertos" abajo, en dos grupos: infraestructura que todavía no identificamos, y VMs que ya identificamos pero a las que no pudimos entrar). Este informe deja de lado a propósito el % de completitud del trazado funcional de `verificacion_completitud_clientes.md` (capas 4/5, tráfico y sesiones de aplicación) — eso mide otra cosa, no responsabilidad de infraestructura. Lo que importa acá es qué tan bien entendemos el mapa: motor, base de datos, storage, firewall/NAT de cada cliente, y qué VMs siguen sin poder abrirse.
+
+## Puntos ciegos abiertos
+
+Dos tipos de vacío, distintos en causa y en solución. El primero es infraestructura que sabemos que existe pero no identificamos todavía; el segundo es infraestructura ya identificada — sabemos qué VM es y qué debería tener adentro — a la que simplemente no pudimos entrar.
+
+### Infraestructura sin identificar
+
+| Punto ciego | Qué sabemos | Próximo paso concreto |
+|---|---|---|
+| **`OL8CASLAWL01`** — candidato a cliente nuevo | VM sin ningún rastro previo, IP ya resuelta (`192.1.1.64`, host `192.1.3.252`). El nombre sugiere "Casla" (San Lorenzo), mismo patrón que `BOCA`. Categoría inferida: `weblogic_app`. **Confirmado como alta reciente, no como vacío viejo**: apareció por primera vez en el export del 12 sep 2026, con solo 10 días de actividad — mismo patrón que Heinlein/Rex, sin relación con el segmento aislado de `FW` más allá de compartir el mismo host ESXi. | Entrar directo por TeamViewer/SSH a `192.1.1.64`: `hostname`, `ps -ef`/`docker ps -a`, y buscar su dominio en algún NPM. Barato — un solo host ya identificado. |
+| **Servidor NFS sin nombrar** | `OPENDOCKER.57` y `VM-DOCKER-Clientes` montan NFS externo (uno con "montaje con error", otro "con alta ocupación") — el host nunca se nombra en el relevamiento Docker original. | `mount \| grep nfs` (solo lectura) y `cat /etc/fstab` en esos dos hosts. Resuelve la IP del servidor en un comando. |
+| **Segundo stack CEFAS + cliente "SYT"** | 5 IPs nuevas (`10.10.1.100`, `10.10.1.8`, `172.18.5.111`, `172.18.5.112`, `10.10.1.43`) en el segmento aislado detrás de `FW` (`192.1.3.1`), ninguna en `ExportList.csv`. "SYT" no coincide con ningún cliente conocido. | Puertos NAT ya mapeados: SSH a `172.18.5.111` por `WAN:2232`, a `172.18.5.112` por `WAN:2233`, a `172.18.5.6` por `WAN:2333`, a `10.10.1.3` por `WAN:61991`. Con cualquiera de estos, `hostname`/`ps -ef`/access log dice si es CEFAS legado abandonado o un cliente real distinto. |
+| **`PDBREXPROD` / `192.1.3.34`** | Alias TNS de una segunda DB candidata para Rex Argentina, en el mismo segmento aislado que `WL-CLIENTES`/`DB-GIAR`. Sin VM en ningún export de vCenter. Descartada como ruta activa (Rex usa `PRODREX01`), pero sigue sin explicación — podría ser un service name dentro de una PDB ya conocida, no una VM nueva. | Baja prioridad (ya no bloquea nada funcional). Si se retoma: `ping`/SSH desde el mismo segmento `192.1.3.x` antes de asumir VM sin inventariar. |
+| **Piedras — capacidad de host** | El único sitio (de 3) sin datos de RAM/CPU física real — quedó fuera de los dos exports de "hosts and clusters" regenerados el 12 sep. | TeamViewer a `192.168.100.4`, Summary de vSphere. Cierra el mismo análisis de sobreasignación ya hecho para los otros 12 hosts. |
+| **10 IPs del segmento `192.1.1.x` sin ningún rastro en `ExportList.csv`** | Reglas NAT de `FWOPEN` con destinos reales (Exchange, Jira, Firma Digital, backend de SIGOWEB/SELFSERVICE) que no corresponden a ninguna de las 129 VMs exportadas. | Distinto a los anteriores: si el export de vCenter no las ve, puede ser que vivan en otro vCenter/cluster, o sean hardware físico fuera de vSphere. Esto probablemente **no se resuelve solo por TeamViewer** — es la única pregunta de esta lista que valdría la pena dejar planteada a quien en Smart South haya heredado el conocimiento operativo (no el equipo saliente, que ya no está — ver más abajo). |
+
+### VMs identificadas, sin poder entrar
+
+Acá ya sabemos qué VM es y qué rol cumple — el vacío es puramente de acceso (credencial rechazada, sin `sudo`, o el host apagado).
+
+| VM / host | Por qué importa | Estado del acceso |
+|---|---|---|
+| **`OPENDBPROD03`** (`10.77.7.30`) — DB de ROMAN | Cierre 1.0 de capa 6 de ROMAN (hoy en 0.9, solo por `tnsnames.ora`/config, sin `sqlplus` directo). | `ssh root@10.77.7.30` **probado y rechazado (12 sep 2026)** — el mismo `root` que abrió `192.1.1.31`/`.32`/`.90` no sirve en este segmento. |
+| **`OPENDBDES011`** (`10.77.7.151`, "Roman test" en vCenter) | Sin trazar qué corre realmente ahí — descartada de la ruta productiva de ROMAN, pero sin confirmar si es `romanstest` u otra cosa. | `ssh root@10.77.7.151` rechazado, mismo intento que arriba. |
+| **`OPENDBPROD005`** (`10.77.7.15`) — DB real de EBY (ruta `eby-prod`) | La ruta ya está cerrada por evidencia indirecta fuerte (`tnsnames.ora` oficial + `netstat` con 100% del tráfico real yendo ahí), pero nunca se confirmó por `sqlplus` directo — sigue siendo inferencia de config, no sesión en vivo. | `ssh root@10.77.7.15` rechazado. Todo el segmento `10.77.7.x` comparte este bloqueo. |
+| **`DBClientes.238`** (`192.1.1.238`) — DB de DVAL | Bloquea el cierre de capa 6 de DVAL, uno de los dos clientes que quedaron sin remedir en esta ronda. | `ssh root@192.1.1.238` **y** `soportesmart` (la cuenta que sí funciona en `WebLogic.191`) **ambos rechazados (12/13 sep 2026)** — confirma que no hay ni siquiera una cuenta válida por segmento, cada host tiene la suya. |
+| **`WL-CLIENTES`** (`172.18.5.40`) — WebLogic compartido Argocean/ROMAN | Se logró entrar (por consola de vCenter, `soportesmart`), pero **sin `sudo`** — no se pudo leer `formsweb.cfg` ni ningún access log, así que no se puede atribuir la actividad reciente observada (`ps -ef`/`netstat`) a Argocean o a ROMAN específicamente. | Acceso parcial: dentro del host, sin privilegios para los archivos que importan. |
+| **`OpenPiedrasFw01`** — candidato a pfSense de Piedras | Explicaría por qué el dashboard `192.168.100.1` nunca respondió durante el relevamiento manual de firewalls. | VM apagada en el export de Piedras — no se puede confirmar sin encenderla, decisión que excede un simple TeamViewer. |
+
+## Descubrimientos por cliente (óptica de infraestructura)
+
+Qué encontramos de cada cliente en términos de infraestructura real — motor, DB, estado de uso — sin mezclarlo con el % de trazado funcional (eso vive en `verificacion_completitud_clientes.md`, y mide otra cosa).
+
+| Cliente | Estado de uso | Hallazgo de infraestructura clave |
+|---|---|---|
+| **CEFAS** | Activo, confirmado | Motor clásico (Forms 11g) en `WebLogic.191`, compartido con 7 clientes más. Self Service aparte, en contenedores propios (`ss_front/back/pg_cefas`) — no toca la Oracle del motor clásico. El mismo `WebLogic.191` hace doble función de servidor NFS. |
+| **JOBS** | Activo, confirmado | WebLogic (`WL12C-PROD`) y DB (`CLIENTES-DB2`, `192.1.1.51`) compartidos con **ENERFLEX** — mismo host, cada uno con su propio `SERVICE_NAME` (`JOBS` vs `enerflex`), confirmado por PID/`netstat`. Dos rutas de entrada distintas para JOBS, ambas con tráfico real simultáneo. |
+| **ENERFLEX** | Activo, confirmado (hereda evidencia de JOBS) | Comparte motor y DB con JOBS (`WL12C-PROD`/`CLIENTES-DB2`) — mismo host, tenant separado. Falta solo su charset propio. |
+| **EBY** | Activo, confirmado | **Dos stacks Oracle en paralelo**, no una migración a medio camino: `WebLogic.191`→`Database .90` (descartada, esa DB es de otro tenant, `SIGO`) y `OPENWLPROD01`→`OPENDBPROD005` (la real, 1.45M requests). |
+| **GIAR (Arris de Argentina)** | **Dormido** — deployment real, cero uso | Stack legado (`WL-GIAR`/`DB-GIAR`) apagado de verdad en vCenter. Stack nuevo (`OPENWLPROD01`/`PRODGIAR`) tiene deployment deliberado en config, pero **cuatro fuentes independientes en cero** (sesiones DB, netstat, 3 días de access log). No hay ni un dominio conocido por el que entraría un usuario. |
+| **ROMAN (CSM)** | **Dormido** — mismo perfil que GIAR | Configurado como producción de punta a punta (`OPENWLPROD01`/`OPENDBPROD03`), pero tres rutas de acceso distintas confirman cero tráfico real (NPM, access log del motor, y un tercer ORDS con 95% de sus requests fallando por backend caído). DB sin acceso directo — ver "VMs identificadas, sin poder entrar". |
+| **MAIPU** | **En alta, incompleto** | DB nueva con nota explícita "PRODUCCION NUEVO" (`DASADBPROD01`) — Condor todavía no terminado de configurar encima. Dominio de portal de proveedores deshabilitado. |
+| **HEINLEIN** | **Subestimado en el inventario** | Figura como "solo infraestructura/test", pero una VM nueva (`OL8HEINPROD`) y una PDB (`HEINLEIN_PROD`) sugieren producción real sin confirmar todavía — trazado recién arrancado. |
+| **Rex Argentina** | Activo, confirmado — con incidente operativo | Motor clásico con usuarios nominales reales + módulo Self Service aparte (`rex_frontend`/`rex_backend`/`rex_postgres`, 2 años de uptime). **Su storage de recibos está roto ahora mismo** (`Stale file handle` en el mount NFS) — hallazgo operativo, no solo de inventario. |
+| **BOCA** | Activo, confirmado | Forms productivo real corre en la VM llamada "`WL12C-Desarrollo`" (el nombre engaña). CDB `BOCA` casi vacía; los datos viven en la PDB `BOCAPDB`, con DML del mismo día de la consulta. |
+| **DVAL** | Sin remedir esta ronda | Extrapolación original, sin sesión nueva. DB sin acceso directo — ver "VMs identificadas, sin poder entrar". |
+| **ABB** | **Apagado de hecho** desde 01-jul-2026 | DB productiva identificada y confirmada (`192.1.1.31`, schema `CONDOR`), pero cero sesiones/DML desde esa fecha con la infraestructura igual encendida. Apoya (no prueba) la nota de baja de la matriz. |
+| **DCVIAJES** | Activo, confirmado (15 sep) | Comparte box de DB con ABB (`192.1.1.190`). No se logró capturar una sesión de red, pero `v$sqlarea` reveló el patrón de numeración de documentos Forms — la tabla de auditoría `AUDIT_TNUMDOC` confirmó usuario nominal (`CONTABLE`), 43 documentos reales (Notas de Débito a Proveedor) el 13-sep. Evidencia transaccional, más fuerte que un `netstat`. |
+| **ESYOP** | Activo, confirmado | Sesión de usuario real capturada en el momento exacto de la consulta (`config=esyop`, puesto de trabajo `PC-GUIDO`) con la conexión a DB confirmada en simultáneo por `netstat`. |
+| **Argocean** | **Ambiguo** — probablemente nunca llegó a producción | DB apagada (confirmado por vCenter, sin necesitar sesión). El WebLogic compartido con ROMAN está vivo y con actividad reciente, pero sin poder aislar si esa actividad es de Argocean o de ROMAN — ver `WL-CLIENTES` en "VMs identificadas, sin poder entrar". Ruta de dominio deshabilitada. Distinto matiz que ABB/GIAR: nunca tuvo ficha de producto ni aparece en la tabla principal de la matriz — parece alta nunca terminada, no baja. |
+
+**Patrón transversal, dos clientes en la misma situación:** **GIAR y ROMAN** están configurados como producción de punta a punta pero confirmados, con evidencia técnica sólida (múltiples fuentes independientes), sin un solo usuario real. Es el mismo perfil que ya tenía ABB. Entre los tres, son candidatos naturales a una revisión de licencias/recursos — infraestructura completa retenida para un uso que no se observa en ningún punto del circuito.
+
+## Riesgos y puntos frágiles (actualizado)
+
+- **Sobreasignación de RAM confirmada con datos exactos: 6 de 12 hosts ESXi del cluster principal.** Más crítico en GB absolutos: `.223`/`.224` (+30/+36 GB sobre capacidad física real). Más crítico en términos relativos: `.216` (+64%). `.218` queda al límite justo (+3%) — el más frágil de los seis. Piedras queda fuera de este análisis (punto ciego, ver tabla arriba).
+- **Tres clientes con infraestructura completa pero sin uso real observado (ABB, GIAR, ROMAN)** — ver el patrón transversal arriba. Sin equipo saliente para confirmar la decisión de negocio, esto queda como recomendación técnica a validar con quien tenga la autoridad de negocio hoy en Smart South.
+- **Exposición a Internet:** consola de administración de vCenter (`192.1.1.29:443`) y panel de `FWOPEN` publicados por NAT en el firewall de borde; una regla de `FWOPEN` expone directo el puerto Forms de BOCA (`:9998`) sin pasar por NPM; en el firewall de Argocean/ROMAN, el control de acceso por alias de IP es **letra muerta en la práctica** — una regla previa sin restricción ya deja pasar cualquier IP antes de evaluar el alias.
+- **Incidente operativo activo, no solo de inventario: el storage de recibos de Rex Argentina está roto** (`Stale file handle` en el mount NFS que usan `rex_frontend`/`rex_backend`). La app sigue arriba, pero la carga/descarga de recibos probablemente falla.
+- **Sin credencial universal, ni siquiera por segmento de red.** `root` funcionó en algunos hosts DB del segmento `192.1.1.x` (`.31`, `.32`, `.90`) pero fue rechazado en otro del mismo segmento (`.238`, DB de DVAL) y en todo el segmento `10.77.7.x` (DB de ROMAN y de EBY vía esa ruta) — cada host tiene su propia contraseña, sin patrón explotable. Bloquea el cierre 1.0 de capa 6 de ROMAN y DVAL.
+- **VMs multi-cliente:** `WebLogic.191` (8 clientes), `WL12C-Desarrollo`/`.2.54` (ABB+BOCA+JOBS) y `OPENWLPROD01` (EBY+GIAR+ROMAN) siguen siendo los puntos de mayor radio de impacto — cualquier cambio ahí afecta a varios clientes a la vez.
+
+## Decisiones y accesos pendientes, sin equipo saliente a quien consultar
+
+Esto reemplaza la sección "Preguntas para el equipo saliente" de los informes anteriores — esas preguntas ya no tienen a quién dirigirse. Quedan divididas en dos tipos:
+
+**Requieren decisión de negocio de Smart South (no son preguntas técnicas):**
+- Estado real de **ABB, GIAR y ROMAN** — infraestructura completa, retenida, sin uso real confirmado en ninguno de los tres. La evidencia técnica está — falta la decisión de si se dan de baja, se mantienen como respaldo, o se investigan más a fondo.
+- **Argocean** — a diferencia de los tres anteriores, la lectura técnica es "nunca llegó a producción", no "se usó y se dejó". Vale la pena tratarlo distinto en cualquier decisión de limpieza de recursos.
+
+**Requieren acceso o credencial que hoy nadie en el proyecto tiene:**
+- Credencial de DB para el segmento `10.77.7.x` (bloquea el cierre final de ROMAN y de la ruta paralela de EBY) y para `192.1.1.238` (DVAL). Sin equipo saliente, esto pasa a ser una pregunta para quien en Smart South haya heredado el vault de credenciales — si existe tal traspaso, sigue sin confirmarse.
+- Las 10 IPs de `192.1.1.x` sin rastro en `ExportList.csv` (Exchange, Jira, etc.) — si no están en el export de vCenter que tenemos, puede haber otro vCenter/cluster que no se traspasó. Sin nadie a quien preguntarle directamente, la única vía que queda es buscar evidencia indirecta (¿responden esos servicios por red? ¿hay alguna consola de gestión alcanzable?) en vez de asumir que están fuera de nuestro alcance.
+
+Sin más reuniones previstas, cualquiera de estos dos grupos que quede sin resolver pasa a ser, de hecho, permanente — vale la pena decidir explícitamente cuáles se dejan así.

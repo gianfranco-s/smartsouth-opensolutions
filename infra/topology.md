@@ -122,27 +122,27 @@ Solo los totales — ver `inventory.json` → `vms[].category` para la lista de 
 - **192.1.1.214 – 192.1.1.224** (11 hosts) — cluster principal, aloja la mayoría de las VMs WL/DB de cara al cliente.
 - **192.1.3.252** (1 host) — aloja un conjunto distinto de VMs en otros rangos de IP (`172.18.5.x`, `10.10.1.x`, `192.1.3.x`) incluyendo `WL-ROMAN`, `DB-ROMAN`, `DB-GIAR`, `WL-GIAR`, `FW`, `WL12-Clientes`. **Probablemente un sitio físico separado o una máquina standalone fuera del cluster principal** — todavía sin confirmar, no comparte el patrón de gestión 192.1.1.x de los demás.
 
-### Capacidad por host — asignado vs. físico real (12/13 sep 2026, pedido de Alexis Lombardi) — sobreasignación confirmada
+### Capacidad por host — asignado vs. físico real (12 sep 2026, pedido de Alexis Lombardi) — sobreasignación confirmada con datos exactos
 
-RAM/vCPU *asignada* y host de cada VM: `ExportList-Datacenter-Full.csv`/`ExportList-Piedras-Full.csv` (18 ago 2026 — único export con esas columnas). Estado ON/OFF y uso real por VM: `ExportList20260912.csv` (12 sep, cruzado por nombre contra el mapeo VM→host de agosto — las 144 VMs de agosto siguen todas ahí). Capacidad física implícita: `ExportList-hosts_and_clusters.csv` (`Consumed Memory %` por host, 13 sep — 45 min después del export anterior, misma sesión) vía `uso real GB / (%consumido/100)`. Detalle del método, el cruce de estados y el margen de error en `infra/findings.md`.
+Todo del mismo snapshot — dos exports regenerados el 12 sep 2026 con formato completo: `ExportList20260912.csv` (host, RAM/vCPU asignada, estado, uso real por VM) y `ExportList-hosts_and_clusters20260912.csv` (`Memory Size (MB)` por host — RAM física real, exacta, ya no una inferencia por porcentaje). Detalle del método y de la versión anterior (aproximada) en `infra/findings.md`.
 
-| Host | VMs (total/ON, 12 sep) | vCPU asig. (total/ON) | RAM asignada GB (total/ON) | RAM real usada GB (ON, 12 sep) | RAM física implícita GB | ¿Sobreasignado? |
-|---|---|---|---|---|---|---|
-| 192.1.1.214 | 5/4 | 30/22 | 86/62 | 49.7 | ~116 | no |
-| **192.1.1.215** | 7/7 | 40/40 | 114/114 | 52.1 | ~111 | **sí** |
-| **192.1.1.216** | 11/10 | 33/29 | 129/105 | 51.5 | ~64 | **sí** |
-| **192.1.1.217** | 7/7 | 56/56 | 110/110 | 71.1 | ~96 | **sí** |
-| **192.1.1.218** | 7/5 | 36/30 | 100/66 | 51.1 | ~61 | **sí** |
-| 192.1.1.219 | 7/6 | 32/24 | 58/52 | 45.8 | ~68 | no |
-| 192.1.1.220 | 9/6 | 39/32 | 106/70 | 44.1 | ~123 | no |
-| **192.1.1.221** | 22/5 | 60/20 | 128/46 | 32.7 | ~38 | **sí** |
-| 192.1.1.222 | 5/3 | 23/13 | 92/36 | 23.4 | ~117 | no |
-| **192.1.1.223** | 17/15 | 134/116 | **330/290** | **231.7** | ~255 | **sí** — único host con `Status: Warning` en vCenter |
-| **192.1.1.224** | 16/14 | 115/107 | **324/292** | **239.5** | ~255 | **sí** |
-| 192.1.3.252 | 16/9 | 96/48 | 158/82 | 77.9 | ~92 | no (`WL-GIAR`/`DB-GIAR` ya apagadas al 12 sep) |
-| 192.168.100.4 (Piedras) | 15/2 | 58/6 | 177/16 | 16.1 | sin dato (fuera de este export) | — |
+| Host | VMs (total/ON) | vCPU asig. (total/ON) | RAM asignada GB (total/ON) | RAM real usada GB (ON) | RAM física exacta GB | Excedente/margen GB (%) | ¿Sobreasignado? |
+|---|---|---|---|---|---|---|---|
+| 192.1.1.214 | 5/4 | 30/22 | 86/62 | 49.7 | 120.0 | −58 (−48%) | no |
+| 192.1.1.215 | 8/8 | 46/46 | 126/126 | 64.2 | 140.0 | −14 (−10%) | no |
+| **192.1.1.216** | 11/10 | 33/29 | 129/105 | 51.5 | 63.9 | **+41 (+64%)** | **sí** |
+| **192.1.1.217** | 7/7 | 56/56 | 110/110 | 71.3 | 95.9 | +14 (+15%) | **sí** |
+| **192.1.1.218** | 7/5 | 36/30 | 100/66 | 51.6 | 64.0 | +2 (+3%) | **sí** |
+| 192.1.1.219 | 7/6 | 32/24 | 58/52 | 45.9 | 72.0 | −20 (−28%) | no |
+| 192.1.1.220 | 9/6 | 39/32 | 106/70 | 44.1 | 128.0 | −58 (−45%) | no |
+| **192.1.1.221** | 22/5 | 60/20 | 128/46 | 32.7 | 40.0 | +6 (+15%) | **sí** |
+| 192.1.1.222 | 5/3 | 23/13 | 92/36 | 23.4 | 128.0 | −92 (−72%) | no |
+| **192.1.1.223** | 17/15 | 136/118 | **326/286** | **231.8** | 255.9 | +30 (+12%) | **sí** — único host con `Status: Warning` en vCenter |
+| **192.1.1.224** | 16/14 | 115/107 | **324/292** | **238.1** | 255.9 | +36 (+14%) | **sí** |
+| 192.1.3.252 | 18/11 | 108/60 | 186/110 | 105.7 | 127.3 | −17 (−14%) | no |
+| 192.168.100.4 (Piedras) | — | — | — | — | sin dato (fuera de ambos export de hosts) | — | — |
 
-**7 de 12 hosts del cluster principal tienen ya más RAM asignada a VMs encendidas que su capacidad física implícita** (`.215`, `.216`, `.217`, `.218`, `.221`, `.223`, `.224`) — confirma la sospecha de Alexis como patrón del cluster, no solo en los dos hosts más grandes. El cálculo de CPU física por el mismo método no es confiable (demasiado ruido instantáneo, se repite el resultado inconsistente con datos de esta misma fecha) — si hace falta el dato exacto de CPU, ese sí requiere TeamViewer.
+**6 de 12 hosts sobreasignados con datos exactos: `.216`, `.217`, `.218`, `.221`, `.223`, `.224`.** `192.1.1.215` sale de la lista respecto al corte anterior (aproximado) — con RAM física exacta tiene 14 GB de margen, no estaba realmente al límite. En GB absolutos, `.223`/`.224` son los más críticos (+30/+36 GB); en términos relativos, **`.216` es el peor (+64%)** pese a ser un host más chico. CPU sigue sin poder confirmarse de la misma forma — ahora se conocen los sockets físicos por host, pero faltan cores/GHz; si hace falta el dato exacto, requiere TeamViewer.
 
 `.223`/`.224` son los candidatos más fuertes a sobreasignación de RAM: mayor RAM asignada del cluster y uso real ya al 76-82% de lo asignado. Sin la capacidad física del host, no se puede confirmar overcommit — solo apuntar dónde mirar primero.
 - **192.168.100.4** (1 host) — **sitio "Piedras", confirmado.** Ver sección aparte abajo.

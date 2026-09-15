@@ -63,3 +63,16 @@ ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa root@10.77.
 
 
 tampoco puedo a .238
+
+---
+
+Argocean, capa 4 (WL-CLIENTES, 172.18.5.40) — pendiente, ver plan_relevamiento_alta_argocean.md e infra/findings.md.
+
+4 intentos de acceso fallaron (13-14 sep 2026): SSH directo desde la estación Windows, SSH vía NAT pública del FW (200.55.243.116:215), consola web de vCenter (no funcional), SSH administrativo al FW (192.1.3.1, timeout pese a que el dashboard HTTPS sí responde).
+
+Falta probar UN solo camino, correctamente esta vez: dashboard pfSense (192.1.3.1, credencial smartsouth) → menú Diagnostics > Command Prompt → ahí SÍ hay un cuadro de texto embebido en el navegador que ejecuta en el propio firewall (no confundir con la PowerShell de la estación Windows, que es donde se corrieron los intentos anteriores por error). Probar primero:
+ping 172.18.5.40
+(sintaxis del shell del firewall, probablemente estilo BSD -- si pide flag de conteo es "-c 4", no "-n"). Si responde, seguir con el ssh desde ese mismo cuadro:
+ssh -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa soportesmart@172.18.5.40 "ps -ef | grep -iE 'argocean|mba|java|weblogic|forms'; ss -tlnp"
+
+Si tampoco responde desde ahí (el firewall tiene IP propia 172.18.5.2 en esa misma red) -- es evidencia dura de host aislado de red pese a figurar Powered On, cerrar capa 4 como "sin tráfico posible" y sumarlo a la pregunta de negocio de QUESTIONS.md.

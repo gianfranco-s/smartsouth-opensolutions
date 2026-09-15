@@ -43,6 +43,14 @@ Con esto la comparación es directa: RAM asignada a las VMs encendidas vs. RAM f
 - **CPU sigue sin poder confirmarse, pero ahora se conocen los sockets físicos por host** (columna `CPUs` del export de hosts): 1 socket en `.216`/`.219`/`192.1.3.252`, 2 en el resto. Sin cores ni GHz no alcanza para replicar el mismo análisis de sobreasignación en CPU — requeriría TeamViewer (Summary de cada host) o un export adicional.
 - Cargado en `inventory.json` → `esxi_capacity` (`physical_capacity_known: true`, ya no `"approximate"`), incluyendo ahora Piedras.
 
+## DVAL — destino de migración de la matriz (`10.77.7.14`/`PRODDVAL`) descartado, no existe en la red (15 sep 2026)
+
+La matriz declara para DVAL un destino de migración nunca antes revisado: `sid_nuevo: PRODDVAL`, `servidor_db_destino: 10.77.7.14` — mismo patrón que destrabó a EBY/GIAR/ROMAN/Rex (stack legado vs. consolidado nuevo). Se probó el mismo camino barato que cerró esos cuatro clientes: `sudo grep -iE 'dval|proddval'` sobre el `tnsnames.ora` y el `formsweb.cfg` de `OPENWLPROD01` (donde ya hay `sudo` real, sin necesitar credencial nueva) — **cero coincidencias en ambos archivos**. A diferencia de GIAR/ROMAN, acá no hay ni siquiera un alias de config — DVAL no está deployado en este stack consolidado.
+
+Se probó además si `10.77.7.14` responde en absoluto, desde el mismo host (`OPENWLPROD01`, mismo segmento `10.77.x`): el puerto Oracle (`1521`) dio `CLOSED` y el `ping` devolvió **`Destination Host Unreachable`** — no es un firewall filtrando el puerto, es una IP sin nada detrás en ese segmento. **La migración a `PRODDVAL`/`10.77.7.14` nunca se completó** (o la nota de la matriz está mal, o la VM nunca se provisionó) — descarta esta vía como atajo para cerrar la capa 6 de DVAL sin la credencial bloqueada.
+
+**Conclusión: el único camino que queda para DVAL sigue siendo `DBClientes.238` (`192.1.1.238`, DB legada), con la credencial rechazada dos veces (`root` y `soportesmart`, ver `QUESTIONS.md`).** No hay atajo de config como el que funcionó para los otros cuatro clientes con patrón legado/consolidado.
+
 ## Nuevo: infraestructura on-premise real que no está en nuestro inventario
 
 Buscamos todas las IPs mencionadas en el material fuente y las cruzamos contra `inventory.json`. Del lado on-premise, encontramos una sola cosa sin identificar:

@@ -182,6 +182,7 @@ flowchart TB
     direction TB
     EDGE["OPENVPNFW01 — pfSense borde (VPN)<br/>200.55.243.92 / .115<br/>solo OpenVPN UDP/2190 · VPN S2S a Azure casi sin uso (~487 MiB/30d)"]
     EDGE2["FWOPEN — pfSense borde (NAT) + interno<br/>200.55.243.90 / .94 · 192.1.1.11<br/>~46 reglas NAT: los 2 NPM (80/443), Oracle directo,<br/>consola de vCenter (192.1.1.29:443), su propio panel"]
+    EDGE3["DMFW01 — pfSense borde propio de Maipú<br/>200.55.240.146 · mgmt 192.1.3.93<br/>NAT confirmado → DMWL01 7777/4443 (netstat, 15 sep 2026)<br/>dashboard propio y vCenter sin acceso todavía"]
 
     subgraph CLUSTER["Cluster ESXi principal<br/>192.1.1.214–224 (11 hosts) · LAN 192.1.1.x"]
       direction TB
@@ -190,6 +191,13 @@ flowchart TB
       OTHERDOCKER["5 hosts Docker más<br/>(sin NPM)"]
       WLDB["VMs WebLogic / Forms-Reports / ORDS<br/>+ bases Oracle de clientes (ver §1)"]
       BACKUP["OPENBK — backup Veeam<br/>192.1.1.14 / 10.77.254.114"]
+
+      subgraph MAIPU["Maipú — stack confirmado 15 sep 2026<br/>LAN propia 10.77.10.x · mismo host físico 192.1.1.223"]
+        direction TB
+        DMWL["DMWL01 — WebLogic Forms/Reports<br/>10.77.10.101 · también config activa CEFAS/GIAR/EBY/Rex-test (posible DR, sin confirmar tráfico real)"]
+        DMDB["DASADBPROD01 — Oracle<br/>10.77.10.201 · PDB PDBDASAPR02 (prod) / DMAIPUQA (QA)"]
+        DMWL --> DMDB
+      end
     end
 
     subgraph SEG3["Segmento aislado — tercer perímetro propio, confirmado 12-14 sep 2026<br/>host ESXi 192.1.3.252 · LAN 172.18.5.x / 10.10.1.x / 192.1.3.x"]
@@ -213,11 +221,13 @@ flowchart TB
   Internet -->|"OpenVPN 2190/UDP (único puerto)"| EDGE
   Internet -->|"NAT entrante: 80/443, Oracle, admin"| EDGE2
   Internet -->|"NAT entrante propio, WAN dedicada"| FW3
+  Internet -->|"NAT entrante propio de Maipú"| EDGE3
   EDGE --> CLUSTER
   EDGE2 -->|"NAT 80/443 → los 2 NPM"| NPM
   NPM -->|"dominio / Host header"| WLDB
   NPM -->|"ords-‹cliente› → ORDS pegado a la base del cliente"| WLDB
   FWINT -.-> NPM
+  EDGE3 --> MAIPU
   FW3 --> LEGACY
   FW3 --> SHARED
   FW3 --> BLINDSPOT
@@ -231,11 +241,12 @@ flowchart TB
 
 - **Confirmado — hay dos firewalls de borde en el sitio principal, no uno.** `OPENVPNFW01` (`200.55.243.92`) termina la VPN site-to-site con Azure y **solo** expone OpenVPN/2190 UDP — pero esa VPN hoy lleva tráfico casi nulo (~487 MiB/30d, ver `informe_ejecutivo_infraestructura_02.md`). `FWOPEN` (`200.55.243.90` / `.94`) es un segundo pfSense de cara a Internet con ~46 reglas NAT activas: los dos NPM en 80/443, acceso Oracle directo para varios clientes, **la consola de administración de vCenter** (`192.1.1.29:443`) y su propio panel. Esto **corrige** el hallazgo anterior de "solo OpenVPN expuesto" (ver `findings.md` → "Corregido: la exposición a Internet NO es mínima", 19 ago 2026). `FWOPEN` aparece dos veces en el diagrama a propósito: es a la vez pfSense interno del cluster y gateway NAT de borde.
 - **Confirmado (12-14 sep 2026) — el host `192.1.3.252` no es "otro host más" del cluster principal: tiene su propio tercer perímetro de red, con firewall de borde propio.** `FW` (`192.1.3.1`) es un pfSense con IPs WAN dedicadas (`200.55.243.116`/`.117`, distintas de las de `FWOPEN`) y ~53 reglas NAT propias — el tráfico hacia ese segmento **no pasa por `FWOPEN`**. Detrás está el LAN aislado `172.18.5.x`/`10.10.1.x`: el stack legado de GIAR y de ROMAN (ambos con infraestructura confirmada, GIAR apagado de hecho), el WebLogic compartido de Argocean/ROMAN (`WL-CLIENTES`, vivo pero sin poder atribuir su tráfico por falta de `sudo`), y un blind spot nuevo sin resolver (segundo stack de CEFAS + un cliente "SYT" nunca antes visto). Este firewall ya estaba contado dentro de los "6 pfSense confirmados" del relevamiento manual — lo que cambió es entender que es el borde de su propio segmento, no un firewall interno más del cluster `192.1.1.x` (corrección respecto a la versión anterior de este diagrama).
+- **Confirmado (15 sep 2026) — Maipú tiene su propio firewall de borde con WAN dedicada, pero a diferencia de `FW` no es un segmento físicamente separado.** `DMFW01` tiene tres IPs — WAN propia `200.55.240.146`, mgmt `192.1.3.93`, LAN `10.77.10.1` — y detrás una LAN propia (`10.77.10.x`) para Maipú, pero la VM vive en el mismo host del cluster principal (`192.1.1.223`) que el resto, no en un ESXi aparte como `FW` (`192.1.3.252`). Detrás está un stack ya confirmado activo: `DMWL01` (WebLogic Forms/Reports, `10.77.10.101`) → `DASADBPROD01` (`10.77.10.201`, PDB `PDBDASAPR02` prod / `DMAIPUQA` QA), conexión confirmada por `netstat`. Lo que falta cerrar es la entrada: ni el dashboard de `DMFW01` (`192.1.3.93:81`, timeout) ni la consola de vCenter responden todavía, así que las reglas NAT propias de `DMFW01` no están confirmadas directamente — solo se sabe, por `netstat` del lado de `DMWL01`, que algo llega hasta los puertos `7777`/`4443`. Hallazgo aparte: `DMWL01` tiene configuración activa para CEFAS/GIAR/EBY/Rex-test en su `formsweb.cfg` — probable réplica/DR compartida, sin confirmar si sirve tráfico real de esos clientes (ver `informe_ejecutivo_infraestructura_03.md`).
 - **Confirmado (13-14 sep 2026) — Piedras llega al firewall de este tercer segmento, pero no a la red que protege.** Desde `Win10-Piedras`, el dashboard HTTPS de `FW` (`192.1.3.1`) responde con normalidad, pero ni SSH al propio firewall ni una ruta directa a `172.18.5.x` son alcanzables desde ahí — coherente con que el segmento sigue genuinamente aislado, confirmado también desde este segundo punto de origen.
 - **Confirmado — el plano ORDS es la vía principal app↔datos.** Los portales CONDOR en Azure AKS consultan la base Core y pegan por HTTPS a `ords-‹cliente›.open.com.ar`, endpoints publicados por el NPM on-premise cuyo destino es un ORDS (Oracle REST Data Services) pegado a la base Oracle del cliente. El grueso del tráfico app→datos va por acá, por Internet — no por la VPN S2S. Clientes con `ords-` propio: Balanz, BOCA, CEFAS, EBY, JOBS, ROMAN (ver `informe_ejecutivo_infraestructura_02.md` y `findings.md`).
 - **Confirmado — Piedras:** sitio real, con su propio host ESXi y subred `192.168.100.0/24`; la conectividad Piedras → cluster principal (`192.1.1.x`), probada en vivo llegando al panel de NPM de `VM-DOCKER-Clientes` sin salto intermedio.
 - **Inferido, no probado en vivo:** la conectividad Piedras → `OPENBK` (backup) — viene de una nota de texto en `OPENDB_31`, no de una prueba de red hecha a mano.
-- **Todavía abierto:** si `OpenPiedrasFw01` es efectivamente el pfSense de Piedras (está apagada, sin confirmar por acceso directo); el rango `192.168.222.x` (endpoints ORDS de Balanz) que no aparece en ningún export — posible otra red aislada, como pasó con Piedras; identidad del segundo stack CEFAS y del cliente "SYT" dentro del segmento aislado (ver `findings.md`).
+- **Todavía abierto:** si `OpenPiedrasFw01` es efectivamente el pfSense de Piedras (está apagada, sin confirmar por acceso directo); el rango `192.168.222.x` (endpoints ORDS de Balanz) que no aparece en ningún export — posible otra red aislada, como pasó con Piedras; identidad del segundo stack CEFAS y del cliente "SYT" dentro del segmento aislado (ver `findings.md`); reglas NAT propias de `DMFW01` — acceso a su dashboard y a la consola de vCenter bloqueado (15 sep 2026), motivo puntual sin precisar.
 
 ## Cómo regenerar estos diagramas
 

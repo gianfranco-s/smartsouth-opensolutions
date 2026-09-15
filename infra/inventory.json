@@ -4368,7 +4368,7 @@
     },
     {
       "name": "WL-GIAR",
-      "power_state": "Encendido",
+      "power_state": "Apagado",
       "condition": "Normal",
       "esxi_host": "192.1.3.252",
       "provisioned": "56,15 GB",

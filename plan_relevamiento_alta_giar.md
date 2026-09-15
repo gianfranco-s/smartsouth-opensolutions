@@ -36,7 +36,7 @@ De `infra/inventory.json` → `clients[GIAR]`, `infra/findings.md`, `verificacio
 | 3 | Firewall / NAT | ✅ **CERRADA (12 sep 2026).** Transcripción completa del NAT de `FW` (`pfsense-192.1.3.1-nat-rules.txt`, 53 reglas, cargada en `inventory.json` → `vms[FW].nat_rules`) confirma: `200.55.243.117:80` → `10.10.1.50:80` ("GIAR WL http") y `:443` → `:443` ("GIAR WL"), `source: *` — coincide exacto con `giarprod.condorenterprise.com.ar` del NPM. `WL-GIAR` es el backend real, confirmado por config de firewall, no solo hipótesis. SSH también mapeado: `200.55.243.117:215` → `10.10.1.50:22`. `DB-GIAR` (`10.10.1.9`): SSH `.117:212`, Oracle `.117:1522`. Bonus: candidato de DB nuevo sin identificar, `10.1.1.10` ("GIAR DB 1521 NUEVO", `.117:51521`). | Ninguno — capa cerrada. |
 | 4 | App — motor clásico | ✅ **Legado muerto, nuevo confirmado real (13 sep 2026).** `WL-GIAR` (`10.10.1.50`) `Powered Off` en vCenter — sin proceso posible. La ruta pública NAT-eada (`giarprod.condorenterprise.com.ar` → `FW` → `WL-GIAR`) está rota de hecho. Pero `OPENWLPROD01` tiene secciones reales `[giargprod]`/`[activaciongiarg]`/`[giargprodFSAL]` en `formsweb.cfg` (`pageTitle=Giarg PRODUCCION`, `userid=@PRODGIAR`) — deployment deliberado, no un alias de paso. | Ninguno para config. Falta sesión de usuario real en día hábil (capa 6). |
 | 5 | App — Docker/reportes | ⬜ **Sin trazar.** Matriz no marca Jasper/Condor Link para GIAR (campos en blanco, no "No"). | `grep -i giar` sobre `proxy_hosts.csv`/`dockerdeb_proxy_host_2026-09-01.tsv` — ¿hay `giarjasper.*` o similar? Si aparece, `docker ps` en el host destino. Baja prioridad si el campo en blanco se confirma como "no aplica". |
-| 6 | Base de datos | 🟡 **Legado descartado, falta el nuevo.** `DB-GIAR` (`10.10.1.9`) confirmada `Apagado` en `ExportList20260912.csv` (12 sep 2026) — sin instancia Oracle posible en una VM apagada, no hace falta SSH/`sqlplus`. Queda solo `PRODGIAR` (PDB en `OPENDBPROD001`, `READ WRITE`, solo sesiones `SYS` vistas el 6-sep). | **PRÓXIMO PASO.** En `CDBOPEN03` (ya accesible, `su - oracle`): `ALTER SESSION SET CONTAINER=PRODGIAR;` y correr `dba_tab_modifications` sobre el schema de aplicación (probablemente `CONDOR`) para un último-DML que no dependa de pescar una sesión activa — mismo truco que cerró ABB/BOCA/DCVIAJES/ESYOP. |
+| 6 | Base de datos | 🟡 **Legado descartado, nuevo sin sesión capturada dos veces (sábado y lunes).** `DB-GIAR` (`10.10.1.9`) confirmada `Apagado`. `PRODGIAR` (PDB en `OPENDBPROD001`): `v$session` filtrado por `con_id` repetido el 13-sep (domingo) y el 14-sep (lunes, día hábil) — **ambas veces solo la sesión `SYS` de la propia consulta, cero aplicación.** `dba_tab_modifications` sin estadísticas (0 filas, las 6 schemas de esta PDB). En tensión con `formsweb.cfg` real (`[giargprod]` deployment deliberado) y recompilación de procedimientos `CONDOR` 12/13-sep. | **PRÓXIMO PASO.** `access.log` de `WLS_FORMS` en `OPENWLPROD01` (ya con sudo) — buscar `config=giargprod`/`activaciongiarg`, mismo cierre que fue decisivo para ROMAN. Complementar con `netstat -tn \| grep 10.77.7.11` en el mismo box. |
 | 7 | Almacenamiento | ⬜ **Sin trazar.** Sin indicio todavía de NFS/volumen dedicado. | Si la capa 4 confirma dónde vive la app real, `mount`/`fstab` en ese box — mismo patrón que CEFAS/EBY. Baja prioridad hasta cerrar 3, 4 y 6. |
 
 ## Orden de la sesión sugerido (qué correr, dónde)
@@ -91,3 +91,40 @@ WHERE type='USER' AND con_id = (SELECT con_id FROM v$pdbs WHERE name='PRODGIAR')
 GROUP BY username, machine, program, status
 ORDER BY 5 DESC;
 ```
+
+## Actualización (14 sep 2026, lunes — día hábil) — v$session repetido, mismo resultado vacío
+
+Corrido el query filtrado por `con_id` en horario hábil (lunes 14-sep, no sábado). Resultado: **una sola fila, `SYS`/`sqlplus@opendbprod001.open`** — la sesión de la propia consulta. **Cero sesiones de aplicación** en `PRODGIAR` en este instante, ahora sin el caveat de "es fin de semana".
+
+**No alcanza para declarar capa 6 en 0 todavía** — sigue siendo una foto de un instante (mismo límite que ya jugó en contra con ROMAN antes de que el `access.log` lo confirmara del todo), y `dba_tab_modifications` ya había dado 0 filas para los 6 schemas de esta PDB (sin estadísticas trackeadas, no es evidencia de inactividad por sí sola). Lo que sí cambia: ya no hay una excusa de "día no hábil" para el resultado negativo — sube el peso de la evidencia hacia "sin uso", pero todavía en tensión con el hallazgo de `formsweb.cfg` (deployment real) y la recompilación reciente de procedimientos de `CONDOR` (12/13-sep).
+
+**Próximo paso, más barato que repetir `v$session` a ciegas:** replicar para GIAR el mismo cierre que sí fue decisivo para ROMAN — el `access.log` de `WLS_FORMS` en `OPENWLPROD01` (ya se tiene acceso `sudo` a ese box). Si aparece un `config=giargprod`/`activaciongiarg` con `POST /forms/lservlet 200` reciente → GIAR vivo, contradice el `v$session` vacío (sesión pooled que no quedó en la foto). Si no aparece nunca → mismo patrón que cerró ROMAN (cero tráfico en dos fuentes independientes), y ahí sí se puede tratar como resuelto.
+
+```
+sudo find /u01/app/oracle/product/12.2.1/user_projects/domains/base_domain/servers/WLS_FORMS/logs -iname "access*.log"
+sudo grep -iE 'giarg|activaciongiarg' <access.log encontrado> | tail -50
+```
+
+Si el log rota diario y no llega a varios días atrás, complementar con `sudo netstat -tn | grep 10.77.7.11` (conexión Oracle real desde `OPENWLPROD01` hacia `PRODGIAR`, mismo chequeo que se usó para EBY/ROMAN).
+
+## Cierre (14 sep 2026, lunes — día hábil): cuatro fuentes en cero, GIAR queda con el mismo perfil que ROMAN
+
+- `netstat -tn | grep 10.77.7.11` en `OPENWLPROD01`: **sin resultado** — cero conexiones a la DB de GIAR.
+- `access.log` de `WLS_FORMS` encontrado en `.../servers/WLS_FORMS/logs/access.log` (+ 7 rotados, `access.log00521`–`00527`, cubriendo jueves 10-sep a lunes 14-sep — 3 días hábiles completos). `grep -iE 'giarg|activaciongiarg'` sobre el actual **y** los rotados juntos (`access.log*`): **cero coincidencias.**
+- `v$session` (con el filtro por `con_id` ya corregido) repetido en día hábil: **cero sesiones de aplicación**, igual que el sábado.
+
+**Cuatro fuentes independientes, todas en cero** — más evidencia que la que cerró ROMAN (dos fuentes). GIAR tiene un deployment de producción real y deliberado (`formsweb.cfg`, alias `PRODGIAR`/`GIARG`) pero ningún usuario activo observable en ningún punto de la ruta, en ningún método de verificación probado. No es una prueba de baja formal (sigue siendo pregunta de negocio, `QUESTIONS.md`), pero la evidencia técnica ahora inclina claramente hacia la nota informal de la matriz ("de baja") por sobre el campo formal ("Mantenimiento solamente").
+
+**Estado final de las 7 capas:**
+
+| Capa | Estado |
+|---|---|
+| 1. Dominio de entrada | 🔴 Legado muerto; sin dominio conocido para el stack nuevo (nadie encontró por dónde entrarían usuarios reales) |
+| 2. NPM | 🟡 Parcial — depende de 1 |
+| 3. Firewall/NAT | ✅ Cerrada |
+| 4. App — motor clásico | ✅ Cerrada (config real, sin tráfico) |
+| 5. App — Docker/reportes | ⬜ Sin trazar, baja prioridad dado el resultado |
+| 6. Base de datos | ✅ Cerrada — legado apagado, nuevo confirmado sin tráfico (4 fuentes) |
+| 7. Almacenamiento | ⬜ Sin trazar, baja prioridad dado el resultado |
+
+Sin más pasos bloqueantes para este trazado. Cabo suelto no crítico: el schema `MOTOROLA` (posible nombre legado pre-rebranding Arris/Motorola Home), sin confirmar y sin relación con la pregunta de tráfico.

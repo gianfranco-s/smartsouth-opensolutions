@@ -4,8 +4,6 @@
 
 Se calculó en base a exports de vCenter:
 * listado completo por VM: host ESXi, RAM/vCPU **asignada** (columnas `Memory Size`/`CPUs`, configuración), estado ON/OFF, y uso real (`Host CPU`/`Host Mem`). Único export que trae asignación + host + uso real juntos, sin mezclar fechas.
-1. listado completo de hosts y clusters host ESXi: **`Memory Size (MB)`, la RAM física real instalada**. También trae `CPUs` (cantidad de sockets físicos) y `Consumed CPU/Memory %`.
-1. mismo listado de hosts, para el sitio "Piedras" (`ExportListPiedras-host_and_clusters20260912.csv`) — antes quedaba afuera por no tener este export propio.
 
 ## Tabla por host
 

@@ -124,7 +124,7 @@ Solo los totales — ver `inventory.json` → `vms[].category` para la lista de 
 
 ### Capacidad por host — asignado vs. físico real (12 sep 2026, pedido de Alexis Lombardi) — sobreasignación confirmada con datos exactos
 
-Todo del mismo snapshot — dos exports regenerados el 12 sep 2026 con formato completo: `ExportList20260912.csv` (host, RAM/vCPU asignada, estado, uso real por VM) y `ExportList-hosts_and_clusters20260912.csv` (`Memory Size (MB)` por host — RAM física real, exacta, ya no una inferencia por porcentaje). Detalle del método y de la versión anterior (aproximada) en `infra/findings.md`.
+Todo del mismo snapshot — dos exports regenerados el 12 sep 2026 con formato completo: `ExportList20260912.csv` (host, RAM/vCPU asignada, estado, uso real por VM) y `ExportList-hosts_and_clusters20260912.csv` (`Memory Size (MB)` por host — RAM física real, exacta, ya no una inferencia por porcentaje). Piedras (`192.168.100.4`) se suma con `ExportListPiedras-host_and_clusters20260912.csv` (15 sep). Detalle del método y de la versión anterior (aproximada) en `infra/findings.md`.
 
 | Host | VMs (total/ON) | vCPU asig. (total/ON) | RAM asignada GB (total/ON) | RAM real usada GB (ON) | RAM física exacta GB | Excedente/margen GB (%) | ¿Sobreasignado? |
 |---|---|---|---|---|---|---|---|
@@ -140,9 +140,9 @@ Todo del mismo snapshot — dos exports regenerados el 12 sep 2026 con formato c
 | **192.1.1.223** | 17/15 | 136/118 | **326/286** | **231.8** | 255.9 | +30 (+12%) | **sí** — único host con `Status: Warning` en vCenter |
 | **192.1.1.224** | 16/14 | 115/107 | **324/292** | **238.1** | 255.9 | +36 (+14%) | **sí** |
 | 192.1.3.252 | 18/11 | 108/60 | 186/110 | 105.7 | 127.3 | −17 (−14%) | no |
-| 192.168.100.4 (Piedras) | — | — | — | — | sin dato (fuera de ambos export de hosts) | — | — |
+| 192.168.100.4 (Piedras) | 15/2 | 58/6 | 177/16 | 16.1 | 32.0 | −16 (−50%) | no — hoy |
 
-**6 de 12 hosts sobreasignados con datos exactos: `.216`, `.217`, `.218`, `.221`, `.223`, `.224`.** `192.1.1.215` sale de la lista respecto al corte anterior (aproximado) — con RAM física exacta tiene 14 GB de margen, no estaba realmente al límite. En GB absolutos, `.223`/`.224` son los más críticos (+30/+36 GB); en términos relativos, **`.216` es el peor (+64%)** pese a ser un host más chico. CPU sigue sin poder confirmarse de la misma forma — ahora se conocen los sockets físicos por host, pero faltan cores/GHz; si hace falta el dato exacto, requiere TeamViewer.
+**6 de 12 hosts sobreasignados con datos exactos: `.216`, `.217`, `.218`, `.221`, `.223`, `.224`.** `192.1.1.215` sale de la lista respecto al corte anterior (aproximado) — con RAM física exacta tiene 14 GB de margen, no estaba realmente al límite. En GB absolutos, `.223`/`.224` son los más críticos (+30/+36 GB); en términos relativos, **`.216` es el peor (+64%)** pese a ser un host más chico. CPU sigue sin poder confirmarse de la misma forma — ahora se conocen los sockets físicos por host, pero faltan cores/GHz; si hace falta el dato exacto, requiere TeamViewer. **Piedras no está sobreasignado hoy (solo 2/15 VMs encendidas), pero tiene sobreasignación latente severa**: sus 13 VMs apagadas suman 177 GB configurados contra apenas 32 GB físicos — no soportaría reactivarlas todas.
 
 `.223`/`.224` son los candidatos más fuertes a sobreasignación de RAM: mayor RAM asignada del cluster y uso real ya al 76-82% de lo asignado. Sin la capacidad física del host, no se puede confirmar overcommit — solo apuntar dónde mirar primero.
 - **192.168.100.4** (1 host) — **sitio "Piedras", confirmado.** Ver sección aparte abajo.
@@ -185,16 +185,19 @@ flowchart TB
 
     subgraph CLUSTER["Cluster ESXi principal<br/>192.1.1.214–224 (11 hosts) · LAN 192.1.1.x"]
       direction TB
-      FWINT["6 pfSense internos confirmados<br/>FWOPEN · FW · CliProFw01<br/>OPENFWCLI001 · OPENFWCLI10 · DMFW01<br/>(+2 candidatos: OPENFWCLI02, VM_FW)"]
+      FWINT["5 pfSense internos confirmados en este segmento<br/>FWOPEN · CliProFw01 · OPENFWCLI001<br/>OPENFWCLI10 · DMFW01<br/>(+2 candidatos: OPENFWCLI02, VM_FW)"]
       NPM["4 hosts Docker con Nginx Proxy Manager<br/>DOCKER-DEB · OPENDOCKER04 · VM-DOCKER-Clientes (x2)<br/>ruteo por dominio + ORDS (ords-‹cliente›.open.com.ar)"]
       OTHERDOCKER["5 hosts Docker más<br/>(sin NPM)"]
       WLDB["VMs WebLogic / Forms-Reports / ORDS<br/>+ bases Oracle de clientes (ver §1)"]
       BACKUP["OPENBK — backup Veeam<br/>192.1.1.14 / 10.77.254.114"]
     end
 
-    subgraph HOST2["Host ESXi standalone — ¿sitio separado? (sin confirmar)<br/>192.1.3.252"]
+    subgraph SEG3["Segmento aislado — tercer perímetro propio, confirmado 12-14 sep 2026<br/>host ESXi 192.1.3.252 · LAN 172.18.5.x / 10.10.1.x / 192.1.3.x"]
       direction TB
-      GIARROMAN["WL-GIAR · DB-GIAR<br/>WL-ROMAN · DB-ROMAN · WL12-Clientes<br/>rangos 172.18.5.x / 10.10.1.x / 192.1.3.x"]
+      FW3["FW — pfSense de borde propio (6º confirmado)<br/>200.55.243.116 / .117 · 192.1.3.1<br/>~53 reglas NAT propias, WAN dedicada — no pasa por FWOPEN"]
+      LEGACY["WL-GIAR · DB-GIAR — legado GIAR, apagado en vCenter<br/>WL-ROMAN · DB-ROMAN-HISTORICO — legado ROMAN"]
+      SHARED["WL-CLIENTES (172.18.5.40) — compartido Argocean/ROMAN<br/>vivo, actividad reciente, sin poder atribuir (sin sudo)"]
+      BLINDSPOT["2º stack CEFAS + cliente \"SYT\" — sin identificar<br/>10.10.1.100/.8/.43 · 172.18.5.111/.112"]
     end
   end
 
@@ -209,24 +212,30 @@ flowchart TB
   AZURE -->|"HTTPS · ords-‹cliente›.open.com.ar<br/>(grueso del tráfico app↔datos)"| Internet
   Internet -->|"OpenVPN 2190/UDP (único puerto)"| EDGE
   Internet -->|"NAT entrante: 80/443, Oracle, admin"| EDGE2
+  Internet -->|"NAT entrante propio, WAN dedicada"| FW3
   EDGE --> CLUSTER
   EDGE2 -->|"NAT 80/443 → los 2 NPM"| NPM
   NPM -->|"dominio / Host header"| WLDB
   NPM -->|"ords-‹cliente› → ORDS pegado a la base del cliente"| WLDB
   FWINT -.-> NPM
-  CLUSTER -.->|"sin confirmar si es sitio físico distinto o standalone"| HOST2
+  FW3 --> LEGACY
+  FW3 --> SHARED
+  FW3 --> BLINDSPOT
 
   PWIN -->|"confirmado en vivo 18ago2026:<br/>http://192.1.1.38:81/ responde directo, sin salto"| NPM
+  PWIN -->|"confirmado 13-14sep2026: llega al dashboard HTTPS de FW,<br/>pero NO a la LAN interna 172.18.5.x (aislada)"| FW3
   PHOST -.->|"inferido — nota de backup Veeam<br/>de OPENDB_31 apunta a OPENBK"| BACKUP
 ```
 
 **Qué está confirmado vs. qué es todavía hipótesis, en este diagrama:**
 
-- **Confirmado — hay dos firewalls de borde, no uno.** `OPENVPNFW01` (`200.55.243.92`) termina la VPN site-to-site con Azure y **solo** expone OpenVPN/2190 UDP — pero esa VPN hoy lleva tráfico casi nulo (~487 MiB/30d, ver `informe_ejecutivo_infraestructura_02.md`). `FWOPEN` (`200.55.243.90` / `.94`) es un segundo pfSense de cara a Internet con ~46 reglas NAT activas: los dos NPM en 80/443, acceso Oracle directo para varios clientes, **la consola de administración de vCenter** (`192.1.1.29:443`) y su propio panel. Esto **corrige** el hallazgo anterior de "solo OpenVPN expuesto" (ver `findings.md` → "Corregido: la exposición a Internet NO es mínima", 19 ago 2026). `FWOPEN` aparece dos veces en el diagrama a propósito: es a la vez pfSense interno del cluster y gateway NAT de borde.
+- **Confirmado — hay dos firewalls de borde en el sitio principal, no uno.** `OPENVPNFW01` (`200.55.243.92`) termina la VPN site-to-site con Azure y **solo** expone OpenVPN/2190 UDP — pero esa VPN hoy lleva tráfico casi nulo (~487 MiB/30d, ver `informe_ejecutivo_infraestructura_02.md`). `FWOPEN` (`200.55.243.90` / `.94`) es un segundo pfSense de cara a Internet con ~46 reglas NAT activas: los dos NPM en 80/443, acceso Oracle directo para varios clientes, **la consola de administración de vCenter** (`192.1.1.29:443`) y su propio panel. Esto **corrige** el hallazgo anterior de "solo OpenVPN expuesto" (ver `findings.md` → "Corregido: la exposición a Internet NO es mínima", 19 ago 2026). `FWOPEN` aparece dos veces en el diagrama a propósito: es a la vez pfSense interno del cluster y gateway NAT de borde.
+- **Confirmado (12-14 sep 2026) — el host `192.1.3.252` no es "otro host más" del cluster principal: tiene su propio tercer perímetro de red, con firewall de borde propio.** `FW` (`192.1.3.1`) es un pfSense con IPs WAN dedicadas (`200.55.243.116`/`.117`, distintas de las de `FWOPEN`) y ~53 reglas NAT propias — el tráfico hacia ese segmento **no pasa por `FWOPEN`**. Detrás está el LAN aislado `172.18.5.x`/`10.10.1.x`: el stack legado de GIAR y de ROMAN (ambos con infraestructura confirmada, GIAR apagado de hecho), el WebLogic compartido de Argocean/ROMAN (`WL-CLIENTES`, vivo pero sin poder atribuir su tráfico por falta de `sudo`), y un blind spot nuevo sin resolver (segundo stack de CEFAS + un cliente "SYT" nunca antes visto). Este firewall ya estaba contado dentro de los "6 pfSense confirmados" del relevamiento manual — lo que cambió es entender que es el borde de su propio segmento, no un firewall interno más del cluster `192.1.1.x` (corrección respecto a la versión anterior de este diagrama).
+- **Confirmado (13-14 sep 2026) — Piedras llega al firewall de este tercer segmento, pero no a la red que protege.** Desde `Win10-Piedras`, el dashboard HTTPS de `FW` (`192.1.3.1`) responde con normalidad, pero ni SSH al propio firewall ni una ruta directa a `172.18.5.x` son alcanzables desde ahí — coherente con que el segmento sigue genuinamente aislado, confirmado también desde este segundo punto de origen.
 - **Confirmado — el plano ORDS es la vía principal app↔datos.** Los portales CONDOR en Azure AKS consultan la base Core y pegan por HTTPS a `ords-‹cliente›.open.com.ar`, endpoints publicados por el NPM on-premise cuyo destino es un ORDS (Oracle REST Data Services) pegado a la base Oracle del cliente. El grueso del tráfico app→datos va por acá, por Internet — no por la VPN S2S. Clientes con `ords-` propio: Balanz, BOCA, CEFAS, EBY, JOBS, ROMAN (ver `informe_ejecutivo_infraestructura_02.md` y `findings.md`).
 - **Confirmado — Piedras:** sitio real, con su propio host ESXi y subred `192.168.100.0/24`; la conectividad Piedras → cluster principal (`192.1.1.x`), probada en vivo llegando al panel de NPM de `VM-DOCKER-Clientes` sin salto intermedio.
 - **Inferido, no probado en vivo:** la conectividad Piedras → `OPENBK` (backup) — viene de una nota de texto en `OPENDB_31`, no de una prueba de red hecha a mano.
-- **Todavía abierto:** si el host `192.1.3.252` es un tercer sitio físico separado o una máquina standalone dentro del mismo datacenter (ver findings.md, "Todavía abierto" #2); si `OpenPiedrasFw01` es efectivamente el pfSense de Piedras (está apagada, sin confirmar por acceso directo); el rango `192.168.222.x` (endpoints ORDS de Balanz) que no aparece en ningún export — posible otra red aislada, como pasó con Piedras.
+- **Todavía abierto:** si `OpenPiedrasFw01` es efectivamente el pfSense de Piedras (está apagada, sin confirmar por acceso directo); el rango `192.168.222.x` (endpoints ORDS de Balanz) que no aparece en ningún export — posible otra red aislada, como pasó con Piedras; identidad del segundo stack CEFAS y del cliente "SYT" dentro del segmento aislado (ver `findings.md`).
 
 ## Cómo regenerar estos diagramas
 

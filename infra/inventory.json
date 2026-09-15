@@ -6093,7 +6093,7 @@
     "192.168.100.4"
   ],
   "esxi_capacity": {
-    "_note": "VERSION FINAL, 12 sep 2026 -- capacidad fisica EXACTA, sin aproximar. Dos exports de vCenter regenerados el 12 sep 2026 con formato completo: ExportList20260912.csv (host, RAM/vCPU asignada via columnas 'Memory Size'/'CPUs', estado ON/OFF y uso real 'Host CPU'/'Host Mem' por VM, todo en un mismo snapshot) y ExportList-hosts_and_clusters20260912.csv (RAM fisica real via 'Memory Size (MB)' por host -- ya no una inferencia por Consumed Memory %, mas 'CPUs' = sockets fisicos). Reemplaza dos versiones anteriores de este calculo (la primera mezclaba config de 18 ago con uso de sep; la segunda alineaba fechas pero seguia aproximando RAM fisica por % consumido). Diferencia con la version aproximada: 192.1.1.215 sale de la lista de sobreasignados (tenia margen real de 14GB, no estaba al limite como sugeria la aproximacion) -- el resto de los hosts se mantiene con magnitudes casi identicas, validando que el metodo por % era razonablemente confiable. ram_overcommit_gb/pct = ram_assigned_gb_on - ram_physical_gb (positivo = excedente, negativo = margen). CPU fisico en GHz sigue sin poder confirmarse (falta core count/clock) -- se conoce cantidad de sockets (cpu_sockets) pero no alcanza para replicar el analisis de sobreasignacion en CPU. Piedras (192.168.100.4) queda fuera de ambos exports de hosts. Pedido de Alexis Lombardi: sospecha de RAM asignada por encima de la capacidad fisica real de algun host -- CONFIRMADA con datos exactos, patron de 6 de 12 hosts del cluster principal.",
+    "_note": "VERSION FINAL, 12 sep 2026 -- capacidad fisica EXACTA, sin aproximar. Dos exports de vCenter regenerados el 12 sep 2026 con formato completo: ExportList20260912.csv (host, RAM/vCPU asignada via columnas 'Memory Size'/'CPUs', estado ON/OFF y uso real 'Host CPU'/'Host Mem' por VM, todo en un mismo snapshot) y ExportList-hosts_and_clusters20260912.csv (RAM fisica real via 'Memory Size (MB)' por host -- ya no una inferencia por Consumed Memory %, mas 'CPUs' = sockets fisicos). Reemplaza dos versiones anteriores de este calculo (la primera mezclaba config de 18 ago con uso de sep; la segunda alineaba fechas pero seguia aproximando RAM fisica por % consumido). Diferencia con la version aproximada: 192.1.1.215 sale de la lista de sobreasignados (tenia margen real de 14GB, no estaba al limite como sugeria la aproximacion) -- el resto de los hosts se mantiene con magnitudes casi identicas, validando que el metodo por % era razonablemente confiable. ram_overcommit_gb/pct = ram_assigned_gb_on - ram_physical_gb (positivo = excedente, negativo = margen). CPU fisico en GHz sigue sin poder confirmarse (falta core count/clock) -- se conoce cantidad de sockets (cpu_sockets) pero no alcanza para replicar el analisis de sobreasignacion en CPU. Piedras (192.168.100.4) queda fuera de ambos exports de hosts. Pedido de Alexis Lombardi: sospecha de RAM asignada por encima de la capacidad fisica real de algun host -- CONFIRMADA con datos exactos, patron de 6 de 12 hosts del cluster principal. Piedras (192.168.100.4) incorporado 15 sep 2026 via ExportListPiedras-host_and_clusters20260912.csv -- ya no queda fuera del analisis. No sobreasignado hoy, pero con sobreasignacion latente severa (177GB asignados en total vs 32GB fisicos si se reactivaran las 13 VMs apagadas).",
     "physical_capacity_known": true,
     "by_host": {
       "192.1.1.214": {
@@ -6294,7 +6294,14 @@
         "ram_used_gb_on": 16.1,
         "cpu_used_mhz_on": 146,
         "site": "Piedras",
-        "note": "fuera de ambos export de hosts_and_clusters -- sin capacidad fisica ni sockets conocidos"
+        "note": "fuente capacidad fisica: ExportListPiedras-host_and_clusters20260912.csv (15 sep 2026). No sobreasignado hoy (solo 2/15 VMs ON), pero sobreasignacion latente severa: 13 VMs apagadas suman 177GB asignados en total contra 32GB fisicos -- +453% si se reactivaran todas. RAM/vCPU asignada por VM sigue siendo del export ExportList-Piedras-Full.csv (18 ago 2026), sin version mas nueva.",
+        "ram_physical_gb": 32.0,
+        "cpu_sockets": 1,
+        "ram_overcommit_gb": -16.0,
+        "ram_overcommit_pct": -50.0,
+        "overcommitted_ram": false,
+        "ram_overcommit_gb_if_all_on": 145.0,
+        "ram_overcommit_pct_if_all_on": 453.1
       }
     }
   }

@@ -1,0 +1,2 @@
+﻿Nombre,Estado,Condición,Clúster,% de CPU consumido,% de memoria consumido,Estado de HA,Tiempo de actividad,Certificado válido hasta,Tamaño de memoria (MB),CPU,NIC,Versión,AutoDeploy.MachineIdentity
+192.168.100.4,Conectado,Normal,,12,56,N/D,37 días,20-may-2031 17:13,"32.758,14 MB",1,2,6.5.0,

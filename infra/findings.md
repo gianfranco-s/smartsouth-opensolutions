@@ -12,6 +12,7 @@ Alexis pidió, por host ESXi: cantidad de VMs, recursos asignados y recursos rea
 
 - **`ExportList20260912.csv`** (regenerado, formato completo) — por VM: host ESXi, RAM/vCPU *asignada* (`Memory Size`/`CPUs`, configuración), estado ON/OFF, uso real (`Host CPU`/`Host Mem`). Todo en el mismo snapshot.
 - **`ExportList-hosts_and_clusters20260912.csv`** (regenerado, formato completo) — por host: **`Memory Size (MB)`, la RAM física real instalada**, ya no una inferencia. También `CPUs` (sockets físicos).
+- **`ExportListPiedras-host_and_clusters20260912.csv`** (15 sep 2026) — mismo tipo de export que el anterior, pero para el host del sitio Piedras (`192.168.100.4`), que hasta ahora quedaba afuera del análisis por no tener este export propio.
 
 Con esto la comparación es directa: RAM asignada a las VMs encendidas vs. RAM física real del host, sin aproximar nada.
 
@@ -29,17 +30,18 @@ Con esto la comparación es directa: RAM asignada a las VMs encendidas vs. RAM f
 | **192.1.1.223** | 17/15 | 136/118 | **326/286** | **231.8** | 255.9 | +30.1 (+12%) | **sí** — único `Status: Warning` en vCenter |
 | **192.1.1.224** | 16/14 | 115/107 | **324/292** | **238.1** | 255.9 | +36.1 (+14%) | **sí** |
 | 192.1.3.252 | 18/11 | 108/60 | 186/110 | 105.7 | 127.3 | −17.3 (−14%) | no |
-| 192.168.100.4 (Piedras) | — | — | — | — | sin dato (fuera de ambos export de hosts) | — | — |
+| 192.168.100.4 (Piedras) | 15/2 | 58/6 | 177/16 | 16.1 | 32.0 | −16.0 (−50%) | no — hoy (ver nota) |
 
 *"RAM física exacta" = `Memory Size (MB)` del host, dato directo. "Excedente/margen" = RAM asignada (ON) − RAM física: positivo es cuánto se pasó de asignar; negativo es margen disponible.*
+
+**Piedras: no sobreasignado hoy, pero con sobreasignación latente severa.** Solo 2 de sus 15 VMs están encendidas (16 GB asignados de los 32 GB físicos). Pero las 13 VMs apagadas suman **177 GB asignados en total** contra apenas 32 GB físicos — si se reactivaran todas a la vez, el host no tiene forma de soportarlo (+145 GB, +453% sobre su capacidad real). RAM/vCPU asignada de Piedras sigue viniendo del export del 18 ago (`ExportList-Piedras-Full.csv`, sin versión más nueva); la capacidad física exacta sí es del 15 sep.
 
 **6 de 12 hosts sobreasignados: `.216`, `.217`, `.218`, `.221`, `.223`, `.224`.** Cambio respecto al corte anterior: **`192.1.1.215` sale de la lista** — con datos exactos tiene 140 GB físicos contra 126 GB asignados (14 GB de margen), no estaba realmente al límite como sugería la aproximación por porcentaje. El resto de la lista se mantiene casi sin cambios en magnitud, lo que valida que el método por porcentaje (usado en las dos vueltas anteriores) era razonablemente confiable como primera aproximación. En GB absolutos `.223`/`.224` siguen siendo los más críticos (+30/+36 GB); en % relativo **`.216` sigue siendo el peor (+64%)**. `.218` queda al límite justo (+3%, +2 GB) — el más frágil de los seis.
 
 - **Tres blind spots resueltos de paso.** Las 3 VMs nuevas sin host/IP conocidos (ver más abajo, "GIAR — nuevo export...") ya tienen dueño en este export completo: `OL7SIGOPROD` → `192.1.1.215` (`192.1.1.66`), `OL8CASLAWL01` → `192.1.3.252` (`192.1.1.64`), `OL8HEINPROD` → `192.1.3.252` (`192.1.1.63`) — las tres Oracle Linux 7, con 10/18/22 días de uptime respectivamente (consistente con ser altas recientes). Cargado en `inventory.json` → `vms[]`.
 - **Hallazgo colateral: dos VMs de `192.1.1.223` (el host con más `Status: Warning`) cambiaron de configuración entre el 18 ago y el 12 sep.** `OPENDBPR001`: 32→20 GB RAM, 16→12 vCPU (bajó). `DMWL01`: 16→24 GB RAM, 4→10 vCPU (subió). No hay forma de saber desde acá si fue una mitigación deliberada del problema de sobreasignación o un cambio no relacionado — vale la pena preguntar.
 - **CPU sigue sin poder confirmarse, pero ahora se conocen los sockets físicos por host** (columna `CPUs` del export de hosts): 1 socket en `.216`/`.219`/`192.1.3.252`, 2 en el resto. Sin cores ni GHz no alcanza para replicar el mismo análisis de sobreasignación en CPU — requeriría TeamViewer (Summary de cada host) o un export adicional.
-- **Piedras (`192.168.100.4`) queda fuera** — ninguno de los dos exports de hosts and clusters (ni el de ayer ni este) lo incluye.
-- Cargado en `inventory.json` → `esxi_capacity` (`physical_capacity_known: true`, ya no `"approximate"`).
+- Cargado en `inventory.json` → `esxi_capacity` (`physical_capacity_known: true`, ya no `"approximate"`), incluyendo ahora Piedras.
 
 ## Nuevo: infraestructura on-premise real que no está en nuestro inventario
 

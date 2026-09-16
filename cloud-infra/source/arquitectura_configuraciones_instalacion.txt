@@ -527,7 +527,7 @@ if instr(v_script, 'ppcdr/core') > 0 or instr(v_script, 'ppcdr/provia') > 0  or 
 if v_producto is not null and lower(v_producto) in ('core','provia','erp','psol')
 
 Si se intenta ejecutar un endpoint de alguno de los módulos listados y no se envía la apikey, o el producto, o la apikey es incorrecta, devolverá Unauthorized
-La apikey C0nd0r91 se almacena encriptada en la tparpcdr
+La apikey [REDACTED] se almacena encriptada en la tparpcdr
 
 Permisos a Formularios
 

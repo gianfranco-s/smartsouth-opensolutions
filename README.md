@@ -43,7 +43,7 @@ Este es un repo **privado** — contiene nombres de clientes, IPs internas y (en
 Para juntar en un solo archivo el estado actual del relevamiento — incluyendo `source-files/` sin adulterar, para poder consultarlo aparte —, correr desde la raíz del repo:
 
 ```bash
-zip -r "relevamiento-opensolutions-$(git rev-parse --short HEAD).zip" \
+zip -r "relevamiento-opensolutions-$(date +%Y%m%d)-$(git rev-parse --short HEAD).zip" \
   infra/inventory.json infra/findings.md infra/topology.md infra/esquema-topologia-clientes.html \
   esquema-red-topologia.png \
   relevamiento_alta_*.md relevamiento_azure.md \
@@ -53,7 +53,7 @@ zip -r "relevamiento-opensolutions-$(git rev-parse --short HEAD).zip" \
   source-files
 ```
 
-Queda nombrado con el short hash del commit sobre el que se armó, para saber a qué snapshot corresponde. **El .zip no se commitea** (está en `.gitignore`) — es solo para uso local o para pasarlo a mano.
+Queda nombrado como `relevamiento-opensolutions-<fecha_iso_yyyymmdd>-<commit>.zip`, con la fecha en que se armó y el short hash del commit sobre el que se armó, para saber a qué snapshot corresponde. **El .zip no se commitea** (está en `.gitignore`) — es solo para uso local o para pasarlo a mano.
 
 Deja afuera a propósito: `relevamiento_segmento_aislado.md`, `verificacion_completitud_clientes.md`, `vms_apagadas.md`, `PLAN.md`, `informe_ejecutivo_*.md`, `QUESTIONS.md`, `proxima-sesion.md`, `latest-human-findings.md`, `README.md` y `Documentación general de sistemas TI.md` — documentos de seguimiento/contexto general, no del estado relevado en sí.
 

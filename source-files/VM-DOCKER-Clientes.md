@@ -14,7 +14,7 @@ HOSTNAME=aaa82a1152b1
 DB_MYSQL_HOST=db
 DB_MYSQL_PORT=3306
 DB_MYSQL_USER=npm
-DB_MYSQL_PASSWORD=npm
+DB_MYSQL_PASSWORD=[REDACTED]
 DB_MYSQL_NAME=npm
 SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
 OPENRESTY_VERSION=1.19.3.1
@@ -32,13 +32,13 @@ HOME=/root
 soportesmart@vm-docker:~$ sudo docker exec nginx_db_1 printenv
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 HOSTNAME=2f8d630573cb
-MYSQL_ROOT_PASSWORD=npm
+MYSQL_ROOT_PASSWORD=[REDACTED]
 MYSQL_DATABASE=npm
 MYSQL_USER=npm
-MYSQL_PASSWORD=npm
+MYSQL_PASSWORD=[REDACTED]
 HOME=/root
 
-soportesmart@vm-docker:~$ sudo docker exec -it nginx_db_1 mysql -h 127.0.0.1 -u npm -pnpm npm -e "SELECT id, domain_names, forward_scheme, forward_host, forward_port, enabled, certificate_id, created_on FROM proxy_host;
+soportesmart@vm-docker:~$ sudo docker exec -it nginx_db_1 mysql -h 127.0.0.1 -u npm -p[REDACTED] npm -e "SELECT id, domain_names, forward_scheme, forward_host, forward_port, enabled, certificate_id, created_on FROM proxy_host;
 "
 +----+--------------------------------------+----------------+--------------+--------------+---------+----------------+---------------------+
 | id | domain_names                         | forward_scheme | forward_host | forward_port | enabled | certificate_id | created_on          |

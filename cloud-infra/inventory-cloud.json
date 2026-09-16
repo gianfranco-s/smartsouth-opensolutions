@@ -1,5 +1,5 @@
 {
-  "note": "Cloud-provider infra (Azure). Reopened 2026-09-09 with real Reader access to the portal (identity gsalomone_ext@open.com.ar). Fields marked verified_2026_09_09 were confirmed against the Azure portal/CLI; the rest is still doc-derived (source/) and to be treated with the same 'grain of salt' as other Relevamiento material. Raw enumeration output in cloud-infra/raw/. Plan: plan_relevamiento_azure.md.",
+  "note": "Cloud-provider infra (Azure). Reopened 2026-09-09 with real Reader access to the portal (identity gsalomone_ext@open.com.ar). Fields marked verified_2026_09_09 were confirmed against the Azure portal/CLI; the rest is still doc-derived (source/) and to be treated with the same 'grain of salt' as other Relevamiento material. Raw enumeration output in cloud-infra/raw/. Plan: relevamiento_azure.md.",
   "azure": {
     "verified_2026_09_09": true,
     "identity_used": "gsalomone_ext@open.com.ar",

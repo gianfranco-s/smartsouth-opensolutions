@@ -2,7 +2,7 @@
 
 > ✅ **CERRADO — 7/7 capas (12 sep 2026).** Capa 6 cerrada en `CLIENTES-DB` (`192.1.1.32`, `root`): la instancia `ORACLE_SID=BOCA` es una **CDB** multitenant, prácticamente vacía a nivel raíz; los datos reales viven en la **PDB `BOCAPDB`** (`READ WRITE`), schema `CONDOR` (~22.5 GB, coincide con los 18G de la matriz), charset `WE8MSWIN1252` confirmado. **Último DML de `CONDOR`: 12/09/2026 21:37 — el mismo día de la consulta**, uso productivo activo confirmado en vivo. La disputa "BOCA vs BOCAPDB" de Discrepancias no era tal: las dos fuentes tenían razón, a distinto nivel (CDB vs PDB) — mismo patrón que Rex/GIAR (`CDBOPEN03`). Detalle en `infra/findings.md` ("Resueltos / confirmados", 12 sep 2026) y `infra/inventory.json` (`clients[BOCA].database.resolved`). Lo de abajo es el plan tal como se ejecutó.
 
-**Objetivo:** el mismo que [`plan_relevamiento_alta_cefas.md`](plan_relevamiento_alta_cefas.md), [`plan_relevamiento_alta_jobs.md`](plan_relevamiento_alta_jobs.md) y [`plan_relevamiento_alta_eby.md`](plan_relevamiento_alta_eby.md) — entender capa por capa qué infraestructura usa un cliente (dominio → NPM → firewall/NAT → app → DB → storage) recorriéndolo de punta a punta.
+**Objetivo:** el mismo que [`relevamiento_alta_cefas.md`](relevamiento_alta_cefas.md), [`relevamiento_alta_jobs.md`](relevamiento_alta_jobs.md) y [`relevamiento_alta_eby.md`](relevamiento_alta_eby.md) — entender capa por capa qué infraestructura usa un cliente (dominio → NPM → firewall/NAT → app → DB → storage) recorriéndolo de punta a punta.
 
 **Cuarto trazado, elegido por impacto — no por ser complejo (al contrario).** BOCA tiene la cadena más simple que queda: **un** WebLogic (`WL12C-Desarrollo.2.54`) y **una** DB (`CLIENTES-DB`), los dos ya resueltos por nombre+IP, sin migración de WL pendiente (`status: "Destino definido / sin WL nuevo"`). Se elige igual porque tracearlo **obliga a entrar por primera vez a `192.1.2.54`** — el último WebLogic multi‑inquilino del parque que nadie accedió nunca — y esa sola sesión deja evidencia en vivo para varios clientes más.
 
@@ -15,7 +15,7 @@
 | Co‑inquilino | Qué corre ahí | Qué se cierra al leer sus datasources / sesiones |
 |---|---|---|
 | **ABB** | Forms en `:9001` (`abb.condorwork.com.ar`) | **Tier 1 #4** — cuál de `192.1.1.31` (`DBClientes-12C.31`) vs `192.1.1.190` (`DBClientes.190`) es la DB productiva. Se lee de la URL JDBC en una pantalla. |
-| **EBY** (cola) | ORDS en `:7010` (`ords-eby.open.com.ar`) | último cabo suelto de EBY — ver `plan_relevamiento_alta_eby.md` capa 1. |
+| **EBY** (cola) | ORDS en `:7010` (`ords-eby.open.com.ar`) | último cabo suelto de EBY — ver `relevamiento_alta_eby.md` capa 1. |
 | `condor.open.com.ar` | Forms genérico en `:9001` | dominio sin cliente asignado — clasificarlo. |
 | **JOBS** (test) | ORDS en `:7002` (`ords-jobst.open.com.ar`) | ya mapeado, confirma de paso. |
 | Yacyretá test | `:9002` | entornos test de EBY. |

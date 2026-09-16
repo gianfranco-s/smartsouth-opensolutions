@@ -90,7 +90,7 @@ flowchart LR
 **Leer este diagrama con cuidado — varios nodos son engañosos:**
 
 - **`DBClientes-12C.31` la comparten ABB y ESYOP** (`WL12C-Desarrollo.2.54 → DBClientes-12C.31` y `WebLogic.19 → DBClientes-12C.31`): confirmado en vivo el 6 sep 2026 — instancias Oracle separadas (`ABB` y `esyop`) en el mismo box. `DBClientes.190` la usa **solo DCVIAJES** (vía `WebLogic.191`); la flecha ABB→`DBClientes.190` que había antes se quitó — ese box solo tiene sub‑bases históricas de ABB (`abbhist`/`abbtubio`, apagadas), no su DB productiva.
-- **`EBY`, `ROMAN`, `GIAR` y `Rex Argentina` (`279`) tienen más de un nodo WL y/o DB** — a diferencia del resto, no es "un cliente, un servidor": son candidatos en paralelo (stack legado vs. nuevo, o candidatos sin confirmar todavía). El emparejamiento WL→DB que muestra el diagrama para estos cuatro está curado a mano con la evidencia real de cada trazado (`plan_relevamiento_alta_eby.md`, `infra/findings.md`), no generado mecánicamente — antes de tocar cualquiera de estos nodos, leer el detalle en `clients[].weblogic.resolved`/`.database.resolved` (campo `notes`), no asumir por la flecha. **Excepción: EBY ya no tiene ambigüedad de DB** (cerrado 12 sep 2026, un solo nodo `OPENDBPROD005`) — sus dos nodos WL siguen dobles porque ambos stacks están vivos en simultáneo, no porque falte resolver cuál es el real.
+- **`EBY`, `ROMAN`, `GIAR` y `Rex Argentina` (`279`) tienen más de un nodo WL y/o DB** — a diferencia del resto, no es "un cliente, un servidor": son candidatos en paralelo (stack legado vs. nuevo, o candidatos sin confirmar todavía). El emparejamiento WL→DB que muestra el diagrama para estos cuatro está curado a mano con la evidencia real de cada trazado (`relevamiento_alta_eby.md`, `infra/findings.md`), no generado mecánicamente — antes de tocar cualquiera de estos nodos, leer el detalle en `clients[].weblogic.resolved`/`.database.resolved` (campo `notes`), no asumir por la flecha. **Excepción: EBY ya no tiene ambigüedad de DB** (cerrado 12 sep 2026, un solo nodo `OPENDBPROD005`) — sus dos nodos WL siguen dobles porque ambos stacks están vivos en simultáneo, no porque falte resolver cuál es el real.
 - **`OPENWLPROD01` y `OPENDBPROD001` son ahora los hosts más compartidos del segundo nivel** (después de `WebLogic.191`/8 clientes y `CLIENTES-DB`/3 instancias): `OPENWLPROD01` sirve a EBY, GIAR y ROMAN; `OPENDBPROD001` a Heinlein, CEFAS (destino), GIAR y Rex Argentina — ninguno de estos últimos tres verificado en vivo todavía, solo por `tnsnames.ora`/NPM.
 - **Rex Argentina (`279`) tiene 2 candidatos de DB y 1 de WL, ninguno confirmado** — primera vez que aparece algo de infraestructura de Rex en este diagrama (antes no tenía ningún nodo resuelto).
 
@@ -163,7 +163,7 @@ Solo 2 de las 15 VMs están encendidas — el resto no reporta IP en el export (
 | `OPENSHARE`, `OPENAPPS`, `COBRA`, `CLIENTESRDP` | Apagadas | Almacenamiento compartido, apps, y una VM (`COBRA`) que no coincide con ningún cliente conocido — mismo patrón por el que se encontró Argocean, sin confirmar todavía |
 | `OEM`, `OPENMONITOR10`, `OPEN_GRAFANA` | Apagadas | Monitoreo/administración del sitio |
 
-**Conectividad de red hacia el cluster principal, confirmada en vivo (18 ago 2026).** Desde la sesión de TeamViewer en `Win10-Piedras` (`192.168.100.165`), `http://192.1.1.38:81/` — el panel de Nginx Proxy Manager de `VM-DOCKER-Clientes`, en el cluster principal — respondió directamente, sin salto intermedio. Piedras no es un sitio aislado de red: alcanza al menos el segmento `192.1.1.x`, además del `10.77.254.x` ya inferido por el backup de `OPENDB_31` hacia `OPENBK`. Esto habilita mapear el ítem 1 de Tier 1 (dominio → NPM → servidor, ver `../plan_relevamiento_alta_cefas.md`) directamente desde una sesión a Piedras, sin necesitar un salto a una VM del cluster principal primero.
+**Conectividad de red hacia el cluster principal, confirmada en vivo (18 ago 2026).** Desde la sesión de TeamViewer en `Win10-Piedras` (`192.168.100.165`), `http://192.1.1.38:81/` — el panel de Nginx Proxy Manager de `VM-DOCKER-Clientes`, en el cluster principal — respondió directamente, sin salto intermedio. Piedras no es un sitio aislado de red: alcanza al menos el segmento `192.1.1.x`, además del `10.77.254.x` ya inferido por el backup de `OPENDB_31` hacia `OPENBK`. Esto habilita mapear el ítem 1 de Tier 1 (dominio → NPM → servidor, ver `../relevamiento_alta_cefas.md`) directamente desde una sesión a Piedras, sin necesitar un salto a una VM del cluster principal primero.
 
 Detalle completo, notas de cada VM y hallazgos derivados en `infra/inventory.json` → `meta.piedras_site` / `vms[].site == "Piedras"` y en `infra/findings.md`.
 
@@ -176,7 +176,7 @@ A diferencia de §1–§3 (que agrupan VMs por cliente o por categoría), esta v
 ```mermaid
 flowchart TB
   Internet(("Internet"))
-  AZURE["Azure — capa web/aplicación (en relevamiento)<br/>portales CONDOR (Work / Enterprise / ProvIA) · AKS East US<br/>Angular + backend .NET · Entra ID B2C<br/>los datos viven on-premise (vía ORDS) · ver plan_relevamiento_azure.md"]
+  AZURE["Azure — capa web/aplicación (en relevamiento)<br/>portales CONDOR (Work / Enterprise / ProvIA) · AKS East US<br/>Angular + backend .NET · Entra ID B2C<br/>los datos viven on-premise (vía ORDS) · ver relevamiento_azure.md"]
 
   subgraph DC["Datacenter Open (sitio principal)"]
     direction TB

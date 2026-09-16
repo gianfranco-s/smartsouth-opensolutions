@@ -2,7 +2,7 @@
 
 Sacado de `infra/findings.md` cuando se acotó el alcance a on-premise. Ver `cloud-infra/README.md`.
 
-**El 9 sep 2026 se reabrió la investigación cloud** con acceso `Reader` real al portal (identidad `gsalomone_ext@open.com.ar`, rol `Reader` a nivel suscripción en `Open Prod Subscription` y `Open Operations Subscription`). Crudo de la enumeración en `cloud-infra/raw/`. El plan vive en `plan_relevamiento_azure.md`.
+**El 9 sep 2026 se reabrió la investigación cloud** con acceso `Reader` real al portal (identidad `gsalomone_ext@open.com.ar`, rol `Reader` a nivel suscripción en `Open Prod Subscription` y `Open Operations Subscription`). Crudo de la enumeración en `cloud-infra/raw/`. El plan vive en `relevamiento_azure.md`.
 
 ---
 

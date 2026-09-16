@@ -115,7 +115,7 @@ flowchart TB
 
 ### Camino 1 — ORDS sobre internet (el grueso del tráfico app → datos)
 
-El backend .NET en AKS le pega a `https://ords-<cliente>.open.com.ar/.../ppcdr/` **por internet público**, no por la VPN. Sale por el NAT Gateway de Azure, entra por NAT en el pfSense de borde `OPENVPNFW01`, y el Nginx Proxy Manager on-premise lo enruta al ORDS interno del cliente (`192.1.2.54:7005`, `192.168.222.20:8080`, …), que a su vez habla SQL\*Net local con el Oracle. Autenticación: `apikey` + `producto` en el header, validados en la base del cliente (`condor.valida_servicios_ords`). Detalle y diagrama de secuencia en `plan_relevamiento_azure.md` §"Bloque 8".
+El backend .NET en AKS le pega a `https://ords-<cliente>.open.com.ar/.../ppcdr/` **por internet público**, no por la VPN. Sale por el NAT Gateway de Azure, entra por NAT en el pfSense de borde `OPENVPNFW01`, y el Nginx Proxy Manager on-premise lo enruta al ORDS interno del cliente (`192.1.2.54:7005`, `192.168.222.20:8080`, …), que a su vez habla SQL\*Net local con el Oracle. Autenticación: `apikey` + `producto` en el header, validados en la base del cliente (`condor.valida_servicios_ords`). Detalle y diagrama de secuencia en `relevamiento_azure.md` §"Bloque 8".
 
 ### Camino 2 — VPN S2S IPsec (bajo volumen, control / integraciones)
 

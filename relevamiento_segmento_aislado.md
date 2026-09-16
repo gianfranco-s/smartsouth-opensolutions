@@ -1,6 +1,6 @@
 # Relevamiento del segmento aislado — camino punta a punta (FW / 192.1.3.252)
 
-**Objetivo:** a diferencia de los `plan_relevamiento_alta_*.md` (que recorren un cliente), este plan recorre una **pieza de infraestructura compartida** — el segmento aislado detrás de `FW` (`192.1.3.1`), el tercer perímetro de red confirmado el 12-14 sep 2026 (ver `infra/topology.md` §4). Dos bloqueos concretos, ambos con ruta de acceso ya mapeada, sin necesitar descubrir nada nuevo — solo ejecutarlos:
+**Objetivo:** a diferencia de los `relevamiento_alta_*.md` (que recorren un cliente), este plan recorre una **pieza de infraestructura compartida** — el segmento aislado detrás de `FW` (`192.1.3.1`), el tercer perímetro de red confirmado el 12-14 sep 2026 (ver `infra/topology.md` §4). Dos bloqueos concretos, ambos con ruta de acceso ya mapeada, sin necesitar descubrir nada nuevo — solo ejecutarlos:
 
 1. **`WL-CLIENTES` (`172.18.5.40`) — atribuir la actividad real a Argocean o a ROMAN**, hoy bloqueado por falta de `sudo`.
 2. **Segundo stack de CEFAS + cliente "SYT" — identificar qué es**, cinco IPs nuevas sin ningún rastro en `ExportList.csv`.
@@ -35,7 +35,7 @@ grep -iE 'argocean|roman' <ruta_encontrada>/formsweb.cfg
 # después, acceso logs de OHS (ruta típica ~/config/OHS/ohs1/access_log* o similar):
 grep -iE 'config=argocean|config=roman' <access_log> | tail -50
 ```
-Un `[argocean]`/`config=argocean` real en los logs cierra capa 4 de `plan_relevamiento_alta_argocean.md`; si solo aparece `roman`, confirma que la actividad reciente es de ROMAN y Argocean sigue sin tráfico propio (coherente con su ruta de dominio deshabilitada).
+Un `[argocean]`/`config=argocean` real en los logs cierra capa 4 de `relevamiento_alta_argocean.md`; si solo aparece `roman`, confirma que la actividad reciente es de ROMAN y Argocean sigue sin tráfico propio (coherente con su ruta de dominio deshabilitada).
 
 **Si `root` es rechazado:** anotar en `infra/findings.md` junto al resto de "sin credencial universal, ni siquiera por segmento" — pasa a la lista de accesos pendientes sin equipo saliente a quien preguntar.
 
@@ -82,7 +82,7 @@ cat /etc/hostname /etc/hosts 2>/dev/null
 
 1. Actualizar el `blind_spot` correspondiente en `infra/inventory.json` (`topic: "Segundo stack de CEFAS y un cliente 'SYT'..."`) con la conclusión, o eliminarlo si se resuelve.
 2. Mover el hallazgo a la sección "Resueltos / confirmados" de `infra/findings.md`, con fecha.
-3. Si `WL-CLIENTES` se resuelve: actualizar `clients[Argocean].weblogic.resolved` y/o el equivalente de ROMAN en `infra/inventory.json`, y cerrar capa 4 en `plan_relevamiento_alta_argocean.md` (tabla del camino, fila 4).
+3. Si `WL-CLIENTES` se resuelve: actualizar `clients[Argocean].weblogic.resolved` y/o el equivalente de ROMAN en `infra/inventory.json`, y cerrar capa 4 en `relevamiento_alta_argocean.md` (tabla del camino, fila 4).
 4. Si aparece un cliente nuevo real ("SYT" u otro nombre): agregarlo a la lista de clientes de `infra/topology.md` §1 y al conteo de `informe_ejecutivo_infraestructura_03.md`.
 5. Si ninguno de los dos bloqueos se resuelve (credenciales rechazadas): no hay nada más que intentar por este camino — pasa a la lista de "accesos pendientes sin equipo saliente a quien consultar" de `informe_ejecutivo_infraestructura_03.md`, sin inventar un tercer intento.
 6. El esquema de red (`esquema-red-topologia.png` / artifact) **no necesita cambios** por esto — ya muestra el segmento aislado como zona con blind spots pendientes; lo que cambia acá es el detalle en `topology.md`/`findings.md`, no la forma de la red.

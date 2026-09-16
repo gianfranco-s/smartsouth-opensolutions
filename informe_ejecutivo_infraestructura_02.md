@@ -1,6 +1,6 @@
 # Informe infraestructura Open Solutions — entrega 02
 
-Esta segunda entrega complementa el informe 01 (mapa on-premise, sitios, clientes y candidatos a baja). Incorpora tres cosas nuevas: lo que aclaró la reunión con el equipo saliente sobre el modelo de producto y de cliente, la arquitectura de aplicación punta a punta incluyendo la capa cloud (los ORDS que conectan los portales de Azure con las bases Oracle on-premise), y el avance del trazado detallado por cliente (ABB, BOCA, EBY, JOBS, ROMAN). Fuentes: notas de la reunión (`Documentación general de sistemas TI`), `plan_relevamiento_azure.md`, `infra/findings.md` e `infra/inventory.json`.
+Esta segunda entrega complementa el informe 01 (mapa on-premise, sitios, clientes y candidatos a baja). Incorpora tres cosas nuevas: lo que aclaró la reunión con el equipo saliente sobre el modelo de producto y de cliente, la arquitectura de aplicación punta a punta incluyendo la capa cloud (los ORDS que conectan los portales de Azure con las bases Oracle on-premise), y el avance del trazado detallado por cliente (ABB, BOCA, EBY, JOBS, ROMAN). Fuentes: notas de la reunión (`Documentación general de sistemas TI`), `relevamiento_azure.md`, `infra/findings.md` e `infra/inventory.json`.
 
 ## Modelo de producto y de cliente
 

@@ -1,6 +1,6 @@
 # Relevamiento de alta de cliente — camino punta a punta (ROMAN de referencia)
 
-**Objetivo:** el mismo que [`plan_relevamiento_alta_cefas.md`](plan_relevamiento_alta_cefas.md), [`plan_relevamiento_alta_jobs.md`](plan_relevamiento_alta_jobs.md), [`plan_relevamiento_alta_eby.md`](plan_relevamiento_alta_eby.md) y [`plan_relevamiento_alta_boca.md`](plan_relevamiento_alta_boca.md) — entender capa por capa qué infraestructura usa un cliente (dominio → NPM → firewall/NAT → app → DB → storage) recorriéndolo de punta a punta.
+**Objetivo:** el mismo que [`relevamiento_alta_cefas.md`](relevamiento_alta_cefas.md), [`relevamiento_alta_jobs.md`](relevamiento_alta_jobs.md), [`relevamiento_alta_eby.md`](relevamiento_alta_eby.md) y [`relevamiento_alta_boca.md`](relevamiento_alta_boca.md) — entender capa por capa qué infraestructura usa un cliente (dominio → NPM → firewall/NAT → app → DB → storage) recorriéndolo de punta a punta.
 
 **Quinto trazado, elegido por costo marginal casi nulo + una pregunta abierta de la matriz.** ROMAN corre hoy sobre `OPENWLPROD01` (`10.77.7.201`), **el mismo box al que ya se entró por SSH con `soportesmart` + `sudo (ALL) ALL` el 2 sep 2026** para cerrar EBY. La capa 4 de ROMAN es prácticamente gratis: reconectar y leer `formsweb.cfg`/`tnsnames.ora` — que ya se leyeron completos, solo falta mirar las secciones de ROMAN. Lo genuinamente nuevo es **una** caja de DB (`OPENDBPROD03`, `10.77.7.30`) que nadie tocó nunca, y **resolver la duda que la propia matriz marca**: *"Confirmar si la base/servicio es TEST o producción."*
 

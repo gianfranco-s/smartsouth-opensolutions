@@ -1,6 +1,6 @@
-# Plan de relevamiento — infraestructura Azure
+# Relevamiento de infraestructura Azure — camino punta a punta
 
-**Objetivo:** mapear capa por capa la infraestructura cloud de Open Solutions en Azure — el plano donde corren los portales Angular de CONDOR (Work / Enterprise / ProvIA) — con el mismo criterio punta a punta que los `plan_relevamiento_alta_*.md` del lado on-premise: identidad del recurso → red → cómputo → datos → identidad/acceso → CI/CD, distinguiendo siempre **lo confirmado contra el portal** de **lo que solo dicen los documentos internos**.
+**Objetivo:** mapear capa por capa la infraestructura cloud de Open Solutions en Azure — el plano donde corren los portales Angular de CONDOR (Work / Enterprise / ProvIA) — con el mismo criterio punta a punta que los `relevamiento_alta_*.md` del lado on-premise: identidad del recurso → red → cómputo → datos → identidad/acceso → CI/CD, distinguiendo siempre **lo confirmado contra el portal** de **lo que solo dicen los documentos internos**.
 
 **Contexto / reapertura de alcance.** La investigación de cloud se había estacionado en [`cloud-infra/`](cloud-infra/README.md) para priorizar on-premise. Este plan la reabre. Todo lo que ya teníamos está en `cloud-infra/` (`inventory-cloud.json`, `findings-cloud.md`, `questions-cloud.md`, `topology-cloud.md`, `source/`) y resumido en la tabla de abajo. **Nada de eso está verificado contra Azure** — sale de tres documentos del equipo saliente (`cloud-infra/source/`), a tomar con las mismas pinzas que el resto del material de Relevamiento.
 

@@ -8,7 +8,7 @@ PEDIDO DE ALEXIS (12/13 sep 2026) — capacidad real de cada host ESXi, sospecha
 
 puede ser que ABB este dado de baja, pero tengamos datos como backup exlusinvamente?
 
-Próximos pasos de GIAR (por orden) — ver plan_relevamiento_alta_giar.md para el detalle completo
+Próximos pasos de GIAR (por orden) — ver relevamiento_alta_giar.md para el detalle completo
 
 0. HECHO (12 sep 2026): dashboard de `FW` (`192.1.3.1`) accedido, NAT completo transcripto (`pfsense-192.1.3.1-nat-rules.txt`, cargado en inventory.json). Confirmado: `200.55.243.117:80/443` -> `10.10.1.50` (`WL-GIAR`) es el backend real de `giarprod.condorenterprise.com.ar`. Capa 3 cerrada.
 
@@ -39,7 +39,7 @@ tail -50 <log encontrado>
 
 ---
 
-Pendiente de ROMAN (pausado, no se sigue esta sesión — ver infra/findings.md y plan_relevamiento_alta_roman.md):
+Pendiente de ROMAN (pausado, no se sigue esta sesión — ver infra/findings.md y relevamiento_alta_roman.md):
 
 1. Access log del NPM de DOCKER-DEB para romanprod.condor.solutions — el que dirime si ROMAN está vivo o dormido.
 
@@ -66,7 +66,7 @@ tampoco puedo a .238
 
 ---
 
-Argocean, capa 4 (WL-CLIENTES, 172.18.5.40) — pendiente, ver plan_relevamiento_alta_argocean.md e infra/findings.md.
+Argocean, capa 4 (WL-CLIENTES, 172.18.5.40) — pendiente, ver relevamiento_alta_argocean.md e infra/findings.md.
 
 4 intentos de acceso fallaron (13-14 sep 2026): SSH directo desde la estación Windows, SSH vía NAT pública del FW (200.55.243.116:215), consola web de vCenter (no funcional), SSH administrativo al FW (192.1.3.1, timeout pese a que el dashboard HTTPS sí responde).
 

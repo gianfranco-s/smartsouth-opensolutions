@@ -1,8 +1,8 @@
 # Relevamiento de alta de cliente — camino punta a punta (JOBS de referencia)
 
-**Objetivo:** el mismo que [`plan_relevamiento_alta_cefas.md`](plan_relevamiento_alta_cefas.md) — entender capa por capa qué necesita un cliente (nginx → firewall → app → DB → storage), pero con **JOBS** como caso de contraste: cadena más dedicada (WL y DB propios, ya confirmados por nombre+IP), sin el enredo de WL compartido/migración a medio hacer que tiene CEFAS. La receta final debería salir de cruzar los dos, no de uno solo.
+**Objetivo:** el mismo que [`relevamiento_alta_cefas.md`](relevamiento_alta_cefas.md) — entender capa por capa qué necesita un cliente (nginx → firewall → app → DB → storage), pero con **JOBS** como caso de contraste: cadena más dedicada (WL y DB propios, ya confirmados por nombre+IP), sin el enredo de WL compartido/migración a medio hacer que tiene CEFAS. La receta final debería salir de cruzar los dos, no de uno solo.
 
-## Por qué JOBS
+## Por qué JOBS (impacto sobre el resto del relevamiento)
 
 A diferencia de CEFAS, para JOBS **ya tenemos el dominio de entrada sin necesitar una sesión nueva** — apareció en el mismo CSV de `DOCKER-DEB` que ya se transcribió (`DOCKER-DEB-NginxProxyManager/proxy_hosts.csv`). `jobsprod.condorwork.com.ar` apunta a `192.1.1.1:9001`, que es exactamente la IP de `WL12C-PROD`, el WebLogic que `inventory.json` ya tenía resuelto por nombre para JOBS — coincidencia limpia, sin ambigüedad.
 
@@ -22,7 +22,7 @@ A diferencia de CEFAS, para JOBS **ya tenemos el dominio de entrada sin necesita
 
 1. ~~Completar `clients[].database.resolved` de JOBS en `infra/inventory.json` con el resultado real de la capa 6.~~ Hecho (1 sep 2026) — `service_name_confirmed` agregado para JOBS y Enerflex.
 2. ~~Resolver cuál de las dos rutas de la capa 1 es la que usan los usuarios.~~ Hecho (1 sep 2026) — **las dos.** Access logs de NPM en `DOCKER-DEB` (`sudo docker exec ssl-app-1`, `/data/logs/proxy_host-51.log` para `jobsprod` y `/data/logs/proxy_host-42.log` para `jobs`) muestran sesión Forms activa en simultáneo hoy en ambas rutas, con clientes/IPs distintos (`jobsprod`: `181.94.246.158`, Java 1.8.0_471; `jobs`: `181.91.85.168`, Java 1.8.0_121). No es dedicado-vivo/compartido-legacy — son dos poblaciones de usuarios en uso productivo concurrente. **Gotcha:** el nombre de archivo `proxy_host-<N>.log` no coincide con el `id` de la tabla `proxy_host` en la base MariaDB de NPM (`ssl-db-1`, user/pass `npm`/`npm`, `-h127.0.0.1` porque por socket da `Access denied`) — hay que ubicar el archivo real con `find /data/logs -name "proxy_host-*.log" -exec grep -l "<dominio>" {} \;`, no asumir que el número de archivo es el `id` de la DB.
-3. Cruzar esta receta con la de CEFAS (`plan_relevamiento_alta_cefas.md`) y escribir la versión generalizada en ambos archivos — qué es común a los dos (capas 1–3, típicamente) y qué varía por cliente (si tiene WL/Docker dedicado o compartido, si tiene migración pendiente).
+3. Cruzar esta receta con la de CEFAS (`relevamiento_alta_cefas.md`) y escribir la versión generalizada en ambos archivos — qué es común a los dos (capas 1–3, típicamente) y qué varía por cliente (si tiene WL/Docker dedicado o compartido, si tiene migración pendiente).
 
 ## Receta generalizada (completar después de cruzar con CEFAS)
 

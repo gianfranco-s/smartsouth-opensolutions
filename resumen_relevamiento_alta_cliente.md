@@ -1,6 +1,6 @@
 # Resumen — relevamiento de alta de cliente (CEFAS + JOBS + EBY + BOCA + ROMAN)
 
-Vistazo conjunto de los cuatro trazados punta a punta. Detalle completo, evidencia y pasos en [`plan_relevamiento_alta_cefas.md`](plan_relevamiento_alta_cefas.md), [`plan_relevamiento_alta_jobs.md`](plan_relevamiento_alta_jobs.md), [`plan_relevamiento_alta_eby.md`](plan_relevamiento_alta_eby.md) y [`plan_relevamiento_alta_boca.md`](plan_relevamiento_alta_boca.md) — acá solo el estado.
+Vistazo conjunto de los cuatro trazados punta a punta. Detalle completo, evidencia y pasos en [`relevamiento_alta_cefas.md`](relevamiento_alta_cefas.md), [`relevamiento_alta_jobs.md`](relevamiento_alta_jobs.md), [`relevamiento_alta_eby.md`](relevamiento_alta_eby.md) y [`relevamiento_alta_boca.md`](relevamiento_alta_boca.md) — acá solo el estado.
 
 ## Panorama
 
@@ -65,7 +65,7 @@ Vistazo conjunto de los cuatro trazados punta a punta. Detalle completo, evidenc
 - **Capa Docker / reportes** — no aplica: no hay contenedor `cabj`/`boca` en `OPENDOCKER01`, nada escucha en `:8090`, `cabjjasper` es ruta muerta. Mismo patrón que JOBS.
 - **Almacenamiento** — no aplica: no hay `/clientes/boca` en `WebLogic.191` (la mención previa era un error de transcripción).
 
-**Capa 6 cerrada (12 sep 2026):** `root@192.1.1.32`, `ORACLE_SID=BOCA`, `sqlplus` → `v$database` reveló `CDB=YES` — la CDB `BOCA` está casi vacía (solo schemas de infraestructura Oracle). Los datos reales viven en la PDB **`BOCAPDB`** (`ALTER SESSION SET CONTAINER=BOCAPDB`): schema `CONDOR` con **~22.5 GB** (2571 segmentos, coincide con los 18G de la matriz), charset `WE8MSWIN1252` confirmado dentro de la PDB. Último DML de `CONDOR`: **el mismo día de la consulta** — uso productivo activo confirmado en vivo, sin ambigüedad. La disputa "SID BOCA vs BOCAPDB" no era tal: las dos fuentes tenían razón, a distinto nivel (CDB vs PDB) — mismo patrón multitenant que Rex/GIAR (`CDBOPEN03`). **BOCA queda 7/7, trazado completo.** Ver `plan_relevamiento_alta_boca.md`.
+**Capa 6 cerrada (12 sep 2026):** `root@192.1.1.32`, `ORACLE_SID=BOCA`, `sqlplus` → `v$database` reveló `CDB=YES` — la CDB `BOCA` está casi vacía (solo schemas de infraestructura Oracle). Los datos reales viven en la PDB **`BOCAPDB`** (`ALTER SESSION SET CONTAINER=BOCAPDB`): schema `CONDOR` con **~22.5 GB** (2571 segmentos, coincide con los 18G de la matriz), charset `WE8MSWIN1252` confirmado dentro de la PDB. Último DML de `CONDOR`: **el mismo día de la consulta** — uso productivo activo confirmado en vivo, sin ambigüedad. La disputa "SID BOCA vs BOCAPDB" no era tal: las dos fuentes tenían razón, a distinto nivel (CDB vs PDB) — mismo patrón multitenant que Rex/GIAR (`CDBOPEN03`). **BOCA queda 7/7, trazado completo.** Ver `relevamiento_alta_boca.md`.
 
 **Rédito que no salió (de la sesión del 6 sep):** ABB. El plan contaba con leer su datasource en la consola de `192.1.2.54`, pero ese box no tiene consola ni sudo. Se resolvió después por otra vía — ver sección ABB abajo.
 
@@ -82,7 +82,7 @@ Vistazo conjunto de los cuatro trazados punta a punta. Detalle completo, evidenc
 - **Dominio de entrada (cerrada — sin tráfico real)** — acceso a `DOCKER-DEB` (`192.1.1.37`), NPM en contenedor `ssl-app-1` (`jc21/nginx-proxy-manager`). `proxy-host-93_access.log` (`romanprod`) + `proxy-host-94_access.log` (`romanqa`): **0 requests `lservlet` en 5.097 requests totales**, 100% escaneo de vulnerabilidades genérico (`wlwmanifest.xml`, `.env`, `.git/config`), IPs de bots. Coincide con el `access.log` de `WLS_FORMS` del 6-sep (0 `config=csm`) — **dos fuentes independientes confirman cero uso real**.
 - **Base de datos — credencial probada y rechazada** — `ssh root@10.77.7.30` falló, igual que `.151`/`.15`. El mismo `root` que cerró BOCA (`192.1.1.32`) no sirve en el segmento `10.77.7.x`. Capa 6 sigue en 0.9 (config), no 1.0.
 
-**Conclusión:** ROMAN queda con **6 de 7 capas resueltas** (dominio, NPM, motor clásico, DB —config—, almacenamiento; faltan firewall/NAT y capa Docker, bajo costo) y confirmado como **configurado de punta a punta como producción pero sin un solo usuario real** — mismo patrón que se vio con ABB (apagado de hecho desde el 1‑jul). Queda anotado en `QUESTIONS.md` como pregunta de negocio: ¿ROMAN es candidato a la misma revisión de baja/mantenimiento? Único paso técnico pendiente: `v$session` en `OPENDBPROD03`, bloqueado por credencial de DB. Ver `plan_relevamiento_alta_roman.md`.
+**Conclusión:** ROMAN queda con **6 de 7 capas resueltas** (dominio, NPM, motor clásico, DB —config—, almacenamiento; faltan firewall/NAT y capa Docker, bajo costo) y confirmado como **configurado de punta a punta como producción pero sin un solo usuario real** — mismo patrón que se vio con ABB (apagado de hecho desde el 1‑jul). Queda anotado en `QUESTIONS.md` como pregunta de negocio: ¿ROMAN es candidato a la misma revisión de baja/mantenimiento? Único paso técnico pendiente: `v$session` en `OPENDBPROD03`, bloqueado por credencial de DB. Ver `relevamiento_alta_roman.md`.
 
 **Observación de seguridad menor:** las únicas líneas "roman" en el access log son un bot escaneando backups (`/romanprod.condor.solutions.zip|.sql|.tar.gz`, todo `404`). Dominios `*.condor.solutions` enumerables y con escaneo automatizado.
 
@@ -100,4 +100,4 @@ Vistazo conjunto de los cuatro trazados punta a punta. Detalle completo, evidenc
 - **DCVIAJES — capa 6 parcial.** `192.1.1.190` (Oracle 11.2). DB `DCVIAJES` viva, charset `WE8ISO8859P1` (= matriz), schema `CONDOR` con DML del 04/09/2026 → en uso. Sin sesión capturada, AWR vacío.
 - **Cabo suelto nuevo (bajo):** `192.1.1.190` lista en `/etc/oratab` instancias sin mapear — `GRIMALDI`/`GRIMA2015`/`GRIMATEMP`, `SECLA`/`SECLATEST`, `REXTEST`, `TOLEDO`. `REXTEST` podría ser el test de Rex Argentina.
 
-**Falta:** nada bloqueante — trazado de ABB completo. No llega a 100% solo porque el cliente está apagado de hecho (no hay tráfico vivo que observar). Ver `plan_relevamiento_alta_abb.md`.
+**Falta:** nada bloqueante — trazado de ABB completo. No llega a 100% solo porque el cliente está apagado de hecho (no hay tráfico vivo que observar). Ver `relevamiento_alta_abb.md`.

@@ -38,6 +38,24 @@ A medida que sesiones de TeamViewer confirmen o corrijan algo, editar `inventory
 
 Este es un repo **privado** — contiene nombres de clientes, IPs internas y (en `source-files/`) correspondencia interna real. Mantenerlo privado, y nunca commitear credenciales de ningún tipo — la planilla original de Relevamiento tenía una contraseña de admin en texto plano que se quitó antes de versionarla acá.
 
+## Armar un bundle .zip del estado relevado
+
+Para juntar en un solo archivo el estado actual del relevamiento — incluyendo `source-files/` sin adulterar, para poder consultarlo aparte —, correr desde la raíz del repo:
+
+```bash
+zip -r "relevamiento-opensolutions-$(git rev-parse --short HEAD).zip" \
+  infra/inventory.json infra/findings.md infra/topology.md infra/esquema-topologia-clientes.html \
+  esquema-red-topologia.png \
+  relevamiento_alta_*.md relevamiento_azure.md \
+  resumen_relevamiento_alta_cliente.md \
+  informe_capacidad_esxi.md \
+  cloud-infra \
+  source-files
+```
+
+Queda nombrado con el short hash del commit sobre el que se armó, para saber a qué snapshot corresponde. **El .zip no se commitea** (está en `.gitignore`) — es solo para uso local o para pasarlo a mano.
+
+Deja afuera a propósito: `relevamiento_segmento_aislado.md`, `verificacion_completitud_clientes.md`, `vms_apagadas.md`, `PLAN.md`, `informe_ejecutivo_*.md`, `QUESTIONS.md`, `proxima-sesion.md`, `latest-human-findings.md`, `README.md` y `Documentación general de sistemas TI.md` — documentos de seguimiento/contexto general, no del estado relevado en sí.
 
 ## Notas adicionales
 Para conectarse por ssh a servers más viejos como WebLogic.191
